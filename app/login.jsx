@@ -1,6 +1,6 @@
 // Login
 
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet ,ScrollView} from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
 
@@ -9,7 +9,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Log In</Text>
 
       <View style={styles.inputContainer}>
@@ -49,7 +49,7 @@ export default function LoginScreen() {
           <Text style={styles.footerLink}>Sign Up</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
