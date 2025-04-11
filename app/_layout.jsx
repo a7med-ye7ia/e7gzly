@@ -17,9 +17,9 @@ export default function TabLayout() {
             }}
         />
         <Tabs.Screen
-            name="login"
+            name="Login"
             options={{
-            title: 'login' // Update the tab name properly
+            title: 'Login' // Update the tab name properly
             }}
         />
          <Tabs.Screen

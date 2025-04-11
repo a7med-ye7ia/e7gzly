@@ -32,9 +32,6 @@ const SignUpScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
-      <Text style={styles.header}>RightJoy</Text>
-      
       {/* Title */}
       <Text style={styles.title}>Sign up</Text>
 
