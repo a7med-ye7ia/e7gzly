@@ -7,7 +7,7 @@ export default function Page() {
       <View style={styles.main}>
         <Text style={styles.title}>Welcome</Text>
         <Text style={styles.subtitle}>This is the first page of your app.</Text>
-        <Link href="/app/login.jsx">Go to login</Link>
+        <Link href="/Login">Go to login</Link>
         <Pressable onPress={()=> router.push("/Home")}>
           <Text>Go to Home</Text>
         </Pressable>
