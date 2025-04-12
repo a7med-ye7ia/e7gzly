@@ -1,76 +1,100 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Alert,
-  TextInput,
-  BackHandler,
-  TouchableOpacity,
-} from "react-native"
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, Alert } from "react-native"
 import { useRouter } from "expo-router"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { Ionicons } from "@expo/vector-icons"
 
 const destinations = [
   {
     id: 1,
-    name: "Paris",
-    description: "Experience the city of lights with its iconic Eiffel Tower and world-class cuisine.",
+    name: "Lake Ciliwung",
+    location: "Tangerang",
     image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
-    price: "1,500,000",
-    interests: ["Eiffel Tower", "Louvre Museum", "Notre Dame", "Seine River"],
+    rating: "4.8",
+    featured: true,
+    price: "2,500,000",
   },
   {
     id: 2,
-    name: "Tokyo",
-    description: "Discover the perfect blend of traditional culture and cutting-edge technology.",
-    image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80",
-    price: "2,200,000",
-    interests: ["Tokyo Tower", "Shibuya Crossing", "Imperial Palace", "Senso-ji Temple"],
+    name: "White House",
+    location: "Spain",
+    image: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80",
+    rating: "4.6",
+    featured: true,
+    price: "3,200,000",
   },
   {
     id: 3,
-    name: "New York",
-    description: "Explore the Big Apple with its stunning skyline and diverse neighborhoods.",
-    image: "https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=800&q=80",
-    price: "2,000,000",
-    interests: ["Times Square", "Central Park", "Statue of Liberty", "Broadway"],
+    name: "Danau Beratan",
+    location: "Singajara",
+    image: "https://images.unsplash.com/photo-1558005530-a7958896ec60?auto=format&fit=crop&w=800&q=80",
+    rating: "4.5",
+    featured: false,
+    new: true,
+    price: "1,800,000",
   },
   {
     id: 4,
-    name: "Bali",
-    description: "Relax on pristine beaches and immerse yourself in rich Balinese culture.",
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-    price: "1,200,000",
-    interests: ["Kuta Beach", "Ubud Monkey Forest", "Tanah Lot", "Mount Batur"],
+    name: "Sydney Opera",
+    location: "Australia",
+    image: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=800&q=80",
+    rating: "4.7",
+    featured: false,
+    new: true,
+    price: "4,200,000",
   },
   {
     id: 5,
-    name: "Rome",
-    description: "Walk through history in the eternal city with ancient ruins and Renaissance art.",
-    image: "https://images.unsplash.com/photo-1506976785307-8732e854ad70?auto=format&fit=crop&w=800&q=80",
-    price: "1,800,000",
-    interests: ["Colosseum", "Vatican City", "Trevi Fountain", "Roman Forum"],
+    name: "Roma",
+    location: "Italy",
+    image: "https://images.unsplash.com/photo-1555992336-fb0d29498b13?auto=format&fit=crop&w=800&q=80",
+    rating: "4.8",
+    featured: false,
+    new: true,
+    price: "3,500,000",
   },
   {
     id: 6,
-    name: "Sydney",
-    description: "Enjoy the stunning harbor views and laid-back Australian lifestyle.",
-    image: "https://images.unsplash.com/photo-1506089676908-3592f7389d4d?auto=format&fit=crop&w=800&q=80",
-    price: "2,300,000",
-    interests: ["Sydney Opera House", "Bondi Beach", "Harbour Bridge", "Taronga Zoo"],
+    name: "Bali",
+    location: "Indonesia",
+    image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80",
+    rating: "4.9",
+    featured: false,
+    new: true,
+    price: "2,100,000",
+  },
+  {
+    id: 7,
+    name: "Santorini",
+    location: "Greece",
+    image: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80",
+    rating: "4.7",
+    featured: false,
+    new: true,
+    price: "3,800,000",
+  },
+  {
+    id: 8,
+    name: "Kyoto",
+    location: "Japan",
+    image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80",
+    rating: "4.6",
+    featured: false,
+    new: true,
+    price: "3,900,000",
   },
 ]
 
+const { width } = Dimensions.get("window")
+const cardWidth = (width - 60) / 2
+
 export default function FlightDestinations() {
   const router = useRouter()
-  const [searchQuery, setSearchQuery] = useState("")
-  const [filteredDestinations, setFilteredDestinations] = useState(destinations)
-  const [userName, setUserName] = useState("")
+  const [userName, setUserName] = useState("Kezia Anne")
+  const [userEmail, setUserEmail] = useState("")
+  const [profileImage, setProfileImage] = useState(null)
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -78,38 +102,34 @@ export default function FlightDestinations() {
       if (!isLoggedIn) {
         router.replace("/")
       } else {
-        // Fetch username from AsyncStorage
+        // Fetch user data from AsyncStorage
         const storedUserName = await AsyncStorage.getItem("userName")
+        const storedUserEmail = await AsyncStorage.getItem("userEmail")
+
         if (storedUserName) {
           setUserName(storedUserName)
+        }
+
+        if (storedUserEmail) {
+          setUserEmail(storedUserEmail)
         }
       }
     }
     checkLogin()
-
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
-      router.replace("/")
-      return true
-    })
-
-    return () => {
-      backHandler.remove()
-    }
   }, [])
 
   const handleSignOut = async () => {
-    await AsyncStorage.removeItem("isLoggedIn")
-    Alert.alert("Signed Out", "You have been signed out successfully.")
-    router.replace("/")
-  }
+    try {
+      await AsyncStorage.removeItem("isLoggedIn")
+      await AsyncStorage.removeItem("userName")
+      await AsyncStorage.removeItem("userEmail")
 
-  // Filter destinations based on search query
-  useEffect(() => {
-    const filtered = destinations.filter((destination) =>
-      destination.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    )
-    setFilteredDestinations(filtered)
-  }, [searchQuery])
+      Alert.alert("Success", "You have been signed out successfully")
+      router.replace("/")
+    } catch (error) {
+      Alert.alert("Error", "Failed to sign out")
+    }
+  }
 
   const navigateToProductInfo = (destination) => {
     router.push({
@@ -117,132 +137,241 @@ export default function FlightDestinations() {
       params: {
         id: destination.id,
         name: destination.name,
-        description: destination.description,
+        location: destination.location,
         image: destination.image,
+        rating: destination.rating,
         price: destination.price,
-        interests: JSON.stringify(destination.interests),
       },
     })
   }
 
+  const featuredDestinations = destinations.filter((dest) => dest.featured)
+  const newDestinations = destinations.filter((dest) => dest.new)
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
-        {userName ? <Text style={styles.welcomeText}>Hello, {userName}</Text> : null}
-        <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-          <Text style={styles.signOutText}>Sign Out</Text>
-        </TouchableOpacity>
+        <View>
+          <Text style={styles.greeting}>Hello,</Text>
+          <Text style={styles.userName}>passenger</Text>
+         
+          <Text style={styles.searchPrompt}>Where to fly today?</Text>
+        </View>
+        {/* <View style={styles.profileContainer}>
+          <Image
+            source={{
+              uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80",
+            }}
+            style={styles.profileImage}
+          /> */}
+          <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+            <Ionicons name="log-out-outline" size={20} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      {/* </View> */}
+
+      {/* Featured Destinations */}
+      <View style={styles.featuredContainer}>
+        {featuredDestinations.map((destination, index) => (
+          <TouchableOpacity
+            key={destination.id}
+            style={[styles.featuredCard, { marginRight: index === 0 ? 10 : 0 }]}
+            onPress={() => navigateToProductInfo(destination)}
+          >
+            <Image source={{ uri: destination.image }} style={styles.featuredImage} />
+            {destination.rating && (
+              <View style={styles.ratingBadge}>
+                <Ionicons name="star" size={12} color="#FFD700" />
+                <Text style={styles.ratingText}>{destination.rating}</Text>
+              </View>
+            )}
+            <View style={styles.featuredInfo}>
+              <Text style={styles.destinationName}>{destination.name}</Text>
+              <Text style={styles.destinationLocation}>{destination.location}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
 
-      <Text style={styles.title}>Popular Flight Destinations</Text>
+      {/* New This Year Section */}
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>New This Year</Text>
 
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search destinations..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-      />
-
-      {filteredDestinations.map((destination) => (
-        <View key={destination.id} style={styles.card}>
-          <View style={styles.imageContainer}>
-            <Image source={{ uri: destination.image }} style={styles.image} resizeMode="cover" />
-          </View>
-
-          <View style={styles.content}>
-            <Text style={styles.name}>{destination.name}</Text>
-            <Text style={styles.description}>{destination.description}</Text>
-            <TouchableOpacity style={styles.bookButton} onPress={() => navigateToProductInfo(destination)}>
-              <Text style={styles.bookText}>Book Now</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      ))}
+        {newDestinations.map((destination) => (
+          <TouchableOpacity
+            key={destination.id}
+            style={styles.newDestinationCard}
+            onPress={() => navigateToProductInfo(destination)}
+          >
+            <Image source={{ uri: destination.image }} style={styles.newDestinationImage} />
+            <View style={styles.newDestinationInfo}>
+              <View>
+                <Text style={styles.newDestinationName}>{destination.name}</Text>
+                <Text style={styles.newDestinationLocation}>{destination.location}</Text>
+              </View>
+              <View style={styles.newDestinationRating}>
+                <Ionicons name="star" size={14} color="#FFD700" />
+                <Text style={styles.newDestinationRatingText}>{destination.rating}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    paddingBottom: 40,
+    flex: 1,
     backgroundColor: "#fff",
+    padding: 20,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
+    alignItems: "flex-start",
+    marginBottom: 25,
+    marginTop: 10,
   },
-  welcomeText: {
-    fontSize: 16,
-    fontWeight: "500",
+  greeting: {
+    fontSize: 18,
     color: "#333",
   },
-  signOutButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: "#FF3B30",
-    borderRadius: 8,
+  userName: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#1a1a2e",
+    marginBottom: 2,
   },
-  signOutText: {
-    color: "#fff",
+  userEmail: {
     fontSize: 14,
-    fontWeight: "bold",
+    color: "#666",
+    marginBottom: 5,
   },
-  title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    marginBottom: 24,
-    textAlign: "center",
-  },
-  searchInput: {
-    height: 40,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 24,
+  searchPrompt: {
     fontSize: 16,
+    color: "#888",
+    marginTop: 5,
   },
-  card: {
-    marginBottom: 30,
-    borderRadius: 12,
-    overflow: "hidden",
-    elevation: 3,
-    backgroundColor: "#f9f9f9",
+  profileContainer: {
+    alignItems: "center",
   },
-  imageContainer: {
-    width: "100%",
-    height: 200,
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-  },
-  content: {
-    padding: 16,
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: "600",
+  profileImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     marginBottom: 8,
   },
-  description: {
-    fontSize: 14,
-    color: "#555",
-    marginBottom: 12,
+  signOutButton: {
+    backgroundColor: "#FF3B30",
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  bookButton: {
-    backgroundColor: "#007BFF",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignSelf: "flex-start",
+  featuredContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 25,
   },
-  bookText: {
-    color: "#fff",
+  featuredCard: {
+    width: cardWidth,
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  featuredImage: {
+    width: "100%",
+    height: 150,
+    borderRadius: 16,
+  },
+  ratingBadge: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  ratingText: {
+    fontSize: 12,
+    fontWeight: "bold",
+    marginLeft: 3,
+  },
+  featuredInfo: {
+    padding: 12,
+  },
+  destinationName: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "bold",
+    color: "#333",
+  },
+  destinationLocation: {
+    fontSize: 14,
+    color: "#888",
+    marginTop: 2,
+  },
+  sectionContainer: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#1a1a2e",
+    marginBottom: 15,
+  },
+  newDestinationCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  newDestinationImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 12,
+    margin: 10,
+  },
+  newDestinationInfo: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingRight: 15,
+  },
+  newDestinationName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  newDestinationLocation: {
+    fontSize: 14,
+    color: "#888",
+  },
+  newDestinationRating: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  newDestinationRatingText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginLeft: 3,
   },
 })
