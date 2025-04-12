@@ -1,12 +1,40 @@
-// Login
-
-import { View, Text, TextInput, TouchableOpacity, StyleSheet ,ScrollView} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'; // Import Firebase Auth
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  // Firebase Auth instance
+  const auth = getAuth();
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill out both fields');
+      return;
+    }
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log('User logged in:', userCredential.user);
+      Alert.alert('Success', 'Login successful');
+      // Redirect to the main app screen after successful login
+      router.replace('./Home');  // Adjust this route to where you want to go after login
+    } catch (error) {
+      if (error.code === 'auth/invalid-email') {
+        Alert.alert('Invalid Email', 'The email address is not valid');
+      } else if (error.code === 'auth/user-not-found') {
+        Alert.alert('User Not Found', 'No account found with this email');
+      } else if (error.code === 'auth/wrong-password') {
+        Alert.alert('Wrong Password', 'The password is incorrect');
+      } else {
+        console.error('Login error:', error.message);
+        Alert.alert('Login Failed', error.message);
+      }
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -35,7 +63,7 @@ export default function LoginScreen() {
 
       <View style={styles.divider} />
 
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Log In</Text>
       </TouchableOpacity>
 
@@ -43,9 +71,7 @@ export default function LoginScreen() {
         <TouchableOpacity>
           <Text style={styles.footerLink}>Forgot password?</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {
-          router.push("/SignUp");
-        }}>
+        <TouchableOpacity onPress={() => router.push('./SignUp')}>
           <Text style={styles.footerLink}>Sign Up</Text>
         </TouchableOpacity>
       </View>
@@ -59,20 +85,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 30,
-  },
-  time: {
-    fontSize: 16,
-    color: '#000',
-  },
-  rightJoy: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
   },
   title: {
     fontSize: 24,
@@ -94,15 +106,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-  },
-  showPasswordButton: {
-    position: 'absolute',
-    right: 15,
-    top: 40,
-  },
-  showPasswordText: {
-    color: '#007AFF',
-    fontSize: 14,
   },
   divider: {
     height: 1,

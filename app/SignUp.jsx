@@ -1,5 +1,7 @@
 import { router } from 'expo-router';
 import React, { useState } from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../services/config'; // Adjust path if needed
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert ,ScrollView} from 'react-native';
 
 const SignUpScreen = () => {
@@ -23,12 +25,47 @@ const SignUpScreen = () => {
     return true;
   };
 
-  const handleSignUp = () => {
-    if (validatePassword()) {
+  const handleSignUp = async () => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log('✅ User created:', user);
+      Alert('Success', 'Account created successfully!');
+      router.replace('./Login');
+    } catch (error) {
+      console.error('❌ Firebase error:', error.code, error.message);
+      Alert.alert('Sign Up Failed', error.message);
+    }
+    if (!email || !password || !confirmPassword || !mobile) {
+      Alert.alert('Missing Info', 'Please fill in all fields.');
+      return;
+    }
+  
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      Alert.alert('Invalid Email', 'Please enter a valid email.');
+      return;
+    }
+  
+    if (!validatePassword()) return;
+  
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
       Alert.alert('Success', 'Account created successfully!');
-      // Here you would typically call your signup API
+      router.replace('./Login');
+    } catch (error) {
+      console.error(error);
+      let message = 'Something went wrong.';
+      if (error.code === 'auth/email-already-in-use') {
+        message = 'This email is already registered.';
+      } else if (error.code === 'auth/invalid-email') {
+        message = 'Invalid email address.';
+      } else if (error.code === 'auth/weak-password') {
+        message = 'Password should be at least 6 characters.';
+      }
+      Alert.alert('Error', message);
     }
   };
+  
 
   return (
     <ScrollView style={styles.container}>

@@ -11,6 +11,9 @@ export default function Page() {
         <Pressable onPress={()=> router.push("/Home")}>
           <Text>Go to Home</Text>
         </Pressable>
+        <Pressable onPress={()=> router.push("/SignUp")}>
+          <Text>Go to SignUp</Text>
+        </Pressable>
       </View>
     </View>
   );
