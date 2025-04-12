@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, Alert } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const destinations = [
   {
@@ -42,8 +43,11 @@ const destinations = [
 ];
 
 export default function FlightDestinations() {
-  const handleSignOut = () => {
+  const router = useRouter(); 
+  const handleSignOut = async () => {
+    await AsyncStorage.removeItem('isLoggedIn'); 
     Alert.alert("Signed Out", "You have been signed out successfully.");
+    router.replace('/'); 
   };
 
   return (
