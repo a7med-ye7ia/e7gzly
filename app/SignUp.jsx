@@ -63,10 +63,8 @@ const SignUpScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Title */}
       <Text style={styles.title}>Sign up</Text>
 
-      {/* Email Input */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>E-mail</Text>
         <TextInput
@@ -78,8 +76,6 @@ const SignUpScreen = () => {
           autoCapitalize="none"
         />
       </View>
-
-      {/* Mobile Input */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Mobile Number</Text>
         <TextInput
@@ -91,7 +87,6 @@ const SignUpScreen = () => {
         />
       </View>
 
-      {/* Password Input */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Password</Text>
         <TextInput
@@ -112,7 +107,6 @@ const SignUpScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Confirm Password Input */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Confirm Password</Text>
         <TextInput
@@ -131,7 +125,6 @@ const SignUpScreen = () => {
         ) : null}
       </View>
 
-      {/* Divider */}
       <View style={styles.divider} />
 
       {/* Sign Up Button */}
