@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, Linking, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, Alert } from 'react-native';
+import { Link } from 'expo-router';
 
 const destinations = [
   {
@@ -41,8 +42,18 @@ const destinations = [
 ];
 
 export default function FlightDestinations() {
+  // Function to show an alert on sign out
+  const handleSignOut = () => {
+    Alert.alert("Signed Out", "You have been signed out successfully.");
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* Sign Out button */}
+      <Link href="/" style={styles.signOutButton} onPress={handleSignOut}>
+        <Text style={styles.signOutText}>Sign Out</Text>
+      </Link>
+
       <Text style={styles.title}>Popular Flight Destinations</Text>
 
       {destinations.map((destination) => (
@@ -58,11 +69,12 @@ export default function FlightDestinations() {
           <View style={styles.content}>
             <Text style={styles.name}>{destination.name}</Text>
             <Text style={styles.description}>{destination.description}</Text>
-            <TouchableOpacity
-              onPress={() => Linking.openURL(`https://booking.com/flights/${destination.name}`)}
+            <Link
+              href={`https://booking.com/flights/${destination.name}`}
+              style={styles.bookLink}
             >
-              <Text style={styles.bookLink}>Book Now</Text>
-            </TouchableOpacity>
+              Book Now
+            </Link>
           </View>
         </View>
       ))}
@@ -75,6 +87,19 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 40,
     backgroundColor: '#fff',
+  },
+  signOutButton: {
+    alignSelf: 'flex-end',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#FF3B30',
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  signOutText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   title: {
     fontSize: 26,

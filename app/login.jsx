@@ -1,15 +1,24 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
-import { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'; 
-import FlightDestinations from './flight-destinations';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  
+  const [loading, setLoading] = useState(false);
   const auth = getAuth();
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
+      if (isLoggedIn === 'true') {
+        router.replace('./flight-destinations');
+      }
+    };
+    checkLoginStatus();
+  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -17,12 +26,16 @@ export default function LoginScreen() {
       return;
     }
 
+    setLoading(true);
+
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User logged in:', userCredential.user);
       Alert.alert('Success', 'Login successful');
+      await AsyncStorage.setItem('isLoggedIn', 'true');
       router.replace('./flight-destinations');  
     } catch (error) {
+      setLoading(false);
       if (error.code === 'auth/invalid-email') {
         Alert.alert('Invalid Email', 'The email address is not valid');
       } else if (error.code === 'auth/user-not-found') {
@@ -62,12 +75,16 @@ export default function LoginScreen() {
 
       <View style={styles.divider} />
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Log In</Text>
-      </TouchableOpacity>
+      {loading ? (
+        <ActivityIndicator size="large" color="#007AFF" />
+      ) : (
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <Text style={styles.loginButtonText}>Log In</Text>
+        </TouchableOpacity>
+      )}
 
       <View style={styles.footer}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('./ForgetPassword')}>
           <Text style={styles.footerLink}>Forgot password?</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => router.push('./SignUp')}>
@@ -78,7 +95,6 @@ export default function LoginScreen() {
   );
 }
 
-// Keep the same StyleSheet from previous example
 const styles = StyleSheet.create({
   container: {
     flex: 1,
