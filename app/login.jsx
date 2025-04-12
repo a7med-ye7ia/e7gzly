@@ -1,13 +1,14 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'; // Import Firebase Auth
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'; 
+import FlightDestinations from './flight-destinations';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // Firebase Auth instance
+  
   const auth = getAuth();
 
   const handleLogin = async () => {
@@ -20,8 +21,7 @@ export default function LoginScreen() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User logged in:', userCredential.user);
       Alert.alert('Success', 'Login successful');
-      // Redirect to the main app screen after successful login
-      router.replace('/');  // Adjust this route to where you want to go after login
+      router.replace('./flight-destinations');  
     } catch (error) {
       if (error.code === 'auth/invalid-email') {
         Alert.alert('Invalid Email', 'The email address is not valid');
@@ -30,7 +30,6 @@ export default function LoginScreen() {
       } else if (error.code === 'auth/wrong-password') {
         Alert.alert('Wrong Password', 'The password is incorrect');
       } else {
-        // console.error('Login error:', error.message);
         Alert.alert('Login Failed', error.message);
       }
     }
