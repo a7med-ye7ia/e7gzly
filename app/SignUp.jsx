@@ -26,16 +26,7 @@ const SignUpScreen = () => {
   };
 
   const handleSignUp = async () => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      console.log('✅ User created:', user);
-      Alert('Success', 'Account created successfully!');
-      router.replace('./Login');
-    } catch (error) {
-      console.error('❌ Firebase error:', error.code, error.message);
-      Alert.alert('Sign Up Failed', error.message);
-    }
+    // Validation first
     if (!email || !password || !confirmPassword || !mobile) {
       Alert.alert('Missing Info', 'Please fill in all fields.');
       return;
@@ -48,12 +39,15 @@ const SignUpScreen = () => {
   
     if (!validatePassword()) return;
   
+    // Then try to create the user
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log('✅ User created:', user);
       Alert.alert('Success', 'Account created successfully!');
       router.replace('./Login');
     } catch (error) {
-      console.error(error);
+      console.error('❌ Firebase error:', error.code, error.message);
       let message = 'Something went wrong.';
       if (error.code === 'auth/email-already-in-use') {
         message = 'This email is already registered.';
@@ -62,7 +56,7 @@ const SignUpScreen = () => {
       } else if (error.code === 'auth/weak-password') {
         message = 'Password should be at least 6 characters.';
       }
-      Alert.alert('Error', message);
+      Alert.alert('Sign Up Failed', message);
     }
   };
   

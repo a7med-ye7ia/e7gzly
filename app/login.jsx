@@ -21,7 +21,7 @@ export default function LoginScreen() {
       console.log('User logged in:', userCredential.user);
       Alert.alert('Success', 'Login successful');
       // Redirect to the main app screen after successful login
-      router.replace('./Home');  // Adjust this route to where you want to go after login
+      router.replace('./index');  // Adjust this route to where you want to go after login
     } catch (error) {
       if (error.code === 'auth/invalid-email') {
         Alert.alert('Invalid Email', 'The email address is not valid');
