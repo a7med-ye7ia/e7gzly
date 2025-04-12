@@ -18,7 +18,7 @@ export default function Page() {
             <Link href="/login" style={styles.button}>
               <Text style={styles.buttonText}>Login</Text>
             </Link>
-            <Link href="/signup" style={styles.secondaryButton}>
+            <Link href="/SignUp" style={styles.secondaryButton}>
               <Text style={styles.secondaryButtonText}>Sign Up</Text>
             </Link>
           </View>
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginBottom: 30,
     gap: 12,
-    alignItems: "center",  // To center the buttons
+    alignItems: "center",  
   },
   button: {
     backgroundColor: "#5C40CC",
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 50,
     borderRadius: 10,
     alignItems: "center",
-    width: "80%", // Button width adjusted for better layout
+    width: "80%",
     justifyContent: "center",
   },
   buttonText: {
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "white",
-    width: "80%", // Button width adjusted for better layout
+    width: "80%", 
     justifyContent: "center",
   },
   secondaryButtonText: {

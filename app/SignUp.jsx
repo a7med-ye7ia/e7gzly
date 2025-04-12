@@ -45,7 +45,7 @@ const SignUpScreen = () => {
       const user = userCredential.user;
       console.log('✅ User created:', user);
       Alert.alert('Success', 'Account created successfully!');
-      router.replace('./Login');
+      router.replace('./login');
     } catch (error) {
       console.error('❌ Firebase error:', error.code, error.message);
       let message = 'Something went wrong.';

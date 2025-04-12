@@ -77,7 +77,6 @@ export default function LoginScreen() {
 
       <View style={styles.divider} />
 
-      {/* Loading spinner while logging in */}
       {loading ? (
         <ActivityIndicator size="large" color="#007AFF" />
       ) : (
@@ -98,7 +97,6 @@ export default function LoginScreen() {
   );
 }
 
-// Keep the same StyleSheet from previous example
 const styles = StyleSheet.create({
   container: {
     flex: 1,

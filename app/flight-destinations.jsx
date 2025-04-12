@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, Alert } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, Alert, BackHandler } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -44,8 +44,28 @@ const destinations = [
 
 export default function FlightDestinations() {
   const router = useRouter(); 
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
+      if (!isLoggedIn) {
+        router.replace('/'); 
+      }
+    };
+    checkLogin();
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      router.replace('/'); 
+      return true; 
+    });
+
+    return () => {
+      backHandler.remove();
+    };
+  }, []);
+
   const handleSignOut = async () => {
-    await AsyncStorage.removeItem('isLoggedIn'); 
+    await AsyncStorage.removeItem('isLoggedIn');
     Alert.alert("Signed Out", "You have been signed out successfully.");
     router.replace('/'); 
   };
