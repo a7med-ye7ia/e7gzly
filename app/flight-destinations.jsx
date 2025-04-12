@@ -42,14 +42,12 @@ const destinations = [
 ];
 
 export default function FlightDestinations() {
-  // Function to show an alert on sign out
   const handleSignOut = () => {
     Alert.alert("Signed Out", "You have been signed out successfully.");
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Sign Out button */}
       <Link href="/" style={styles.signOutButton} onPress={handleSignOut}>
         <Text style={styles.signOutText}>Sign Out</Text>
       </Link>

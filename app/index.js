@@ -1,157 +1,108 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
-import { useState, useEffect } from 'react';
-import { router } from 'expo-router';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'; 
-import AsyncStorage from '@react-native-async-storage/async-storage'; // استيراد AsyncStorage
+import { Link } from "expo-router";
+import { SafeAreaView, Text, View, ImageBackground, TouchableOpacity, StatusBar, StyleSheet } from "react-native";
 
-export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); // حالة التحميل
-  const auth = getAuth();
-
-  // التحقق من حالة تسجيل الدخول عند تحميل الصفحة
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
-      if (isLoggedIn === 'true') {
-        // إذا كان المستخدم قد سجل الدخول بالفعل، توجيهه مباشرة للصفحة التالية
-        router.replace('./flight-destinations');
-      }
-    };
-    checkLoginStatus();
-  }, []);
-
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill out both fields');
-      return;
-    }
-
-    setLoading(true); // بدء التحميل
-
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('User logged in:', userCredential.user);
-      Alert.alert('Success', 'Login successful');
-
-      // تخزين حالة تسجيل الدخول
-      await AsyncStorage.setItem('isLoggedIn', 'true');
-      
-      router.replace('./flight-destinations');  
-    } catch (error) {
-      setLoading(false); // إيقاف التحميل في حالة الخطأ
-      if (error.code === 'auth/invalid-email') {
-        Alert.alert('Invalid Email', 'The email address is not valid');
-      } else if (error.code === 'auth/user-not-found') {
-        Alert.alert('User Not Found', 'No account found with this email');
-      } else if (error.code === 'auth/wrong-password') {
-        Alert.alert('Wrong Password', 'The password is incorrect');
-      } else {
-        Alert.alert('Login Failed', error.message);
-      }
-    }
-  };
-
+export default function Page() {
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Log In</Text>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>E-mail</Text>
-        <TextInput
-          style={styles.input}
-          placeholder='Enter your Email'
-          value={email}
-          onChangeText={setEmail}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder='Enter your password'
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-      </View>
-
-      <View style={styles.divider} />
-
-      {/* Loading spinner while logging in */}
-      {loading ? (
-        <ActivityIndicator size="large" color="#007AFF" />
-      ) : (
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Log In</Text>
-        </TouchableOpacity>
-      )}
-
-      <View style={styles.footer}>
-        <TouchableOpacity onPress={() => router.push('./ForgetPassword')}>
-          <Text style={styles.footerLink}>Forgot password?</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('./SignUp')}>
-          <Text style={styles.footerLink}>Sign Up</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      <ImageBackground source={require("../assets/bg.png")} style={styles.backgroundImage} resizeMode="cover">
+        <View style={styles.overlay}>
+          <View style={styles.logoContainer}>
+            {/* <Image source={require("../assets/logo.png")} style={styles.logo} /> */}
+          </View>
+          <View style={styles.contentContainer}>
+            <Text style={styles.title}>Fly Like a Bird</Text>
+            <Text style={styles.subtitle}>Explore new world with us and let yourself get amazing experiences</Text>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Link href="/login" style={styles.button}>
+              <Text style={styles.buttonText}>Login</Text>
+            </Link>
+            <Link href="/signup" style={styles.secondaryButton}>
+              <Text style={styles.secondaryButtonText}>Sign Up</Text>
+            </Link>
+          </View>
+        </View>
+      </ImageBackground>
+    </SafeAreaView>
   );
 }
 
-// Keep the same StyleSheet from previous example
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    color: '#000',
+  backgroundImage: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
   },
-  inputContainer: {
-    marginBottom: 20,
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "space-between",
+    paddingVertical: 40,
+    paddingHorizontal: 20,
   },
-  inputLabel: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#666',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#eee',
-    marginVertical: 25,
-  },
-  loginButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  logoContainer: {
+    alignItems: "center",
     marginTop: 20,
   },
-  footerLink: {
-    color: '#007AFF',
-    fontSize: 14,
+  contentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 30,
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 16,
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 18,
+    color: "white",
+    lineHeight: 24,
+    textAlign: "center",
+    marginHorizontal: 20,
+  },
+  buttonContainer: {
+    marginBottom: 30,
+    gap: 12,
+    alignItems: "center",  // To center the buttons
+  },
+  button: {
+    backgroundColor: "#5C40CC",
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+    borderRadius: 10,
+    alignItems: "center",
+    width: "80%", // Button width adjusted for better layout
+    justifyContent: "center",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  secondaryButton: {
+    backgroundColor: "transparent",
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+    borderRadius: 10,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "white",
+    width: "80%", // Button width adjusted for better layout
+    justifyContent: "center",
+  },
+  secondaryButtonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "600",
+    textAlign: "center",
   },
 });

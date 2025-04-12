@@ -2,12 +2,12 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert,
 import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'; 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); 
   const auth = getAuth();
 
   useEffect(() => {
@@ -26,16 +26,18 @@ export default function LoginScreen() {
       return;
     }
 
-    setLoading(true);
+    setLoading(true); 
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User logged in:', userCredential.user);
       Alert.alert('Success', 'Login successful');
+
       await AsyncStorage.setItem('isLoggedIn', 'true');
+      
       router.replace('./flight-destinations');  
     } catch (error) {
-      setLoading(false);
+      setLoading(false); 
       if (error.code === 'auth/invalid-email') {
         Alert.alert('Invalid Email', 'The email address is not valid');
       } else if (error.code === 'auth/user-not-found') {
@@ -75,6 +77,7 @@ export default function LoginScreen() {
 
       <View style={styles.divider} />
 
+      {/* Loading spinner while logging in */}
       {loading ? (
         <ActivityIndicator size="large" color="#007AFF" />
       ) : (
@@ -95,6 +98,7 @@ export default function LoginScreen() {
   );
 }
 
+// Keep the same StyleSheet from previous example
 const styles = StyleSheet.create({
   container: {
     flex: 1,
