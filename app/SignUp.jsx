@@ -146,7 +146,7 @@ const SignUpScreen = () => {
       <View style={styles.footer}>
         <Text style={styles.footerText}>Already have an account?</Text>
         <TouchableOpacity onPress={() =>{
-            router.push("/Login");
+            router.push("/login");
         }}>
           <Text style={styles.footerLink}>Log In</Text>
         </TouchableOpacity>
