@@ -1,14 +1,16 @@
 "use client"
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
+import { View, Text, TouchableOpacity } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { Ionicons } from "@expo/vector-icons"
+import styles from '../styles/stylePages';
+
 
 export default function BookingConfirmation() {
   const router = useRouter()
   const params = useLocalSearchParams()
 
   return (
-    <View style={styles.container}>
+    <View style={styles.containerBooking}>
       <View style={styles.card}>
         <Ionicons name="checkmark-circle" size={80} color="#4CAF50" style={styles.icon} />
         <Text style={styles.title}>Booking Confirmed!</Text>
@@ -24,62 +26,4 @@ export default function BookingConfirmation() {
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#f5f5f5",
-  },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 15,
-    padding: 30,
-    width: "100%",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  icon: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 15,
-    color: "#333",
-  },
-  message: {
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 15,
-    color: "#555",
-  },
-  details: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 20,
-    color: "#333",
-  },
-  subtext: {
-    fontSize: 14,
-    textAlign: "center",
-    marginBottom: 30,
-    color: "#777",
-  },
-  button: {
-    backgroundColor: "#6200EE",
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-})
+

@@ -1,14 +1,14 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'; 
-import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { loginUser } from '../auth/login';
+import styles from '../styles/stylesAuth';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); 
-  const auth = getAuth();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -26,18 +26,16 @@ export default function LoginScreen() {
       return;
     }
 
-    setLoading(true); 
+    setLoading(true);
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('User logged in:', userCredential.user);
+    const { user, error } = await loginUser(email, password);
+
+    if (user) {
       Alert.alert('Success', 'Login successful');
-
       await AsyncStorage.setItem('isLoggedIn', 'true');
-      
-      router.replace('./flight-destinations');  
-    } catch (error) {
-      setLoading(false); 
+      router.replace('./flight-destinations');
+    } else {
+      setLoading(false);
       if (error.code === 'auth/invalid-email') {
         Alert.alert('Invalid Email', 'The email address is not valid');
       } else if (error.code === 'auth/user-not-found') {
@@ -51,102 +49,48 @@ export default function LoginScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Log In</Text>
+      <ScrollView style={styles.containerLogin}>
+        <Text style={styles.title}>Log In</Text>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>E-mail</Text>
-        <TextInput
-          style={styles.input}
-          placeholder='Enter your Email'
-          value={email}
-          onChangeText={setEmail}
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>E-mail</Text>
+          <TextInput
+              style={styles.input}
+              placeholder='Enter your Email'
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize='none'
+              keyboardType='email-address'
+          />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder='Enter your password'
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Password</Text>
+          <TextInput
+              style={styles.input}
+              placeholder='Enter your password'
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+          />
+        </View>
 
-      <View style={styles.divider} />
+        {loading ? (
+            <ActivityIndicator size="large" color="#007AFF" />
+        ) : (
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+              <Text style={styles.buttonText}>Log In</Text>
+            </TouchableOpacity>
+        )}
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#007AFF" />
-      ) : (
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Log In</Text>
-        </TouchableOpacity>
-      )}
-
-      <View style={styles.footer}>
-        <TouchableOpacity onPress={() => router.push('./ForgetPassword')}>
-          <Text style={styles.footerLink}>Forgot password?</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('./SignUp')}>
-          <Text style={styles.footerLink}>Sign Up</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+        <View style={styles.footer}>
+          <TouchableOpacity onPress={() => router.push('./ForgetPassword')}>
+            <Text style={styles.footerLink}>Forgot password?</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('./SignUp')}>
+            <Text style={styles.footerLink}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    color: '#000',
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  inputLabel: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#666',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#eee',
-    marginVertical: 25,
-  },
-  loginButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  footerLink: {
-    color: '#007AFF',
-    fontSize: 14,
-  },
-});
