@@ -417,5 +417,97 @@ export default StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
     },
+    //Profile style
+    profileHeader: {
+        marginTop: 40,
+        marginBottom: 30,
+        alignItems: "center",
+    },
+
+    greetingText: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 10,
+    },
+
+    balanceText: {
+        fontSize: 18,
+        color: "#555",
+    },
+
+    buttonProfile: {
+        backgroundColor: "#007BFF",
+        padding: 15,
+        borderRadius: 10,
+        marginHorizontal: 20,
+        marginVertical: 10,
+        alignItems: "center",
+    },
+    //
+    // buttonText: {
+    //     color: "#fff",
+    //     fontSize: 16,
+    //     fontWeight: "bold",
+    // },
+
+    logoutButton: {
+        backgroundColor: "#ec1b0f",
+        padding: 15,
+        borderRadius: 10,
+        marginHorizontal: 20,
+        marginVertical: 30,
+        alignItems: "center",
+    },
+
+    logoutText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    profileImage: {
+        width: 160,
+        height: 160,
+        borderRadius: 80,
+        marginBottom: 15,
+        borderWidth: 2,
+        borderColor: "#007BFF",
+    },
+
+    // travels :
+    pageTitle: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 20,
+        textAlign: "center",
+    },
+    cardTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
+        marginBottom: 5,
+    },
+    profileIconContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        padding: 10,
+        zIndex: 10,
+    },
+
+    profileIcon: {
+        width: 80,
+        height: 80,
+        borderRadius: 60,
+    },
+    backButtonProfile: {
+        backgroundColor: "#007BFF",
+        padding: 20,
+        borderRadius: 25,
+        alignItems: "center",
+        marginHorizontal: 40,
+        marginVertical: 40,
+    },
+
+
+
 
 });

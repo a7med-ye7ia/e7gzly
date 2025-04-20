@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49d8117b-f75f-44e1-abea-0f6fe77c7969" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/app/ForgetPassword.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/ForgetPassword.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/SignUp.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/SignUp.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/booking-confirmation.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/booking-confirmation.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/flight-destinations.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/flight-destinations.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/product-info.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/product-info.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/stylePages.js" beforeDir="false" afterPath="$PROJECT_DIR$/styles/stylePages.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,22 +45,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/CS-303/Project_CS303/2-e7gzly",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "D:\\JetBrains\\WebStorm 2024.3.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/CS-303/Project_CS303/3-e7gzly&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\JetBrains\\WebStorm 2024.3.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -84,7 +78,9 @@
       <updated>1744989384068</updated>
       <workItem from="1744989386383" duration="24000" />
       <workItem from="1744989523469" duration="12407000" />
-      <workItem from="1745030426673" duration="5940000" />
+      <workItem from="1745030426673" duration="10132000" />
+      <workItem from="1745077891305" duration="1512000" />
+      <workItem from="1745117493686" duration="3593000" />
     </task>
     <servers />
   </component>

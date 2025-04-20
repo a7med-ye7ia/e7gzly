@@ -179,10 +179,15 @@ export default function FlightDestinations() {
             <Text style={styles.userName}>passenger</Text>
             <Text style={styles.searchPrompt}>Where to fly today?</Text>
           </View>
-          <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-            <Ionicons name="log-out-outline" size={20} color="#fff" />
+          <TouchableOpacity onPress={() => router.push("/profile")}>
+            <Image
+                source={require("../assets/img.png")}
+                style={styles.profileIcon}
+            />
           </TouchableOpacity>
+
         </View>
+
 
         {/* Search Bar */}
         <TextInput
