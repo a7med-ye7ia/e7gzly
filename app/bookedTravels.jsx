@@ -1,13 +1,24 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import styles from "../styles/stylePages";
+import {Ionicons} from "@expo/vector-icons";
 
 export default function BookedTravels() {
     const router = useRouter();
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.pageTitle}>Booked Travels</Text>
+            <View style={styles.profileHeaderRow}>
+                <TouchableOpacity onPress={() => router.back()}>
+                    <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+
+                <Text style={styles.profileTitle}>Booked Travels</Text>
+
+                {/* Empty view for balance */}
+                <View style={{ width: 24 }} />
+            </View>
+
 
             <View style={styles.card}>
                 <Text style={styles.cardTitle}>Rome Trip</Text>
@@ -20,13 +31,6 @@ export default function BookedTravels() {
                 <Text>Departure: 10 July 2025</Text>
                 <Text>Return: 20 July 2025</Text>
             </View>
-
-            <TouchableOpacity
-                style={styles.backButtonProfile}
-                onPress={() => router.push("/profile")}
-            >
-                <Text style={styles.buttonText}>Back</Text>
-            </TouchableOpacity>
         </ScrollView>
     );
 }

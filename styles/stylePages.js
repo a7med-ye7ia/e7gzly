@@ -470,7 +470,7 @@ export default StyleSheet.create({
         borderRadius: 80,
         marginBottom: 15,
         borderWidth: 2,
-        borderColor: "#007BFF",
+        borderColor: "#0e2955",
     },
 
     // travels :
@@ -485,29 +485,91 @@ export default StyleSheet.create({
         fontWeight: "bold",
         marginBottom: 5,
     },
-    profileIconContainer: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        padding: 10,
-        zIndex: 10,
-    },
 
     profileIcon: {
         width: 80,
         height: 80,
-        borderRadius: 60,
+        borderColor: "#0e2955",
+
+        borderRadius: 80,
+        marginBottom: 15,
+        borderWidth: 4,
     },
     backButtonProfile: {
-        backgroundColor: "#007BFF",
+        backgroundColor: "#0e2955",
         padding: 20,
         borderRadius: 25,
         alignItems: "center",
         marginHorizontal: 40,
         marginVertical: 40,
     },
+    profileHeaderRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: 16,
+    },
+
+    profileTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
+        textAlign: "center",
+        flex: 1,
+    },
 
 
 
+    profileTopSection: {
+        alignItems: "center",
+        marginVertical: 16,
+    },
+
+    profilePicLarge: {
+        width: 90,
+        height: 90,
+        borderRadius: 45,
+        marginBottom: 12,
+    },
+
+    profileName: {
+        fontSize: 18,
+        fontWeight: "bold",
+    },
+
+    profileEmail: {
+        fontSize: 14,
+        color: "#666",
+        marginBottom: 10,
+    },
+
+    editButton: {
+        backgroundColor: "#007AFF",
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 6,
+    },
+
+    editButtonText: {
+        color: "white",
+        fontSize: 14,
+    },
+
+    profileOptions: {
+        marginHorizontal: 16,
+        marginTop: 10,
+    },
+
+    optionRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: 14,
+        borderBottomWidth: 1,
+        borderBottomColor: "#eee",
+    },
+
+    optionLabel: {
+        fontSize: 16,
+        marginLeft: 12,
+    },
 
 });

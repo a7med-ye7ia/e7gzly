@@ -1,18 +1,16 @@
 import { View, Text, ScrollView, TouchableOpacity, Image, Alert } from "react-native";
 import { useRouter } from "expo-router";
-import styles from "../styles/stylePages";
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import profileImage from '../assets/img.png';
+import styles from "../styles/stylePages";
+import profileImage from '../assets/img.png'; // Local profile image
 
 export default function Profile() {
     const router = useRouter();
 
     const handleSignOut = async () => {
         try {
-            await AsyncStorage.removeItem("isLoggedIn");
-            await AsyncStorage.removeItem("userName");
-            await AsyncStorage.removeItem("userEmail");
-
+            await AsyncStorage.multiRemove(["isLoggedIn", "userName", "userEmail"]);
             Alert.alert("Success", "You have been signed out successfully");
             router.replace("/");
         } catch (error) {
@@ -20,42 +18,43 @@ export default function Profile() {
         }
     };
 
-    const userName = "Seif";
-    const userBalance = 0.0;
-
     return (
         <ScrollView style={styles.container}>
-            <View style={styles.profileHeader}>
-                <Image
-                    source={profileImage}
-                    style={styles.profileImage}
-                />
-                <Text style={styles.greetingText}>Hello, {userName} </Text>
-                <Text style={styles.balanceText}>Balance: {userBalance} EGP</Text>
+            <View style={styles.profileHeaderRow}>
+                <TouchableOpacity onPress={() => router.back()}>
+                    <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+                <Text style={styles.profileTitle}>My Profile</Text>
+
             </View>
 
-            <TouchableOpacity
-                style={styles.buttonProfile}
-                onPress={() => router.push("/bookedTravels")}
-            >
-                <Text style={styles.buttonText}>Booked Trips</Text>
-            </TouchableOpacity>
+            <View style={styles.profileTopSection}>
+                <Image source={profileImage} style={styles.profilePicLarge} />
+                <Text style={styles.profileName}>Sief Mohamed</Text>
+                <Text style={styles.profileEmail}>Siefmo@gmail.com</Text>
+                <TouchableOpacity style={styles.editButton}>
+                    <Text style={styles.editButtonText}>Edit Profile</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.profileOptions}>
 
 
-            <TouchableOpacity
-                style={styles.buttonProfile}
-                onPress={() => router.push("/TravelsLog")}
-            >
-                <Text style={styles.buttonText}>Trips Log</Text>
-            </TouchableOpacity>
-
-
-            <TouchableOpacity
-                style={styles.logoutButton}
-                onPress={handleSignOut}
-            >
-                <Text style={styles.logoutText}>Logout</Text>
-            </TouchableOpacity>
+                <Option icon="location-outline" label="Location" />
+                <Option icon="card-outline" label="Subscription" />
+                <Option icon="airplane-outline" label="Booked Trips" onPress={() => router.push("/bookedTravels")} />
+                <Option icon="time-outline" label="Trips History" onPress={() => router.push("/TravelsLog")} />
+                <Option icon="log-out-outline" label="Log Out" onPress={handleSignOut} />
+            </View>
         </ScrollView>
     );
 }
+
+// Reusable Option component
+const Option = ({ icon, label, onPress }) => (
+    <TouchableOpacity style={styles.optionRow} onPress={onPress}>
+        <Ionicons name={icon} size={22} color="black" />
+        <Text style={styles.optionLabel}>{label}</Text>
+        <Ionicons name="chevron-forward" size={20} color="#aaa" style={{ marginLeft: 'auto' }} />
+    </TouchableOpacity>
+);
