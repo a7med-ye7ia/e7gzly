@@ -13,9 +13,8 @@ export default function TravelsLog() {
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
 
-                <Text style={styles.profileTitle}>Travels History</Text>
+                <Text style={styles.profileTitle}>Trips History</Text>
 
-                {/* Empty view for balance */}
                 <View style={{ width: 24 }} />
             </View>
 
@@ -25,6 +24,8 @@ export default function TravelsLog() {
                 <Text>Date: 1 Aug 2025</Text>
                 <Text>Duration: 7 Days</Text>
             </View>
+
+            <View style={styles.separator} />
 
             <View style={styles.card}>
                 <Text style={styles.cardTitle}>Paris City Break</Text>

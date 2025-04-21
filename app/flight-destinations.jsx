@@ -174,11 +174,13 @@ export default function FlightDestinations() {
   return (
       <ScrollView style={styles.containerFlight} showsVerticalScrollIndicator={false}>
         <View style={styles.headerFlight}>
-          <View>
-            <Text style={styles.greeting}>Hello,</Text>
-            <Text style={styles.userName}>passenger</Text>
-            <Text style={styles.searchPrompt}>Where to fly today?</Text>
-          </View>
+          {/* Search Bar */}
+          <TextInput
+              style={styles.searchBar}
+              placeholder="Where to fly today..?"
+              onChangeText={(text) => setSearchQuery(text)}
+              value={searchQuery}
+          />
           <TouchableOpacity onPress={() => router.push("/profile")}>
             <Image
                 source={require("../assets/img.png")}
@@ -189,13 +191,7 @@ export default function FlightDestinations() {
         </View>
 
 
-        {/* Search Bar */}
-        <TextInput
-            style={styles.searchBar}
-            placeholder="Search destinations..."
-            onChangeText={(text) => setSearchQuery(text)}
-            value={searchQuery}
-        />
+
 
         {/* Featured Destinations */}
         <View style={styles.featuredContainer}>

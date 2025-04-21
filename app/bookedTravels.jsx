@@ -13,7 +13,7 @@ export default function BookedTravels() {
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
 
-                <Text style={styles.profileTitle}>Booked Travels</Text>
+                <Text style={styles.profileTitle}>Booked Trips</Text>
 
                 {/* Empty view for balance */}
                 <View style={{ width: 24 }} />
@@ -25,6 +25,8 @@ export default function BookedTravels() {
                 <Text>Departure: 20 June 2025</Text>
                 <Text>Return: 30 June 2025</Text>
             </View>
+
+            <View style={styles.separator} />
 
             <View style={styles.card}>
                 <Text style={styles.cardTitle}>Bali Vacation</Text>

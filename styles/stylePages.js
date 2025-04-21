@@ -16,11 +16,7 @@ export default StyleSheet.create({
         padding: 30,
         width: "100%",
         alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
+
     },
     icon: {
         marginBottom: 20,
@@ -70,9 +66,9 @@ export default StyleSheet.create({
     headerFlight: {
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "flex-start",
-        marginBottom: 25,
-        marginTop: 10,
+        // alignItems: "flex-start",
+        marginBottom: 20,
+        marginTop: 20,
     },
     greeting: {
         fontSize: 18,
@@ -103,13 +99,19 @@ export default StyleSheet.create({
         alignItems: "center",
     },
     searchBar: {
-        height: 40,
-        borderColor: "#ddd",
+        borderColor: "#9f9d9d",
+        height: 60,
         borderWidth: 1,
-        borderRadius: 20,
+        borderHeight: 5,
+        borderRadius: 30,
         paddingLeft: 15,
         marginBottom: 20,
         fontSize: 16,
+        width: '80%', // Adjust the width percentage or set a specific value like 300
+        alignSelf: 'center',
+        backgroundColor: '#f0f0f0',
+
+
     },
     featuredContainer: {
         flexDirection: "row",
@@ -465,8 +467,8 @@ export default StyleSheet.create({
         fontWeight: "bold",
     },
     profileImage: {
-        width: 160,
-        height: 160,
+        width: 50,
+        height: 50,
         borderRadius: 80,
         marginBottom: 15,
         borderWidth: 2,
@@ -487,13 +489,13 @@ export default StyleSheet.create({
     },
 
     profileIcon: {
-        width: 80,
-        height: 80,
+        width: 60,
+        height: 60,
         borderColor: "#0e2955",
 
         borderRadius: 80,
         marginBottom: 15,
-        borderWidth: 4,
+        borderWidth: 2.5,
     },
     backButtonProfile: {
         backgroundColor: "#0e2955",
@@ -571,5 +573,9 @@ export default StyleSheet.create({
         fontSize: 16,
         marginLeft: 12,
     },
-
+    separator: {
+        height: 1,
+        backgroundColor: "#ffffff",
+        marginVertical: 10,
+    },
 });
