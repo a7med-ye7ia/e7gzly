@@ -23,6 +23,9 @@ export default function Page() {
             <Link href="/SignUp" style={styles.secondaryButton}>
               <Text style={styles.secondaryButtonText}>Sign Up</Text>
             </Link>
+            <Link href="/admin" style={styles.secondaryButton}>
+              <Text style={styles.secondaryButtonText}>Admin</Text>
+            </Link>
           </View>
         </View>
       </ImageBackground>
