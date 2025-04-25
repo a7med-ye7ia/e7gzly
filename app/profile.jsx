@@ -3,11 +3,13 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../styles/stylePages";
-import profileImage from '../assets/img.png'; // Local profile image
+import profileImage from '../assets/default-avatar.jpg';
+import { auth } from "../services/config";
+
 
 export default function Profile() {
     const router = useRouter();
-
+    const user = auth.currentUser;
     const handleSignOut = async () => {
         try {
             await AsyncStorage.multiRemove(["isLoggedIn", "userName", "userEmail"]);
@@ -19,7 +21,7 @@ export default function Profile() {
     };
 
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.containerSigUp}>
             <View style={styles.profileHeaderRow}>
                 <TouchableOpacity onPress={() => router.back()}>
                     <Ionicons name="arrow-back" size={24} color="black" />
@@ -30,9 +32,9 @@ export default function Profile() {
 
             <View style={styles.profileTopSection}>
                 <Image source={profileImage} style={styles.profilePicLarge} />
-                <Text style={styles.profileName}>Sief Mohamed</Text>
-                <Text style={styles.profileEmail}>Siefmo@gmail.com</Text>
-                <TouchableOpacity style={styles.editButton}>
+                <Text style={styles.profileName}>E7gzly Team</Text>
+                <Text style={styles.profileEmail}>{user?.email}</Text>
+                <TouchableOpacity style={styles.editButton} onPress={() => router.push("/editProfile")}>
                     <Text style={styles.editButtonText}>Edit Profile</Text>
                 </TouchableOpacity>
             </View>

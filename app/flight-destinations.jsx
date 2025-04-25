@@ -183,7 +183,7 @@ export default function FlightDestinations() {
           />
           <TouchableOpacity onPress={() => router.push("/profile")}>
             <Image
-                source={require("../assets/img.png")}
+                source={require("../assets/default-avatar.jpg")}
                 style={styles.profileIcon}
             />
           </TouchableOpacity>

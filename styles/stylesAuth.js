@@ -14,21 +14,12 @@ export default StyleSheet.create({
         marginBottom: 30,
         color: '#000',
     },
-    // inputContainer: {
-    //     marginBottom: 20,
-    // },
+
     inputLabel: {
         fontSize: 16,
         marginBottom: 8,
         color: '#666',
     },
-    // input: {
-    //     borderWidth: 1,
-    //     borderColor: '#ddd',
-    //     borderRadius: 8,
-    //     padding: 12,
-    //     fontSize: 16,
-    // },
     divider: {
         height: 1,
         backgroundColor: '#eee',
@@ -51,11 +42,6 @@ export default StyleSheet.create({
         alignItems: 'center',
         marginTop: 20,
     },
-    // footerLink: {
-    //     color: '#007AFF',
-    //     fontSize: 14,
-    // },
-
 
 // signupStyle :
 
@@ -64,20 +50,8 @@ export default StyleSheet.create({
         padding: 24,
         backgroundColor: '#ffffff',
     },
-    // header: {
-    //     fontSize: 24,
-    //     fontWeight: 'bold',
-    //     marginBottom: 16,
-    //     color: '#000000',
-    // },
-    // title: {
-    //     fontSize: 20,
-    //     fontWeight: '600',
-    //     marginBottom: 24,
-    //     color: '#000000',
-    // },
     inputContainer: {
-        marginBottom: 16,
+        marginBottom: 7,
         position: 'relative',
     },
     label: {
@@ -85,14 +59,6 @@ export default StyleSheet.create({
         marginBottom: 8,
         color: '#666666',
     },
-    // input: {
-    //     height: 48,
-    //     borderWidth: 1,
-    //     borderColor: '#dddddd',
-    //     borderRadius: 8,
-    //     paddingHorizontal: 16,
-    //     fontSize: 16,
-    // },
     toggleButton: {
         position: 'absolute',
         right: 16,
@@ -102,11 +68,7 @@ export default StyleSheet.create({
         color: '#007AFF',
         fontSize: 14,
     },
-    // divider: {
-    //     height: 1,
-    //     backgroundColor: '#eeeeee',
-    //     marginVertical: 24,
-    // },
+
     primaryButton: {
         backgroundColor: '#007AFF',
         borderRadius: 8,
@@ -120,11 +82,7 @@ export default StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
     },
-    // footer: {
-    //     flexDirection: 'row',
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    // },
+
     footerText: {
         fontSize: 14,
         color: '#666666',
@@ -153,11 +111,6 @@ export default StyleSheet.create({
         color: '#333',
         textAlign: 'left',
     },
-    // label: {
-    //     fontSize: 14,
-    //     color: '#888',
-    //     marginBottom: 8,
-    // },
     input: {
         fontSize: 16,
         fontWeight: '600',
@@ -180,5 +133,53 @@ export default StyleSheet.create({
         color: '#FFF',
         fontWeight: '600',
         fontSize: 16,
+    },
+    // edit page
+    profilePicLarge: {
+        width: 120,
+        height: 120,
+        borderRadius: 70,
+        marginBottom: 12,
+    },
+    profileHeaderRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: 20,
+        padding: 16,
+    },
+    profileTitle: {
+        fontSize: 20,
+        fontWeight: "bold",
+        textAlign: "center",
+        flex: 1,
+    },
+    profileTopSection: {
+        alignItems: "center",
+        marginVertical: 16,
+    },
+    editIcon: {
+        position: "absolute",
+        bottom: 0,
+        right: 0,
+        backgroundColor: "#007AFF",
+        borderRadius: 20,
+        padding: 6,
+        marginRight: 135,
+    },
+    errorText: {
+        color: "red",
+        fontSize: 12,
+        marginTop: -10,
+        // paddingLeft: 40,
+    },
+    saveButton: {
+        backgroundColor: "#007AFF",
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 6,
+        width:"20%",
+        alignItems: "center",
+        marginBottom: 50,
     }
 });

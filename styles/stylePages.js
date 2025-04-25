@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet  } from 'react-native';
 
 export default StyleSheet.create({
 
@@ -14,19 +14,20 @@ export default StyleSheet.create({
         backgroundColor: "#fff",
         borderRadius: 15,
         padding: 30,
-        width: "100%",
+        marginLeft: 10,
+        width: "95%",
         alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 3,
 
     },
     icon: {
         marginBottom: 20,
     },
-    // title: {
-    //     fontSize: 24,
-    //     fontWeight: "bold",
-    //     marginBottom: 15,
-    //     color: "#333",
-    // },
+
     message: {
         fontSize: 18,
         textAlign: "center",
@@ -45,17 +46,7 @@ export default StyleSheet.create({
         marginBottom: 30,
         color: "#777",
     },
-    // button: {
-    //     backgroundColor: "#6200EE",
-    //     paddingVertical: 12,
-    //     paddingHorizontal: 30,
-    //     borderRadius: 8,
-    // },
-    // buttonText: {
-    //     color: "#fff",
-    //     fontSize: 16,
-    //     fontWeight: "bold",
-    // },
+
 // flightStyle :
 
     containerFlight: {
@@ -100,16 +91,21 @@ export default StyleSheet.create({
     },
     searchBar: {
         borderColor: "#9f9d9d",
-        height: 60,
+        height: 40,
         borderWidth: 1,
         borderHeight: 5,
         borderRadius: 30,
         paddingLeft: 15,
         marginBottom: 20,
         fontSize: 16,
-        width: '80%', // Adjust the width percentage or set a specific value like 300
+        width: '80%',
         alignSelf: 'center',
         backgroundColor: '#f0f0f0',
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+        elevation: 3,
 
 
     },
@@ -331,11 +327,7 @@ export default StyleSheet.create({
         alignItems: "center",
         marginBottom: 5,
     },
-    // title: {
-    //     fontSize: 24,
-    //     fontWeight: "bold",
-    //     color: "#000",
-    // },
+
     ratingContainer: {
         flexDirection: "row",
         alignItems: "center",
@@ -354,12 +346,7 @@ export default StyleSheet.create({
     section: {
         marginBottom: 20,
     },
-    // sectionTitle: {
-    //     fontSize: 18,
-    //     fontWeight: "bold",
-    //     marginBottom: 10,
-    //     color: "#000",
-    // },
+
     description: {
         fontSize: 16,
         lineHeight: 24,
@@ -445,12 +432,6 @@ export default StyleSheet.create({
         marginVertical: 10,
         alignItems: "center",
     },
-    //
-    // buttonText: {
-    //     color: "#fff",
-    //     fontSize: 16,
-    //     fontWeight: "bold",
-    // },
 
     logoutButton: {
         backgroundColor: "#ec1b0f",
@@ -472,7 +453,7 @@ export default StyleSheet.create({
         borderRadius: 80,
         marginBottom: 15,
         borderWidth: 2,
-        borderColor: "#0e2955",
+        borderColor: "#ccc",
     },
 
     // travels :
@@ -489,8 +470,8 @@ export default StyleSheet.create({
     },
 
     profileIcon: {
-        width: 60,
-        height: 60,
+        width: 50,
+        height: 50,
         borderColor: "#0e2955",
 
         borderRadius: 80,
@@ -509,11 +490,12 @@ export default StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
+        marginBottom: 20,
         padding: 16,
     },
 
     profileTitle: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: "bold",
         textAlign: "center",
         flex: 1,
@@ -527,9 +509,9 @@ export default StyleSheet.create({
     },
 
     profilePicLarge: {
-        width: 90,
-        height: 90,
-        borderRadius: 45,
+        width: 120,
+        height: 120,
+        borderRadius: 70,
         marginBottom: 12,
     },
 
@@ -550,6 +532,7 @@ export default StyleSheet.create({
         paddingHorizontal: 12,
         borderRadius: 6,
     },
+
 
     editButtonText: {
         color: "white",
@@ -578,4 +561,5 @@ export default StyleSheet.create({
         backgroundColor: "#ffffff",
         marginVertical: 10,
     },
+
 });

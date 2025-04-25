@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="49d8117b-f75f-44e1-abea-0f6fe77c7969" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/TravelsLog.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/TravelsLog.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/bookedTravels.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/bookedTravels.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/flight-destinations.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/flight-destinations.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/profile.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/profile.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth/resetPassword.js" beforeDir="false" afterPath="$PROJECT_DIR$/auth/resetPassword.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/services/config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styles/stylePages.js" beforeDir="false" afterPath="$PROJECT_DIR$/styles/stylePages.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -19,6 +21,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
+        <option value="JSX File" />
       </list>
     </option>
   </component>
@@ -37,6 +40,9 @@
     &quot;accountId&quot;: &quot;06c22038-674f-4fe2-a637-749e2c3425fe&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 0
@@ -85,7 +91,12 @@
       <workItem from="1745142387589" duration="3004000" />
       <workItem from="1745160234896" duration="6976000" />
       <workItem from="1745231727566" duration="1341000" />
-      <workItem from="1745239400654" duration="2587000" />
+      <workItem from="1745239400654" duration="5691000" />
+      <workItem from="1745331821116" duration="783000" />
+      <workItem from="1745403295801" duration="9000" />
+      <workItem from="1745416740910" duration="10182000" />
+      <workItem from="1745477855945" duration="19660000" />
+      <workItem from="1745581450514" duration="12518000" />
     </task>
     <servers />
   </component>
