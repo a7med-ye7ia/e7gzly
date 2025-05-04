@@ -6,7 +6,7 @@ import { useRouter } from "expo-router"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Ionicons } from "@expo/vector-icons"
 import styles from '../styles/stylePages';
-import { getDocuments } from "../services/uploads"
+import { getAllFlights } from "../services/flightService"
 
 const { width } = Dimensions.get("window")
 const cardWidth = (width - 60) / 2
@@ -45,11 +45,12 @@ export default function FlightDestinations() {
 
   useEffect(() => {
     const getFlights = async () => {
-      const flights = await getDocuments('flights-destinations');
+      const {success, data, error} = await getAllFlights();
       const getDestinations = [];
 
-      flights.forEach((doc) => {
+      data.forEach((doc) => {
         console.log('fetching flights from fireStore:', doc.data().name);
+        console.log('fetching flights from fireStore:', doc.id);
         getDestinations.push({
           id: doc.id,
           name: doc.data().name,

@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../styles/stylePages";
 import profileImage from '../assets/default-avatar.jpg';
-import { auth } from "../services/config";
+import { auth } from "../config/firebaseConfig";
 
 
 export default function Profile() {

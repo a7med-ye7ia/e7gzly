@@ -1,6 +1,6 @@
 // resetPassword.js
 import { updatePassword } from "firebase/auth";
-import { auth } from "../services/config";
+import { auth } from "../config/firebaseConfig";
 
 export const resetPassword = async (newPassword) => {
     try {

@@ -5,7 +5,7 @@ import { useState } from "react";
 import stylesAuth from "../../styles/stylesAuth";
 import stylePages from "../../styles/stylePages";
 
-import { updateDocument, deleteDocument, addDocument} from "../../services/uploads";
+import { addFlight, deleteFlight, updateFlight } from "../../services/flightService";
 
 
 
@@ -24,7 +24,7 @@ export default function ProductInfo() {
   const [neww, setNeww] = useState(params.new)
 
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const updates = {
       name: name,
       location: location,
@@ -35,21 +35,31 @@ export default function ProductInfo() {
       new: neww || true, // ! update this when the search page is done
     }
 
-    try{
-      if (params.id) {
-        updateDocument(params.id, 'flights-destinations', updates)
-      } else {
-        addDocument(updates, 'flights-destinations')
+    if (params.id) {
+      const { success, id, error } = await updateFlight(params.id, updates)
+      if (success) {
+        console.log("Document updated with ID: ", id);
       }
-    } catch (error){
-      console.log(console.error);
+      else {
+        console.log(error)
+      }
+    }
+    else {
+      const { success, id, error } = await addFlight(updates)
+      if (success) {
+        console.log("Document written with ID: ", id);
+      }
+      else {
+        console.log(error)
+      }
     }
   }
-
-  const handleDelete = () => {
-    try{
-      deleteDocument(params.id, 'flights-destinations');
-    } catch(error) {
+  const handleDelete =  async () => {
+    const { success, error } = await deleteFlight(params.id);
+    if (success) {
+      console.log("Document deleted successfully");
+    }
+    else {
       console.log(error)
     }
     router.back();
@@ -105,21 +115,21 @@ export default function ProductInfo() {
         onValueChange={() => setFeatured(!featured)}
         value={featured}
       />
-      
+
       <Switch
-      trackColor={{ false: "red", true: "green" }}
-      thumbColor={neww ? "#007AFF" : "#f4f3f4"}
-      onValueChange={() => setNeww(!neww)}
-      value={neww}
-    />
+        trackColor={{ false: "red", true: "green" }}
+        thumbColor={neww ? "#007AFF" : "#f4f3f4"}
+        onValueChange={() => setNeww(!neww)}
+        value={neww}
+      />
 
       <TouchableOpacity style={stylePages.editButton} onPress={handleSave}>
         <Text style={stylePages.editButtonText}>{params.id ? 'update' : 'save'}</Text>
       </TouchableOpacity>
 
-      {params.id && <TouchableOpacity style={[stylePages.editButton, {backgroundColor: "red", marginTop: '10'}]} onPress={handleDelete}>
+      {params.id && (<TouchableOpacity style={[stylePages.editButton, { backgroundColor: "red", marginTop: '10' }]} onPress={handleDelete}>
         <Text style={stylePages.editButtonText}>delete</Text>
-      </TouchableOpacity>}
+      </TouchableOpacity>)}
     </ScrollView>
   )
 }

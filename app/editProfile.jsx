@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "../styles/stylesAuth";
 import profileImage from "../assets/default-avatar.jpg";
-import { auth } from "../services/config";
+import { auth } from "../config/firebaseConfig";
 import { resetPassword } from "../auth/resetPassword";
 import { loginUser } from "../auth/login";
 

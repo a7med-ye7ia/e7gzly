@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, Alert, Switch } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { getDocuments } from "../../services/uploads";
 import stylePages from "../../styles/stylePages";
-// import { insert, pickImage, uploadFileToDrive, saveFileToDevice } from "../services/uploads";
+import { getAllFlights } from "../../services/flightService";
 
 export default function manageFlights() {
   const router = useRouter();
@@ -30,10 +29,10 @@ export default function manageFlights() {
 
   useEffect(() => {
     const getFlights = async () => {
-      const flights = await getDocuments('flights-destinations');
+      const {success, data, error} = await getAllFlights();
       const getDestinations = [];
 
-      flights.forEach((doc) => {
+      data.forEach((doc) => {
         console.log('fetching flights from fireStore:', doc.data().name);
         getDestinations.push({
           id: doc.id,
