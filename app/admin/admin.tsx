@@ -31,7 +31,7 @@ const admin = () => {
           <Text style={styles.cardTitle}>Manage Users</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('./manageFlights')}>
           <Ionicons name="airplane" size={32} color="#4A90E2" />
           <Text style={styles.cardTitle}>Manage Flights</Text>
         </TouchableOpacity>

@@ -6,99 +6,7 @@ import { useRouter } from "expo-router"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Ionicons } from "@expo/vector-icons"
 import styles from '../styles/stylePages';
-
-
-
-const destinations = [
-  {
-    id: 1,
-    name: "Lake Ciliwung",
-    location: "Tangerang, Indonesia",
-    image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
-    rating: "4.8",
-    featured: true,
-    price: "2,500,000",
-    museumLink: "https://www.museumnegara.id/en/" // Museum of Indonesia
-  },
-  {
-    id: 2,
-    name: "White House",
-    location: "Washington, D.C., USA",
-    image: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80",
-    rating: "4.6",
-    featured: true,
-    price: "3,200,000",
-    museumLink: "https://www.si.edu/museums" // Smithsonian Museums
-  },
-  {
-    id: 3,
-    name: "Danau Beratan",
-    location: "Singajara, Indonesia",
-    image: "https://images.unsplash.com/photo-1558005530-a7958896ec60?auto=format&fit=crop&w=800&q=80",
-    rating: "4.5",
-    featured: false,
-    new: true,
-    price: "1,800,000",
-    museumLink: "https://www.baliartsandcraftsmuseum.com" // Bali Art and Craft Museum
-  },
-  {
-    id: 4,
-    name: "Sydney Opera",
-    location: "Sydney, Australia",
-    image: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=800&q=80",
-    rating: "4.7",
-    featured: false,
-    new: true,
-    price: "4,200,000",
-    museumLink: "https://www.museumsaustralia.org.au" // Museums Australia
-  },
-  {
-    id: 5,
-    name: "Roma",
-    location: "Rome, Italy",
-    image: "https://images.unsplash.com/photo-1555992336-fb0d29498b13?auto=format&fit=crop&w=800&q=80",
-    rating: "4.8",
-    featured: false,
-    new: true,
-    price: "3,500,000",
-    museumLink: "https://museivaticani.va/content/museivaticani/en.html" // Vatican Museums
-  },
-  {
-    id: 6,
-    name: "Bali",
-    location: "Indonesia",
-    image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80",
-    rating: "4.9",
-    featured: false,
-    new: true,
-    price: "2,100,000",
-    museumLink: "https://www.baliartsandcraftsmuseum.com" // Bali Art and Craft Museum
-  },
-  {
-    id: 7,
-    name: "Santorini",
-    location: "Santorini, Greece",
-    image: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80",
-    rating: "4.7",
-    featured: false,
-    new: true,
-    price: "3,800,000",
-    museumLink: "https://www.santorini-museum.gr" // Santorini Museum
-  },
-  {
-    id: 8,
-    name: "Kyoto",
-    location: "Kyoto, Japan",
-    image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80",
-    rating: "4.6",
-    featured: false,
-    new: true,
-    price: "3,900,000",
-    museumLink: "https://www.kyotostation.com/museums" // Kyoto Museums
-  },
-]
-
-
+import { getDocuments } from "../services/uploads"
 
 const { width } = Dimensions.get("window")
 const cardWidth = (width - 60) / 2
@@ -109,7 +17,9 @@ export default function FlightDestinations() {
   const [userEmail, setUserEmail] = useState("")
   const [profileImage, setProfileImage] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
+  const [destinations, setDestinations] = useState([])
   const [filteredDestinations, setFilteredDestinations] = useState(destinations)
+  const [isLoading, setIsLoading] = useState(false) // ! use it to put a loading animation
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -134,25 +44,42 @@ export default function FlightDestinations() {
   }, [])
 
   useEffect(() => {
+    const getFlights = async () => {
+      const flights = await getDocuments('flights-destinations');
+      const getDestinations = [];
+
+      flights.forEach((doc) => {
+        console.log('fetching flights from fireStore:', doc.data().name);
+        getDestinations.push({
+          id: doc.id,
+          name: doc.data().name,
+          location: doc.data().location,
+          image: doc.data().image,
+          rating: doc.data().rating,
+          featured: doc.data().featured,
+          price: doc.data().price,
+          museumLink: doc.data().museumLink,
+          new : doc.data().new,
+        })
+      });
+      console.log("=====================");
+
+      setDestinations(getDestinations);
+      setFilteredDestinations(getDestinations);
+    };
+    
+    setIsLoading(true);
+    getFlights();
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
     const filteredData = destinations.filter((destination) =>
         destination.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         destination.location.toLowerCase().includes(searchQuery.toLowerCase())
     )
     setFilteredDestinations(filteredData)
   }, [searchQuery])
-
-  const handleSignOut = async () => {
-    try {
-      await AsyncStorage.removeItem("isLoggedIn")
-      await AsyncStorage.removeItem("userName")
-      await AsyncStorage.removeItem("userEmail")
-
-      Alert.alert("Success", "You have been signed out successfully")
-      router.replace("/")
-    } catch (error) {
-      Alert.alert("Error", "Failed to sign out")
-    }
-  }
 
   const navigateToProductInfo = (destination) => {
     router.push({
