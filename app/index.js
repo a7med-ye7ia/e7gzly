@@ -20,7 +20,7 @@ export default function Page() {
             <Link href="/login" style={styles.button}>
               <Text style={styles.buttonText}>Login</Text>
             </Link>
-            <Link href="/SignUp" style={styles.secondaryButton}>
+            <Link href="/login/SignUp" style={styles.secondaryButton}>
               <Text style={styles.secondaryButtonText}>Sign Up</Text>
             </Link>
             <Link href="/admin/admin" style={styles.secondaryButton}>

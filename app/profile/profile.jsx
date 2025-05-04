@@ -2,9 +2,9 @@ import { View, Text, ScrollView, TouchableOpacity, Image, Alert } from "react-na
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import styles from "../styles/stylePages";
-import profileImage from '../assets/default-avatar.jpg';
-import { auth } from "../config/firebaseConfig";
+import styles from "../../styles/stylePages";
+import profileImage from '../../assets/default-avatar.jpg';
+import { auth } from "../../config/firebaseConfig";
 
 
 export default function Profile() {
@@ -34,7 +34,7 @@ export default function Profile() {
                 <Image source={profileImage} style={styles.profilePicLarge} />
                 <Text style={styles.profileName}>E7gzly Team</Text>
                 <Text style={styles.profileEmail}>{user?.email}</Text>
-                <TouchableOpacity style={styles.editButton} onPress={() => router.push("/editProfile")}>
+                <TouchableOpacity style={styles.editButton} onPress={() => router.push("/profile/editProfile")}>
                     <Text style={styles.editButtonText}>Edit Profile</Text>
                 </TouchableOpacity>
             </View>
@@ -44,8 +44,8 @@ export default function Profile() {
 
                 <Option icon="location-outline" label="Location" />
                 <Option icon="card-outline" label="Subscription" />
-                <Option icon="airplane-outline" label="Booked Trips" onPress={() => router.push("/bookedTravels")} />
-                <Option icon="time-outline" label="Trips History" onPress={() => router.push("/TravelsLog")} />
+                <Option icon="airplane-outline" label="Booked Trips" onPress={() => router.push("/profile/bookedTravels")} />
+                <Option icon="time-outline" label="Trips History" onPress={() => router.push("/profile/TravelsLog")} />
                 <Option icon="log-out-outline" label="Log Out" onPress={handleSignOut} />
             </View>
         </ScrollView>

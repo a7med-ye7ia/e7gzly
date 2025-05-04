@@ -2,11 +2,11 @@ import React, { useState , useEffect } from "react";
 import {View, Text, TextInput, TouchableOpacity, Image, ScrollView,Alert,} from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import styles from "../styles/stylesAuth";
-import profileImage from "../assets/default-avatar.jpg";
-import { auth } from "../config/firebaseConfig";
-import { resetPassword } from "../auth/resetPassword";
-import { loginUser } from "../auth/login";
+import styles from "../../styles/stylesAuth";
+import profileImage from "../../assets/default-avatar.jpg";
+import { auth } from "../../config/firebaseConfig";
+import { resetPassword } from "../../auth/resetPassword";
+import { loginUser } from "../../auth/login";
 
 export default function EditProfile() {
     const router = useRouter();

@@ -1,7 +1,7 @@
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { Ionicons } from "@expo/vector-icons"
-import styles from '../styles/stylePages';
+import styles from '../../styles/stylePages';
 
 
 export default function ProductInfo() {
@@ -18,7 +18,7 @@ export default function ProductInfo() {
 
   const handleBookNow = () => {
     router.push({
-      pathname: "/booking-confirmation",
+      pathname: "/main/booking-confirmation",
       params: {
         name: params.name,
         price: params.price,

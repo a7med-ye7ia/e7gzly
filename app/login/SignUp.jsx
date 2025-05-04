@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { router } from 'expo-router';
-import { signUpUser } from '../auth/signUp';
-import styles from '../styles/stylesAuth';
+import { signUpUser } from '../../auth/signUp';
+import styles from '../../styles/stylesAuth';
 
 const SignUpScreen = () => {
   const [email, setEmail] = useState('');

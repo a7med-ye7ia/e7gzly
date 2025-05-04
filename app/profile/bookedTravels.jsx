@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
-import styles from "../styles/stylePages";
+import styles from "../../styles/stylePages";
 import {Ionicons} from "@expo/vector-icons";
 
 export default function BookedTravels() {

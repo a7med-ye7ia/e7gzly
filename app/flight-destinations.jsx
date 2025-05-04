@@ -5,7 +5,7 @@ import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions, Alert, Tex
 import { useRouter } from "expo-router"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Ionicons } from "@expo/vector-icons"
-import styles from '../styles/stylePages';
+import styles from "../styles/stylePages"
 import { getAllFlights } from "../services/flightService"
 
 const { width } = Dimensions.get("window")
@@ -84,7 +84,7 @@ export default function FlightDestinations() {
 
   const navigateToProductInfo = (destination) => {
     router.push({
-      pathname: "/product-info",
+      pathname: "/main/product-info",
       params: {
         id: destination.id,
         name: destination.name,
@@ -109,7 +109,7 @@ export default function FlightDestinations() {
               onChangeText={(text) => setSearchQuery(text)}
               value={searchQuery}
           />
-          <TouchableOpacity onPress={() => router.push("/profile")}>
+          <TouchableOpacity onPress={() => router.push("/profile/profile")}>
             <Image
                 source={require("../assets/default-avatar.jpg")}
                 style={styles.profileIcon}
