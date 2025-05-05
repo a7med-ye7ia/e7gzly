@@ -98,7 +98,7 @@ export default StyleSheet.create({
         paddingLeft: 15,
         marginBottom: 20,
         fontSize: 16,
-        width: '80%',
+        width: '100%',
         alignSelf: 'center',
         backgroundColor: '#f0f0f0',
         shadowColor: "#000",
@@ -470,13 +470,12 @@ export default StyleSheet.create({
     },
 
     profileIcon: {
-        width: 50,
-        height: 50,
+        width: 70,
+        height: 70,
         borderColor: "#0e2955",
 
         borderRadius: 80,
         marginBottom: 15,
-        borderWidth: 2.5,
     },
     backButtonProfile: {
         backgroundColor: "#0e2955",
@@ -485,6 +484,11 @@ export default StyleSheet.create({
         alignItems: "center",
         marginHorizontal: 40,
         marginVertical: 40,
+    },
+    container: {
+        flex: 1,
+        padding: 24,
+        backgroundColor: '#ffffff',
     },
     profileHeaderRow: {
         flexDirection: "row",
@@ -527,7 +531,7 @@ export default StyleSheet.create({
     },
 
     editButton: {
-        backgroundColor: "#007AFF",
+        backgroundColor: "#5C40CC",
         paddingVertical: 6,
         paddingHorizontal: 12,
         borderRadius: 6,
@@ -548,8 +552,7 @@ export default StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         paddingVertical: 14,
-        borderBottomWidth: 1,
-        borderBottomColor: "#eee",
+
     },
 
     optionLabel: {
@@ -561,5 +564,19 @@ export default StyleSheet.create({
         backgroundColor: "#ffffff",
         marginVertical: 10,
     },
+    back:{
+        backgroundColor: '#6C3BD4',   // Purple background
+        padding: 12,
+        borderRadius: 16,             // Rounded corners
+        width: 48,
+        height: 48,
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 4,                 // Shadow for Android
+        shadowColor: '#000',         // Shadow for iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+    }
 
 });

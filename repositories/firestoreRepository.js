@@ -1,5 +1,5 @@
 import { db } from '../config/firebaseConfig';
-import { doc, collection, getDocs, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { doc, collection, getDocs, addDoc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
 
 const getAllDocuments = async (collectionName) => {
   try {
@@ -56,4 +56,4 @@ const deleteDocument = async (collectionName, documentId) => {
   }
 };
 
-export { getAllDocuments, addDocument, updateDocument, deleteDocument };
+export { getAllDocuments, addDocument, updateDocument, deleteDocument, getDocumentById };

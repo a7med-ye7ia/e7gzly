@@ -9,6 +9,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState(null); // 👈 use this instead
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -55,23 +56,33 @@ export default function LoginScreen() {
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>E-mail</Text>
           <TextInput
-              style={styles.input}
               placeholder='Enter your Email'
               value={email}
               onChangeText={setEmail}
               autoCapitalize='none'
               keyboardType='email-address'
+              style={[
+                styles.input,
+                focusedField === 'email' && styles.inputFocused
+              ]}
+              onFocus={() => setFocusedField('email')}
+              onBlur={() => setFocusedField(null)}
           />
         </View>
 
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>Password</Text>
           <TextInput
-              style={styles.input}
               placeholder='Enter your password'
               value={password}
               onChangeText={setPassword}
               secureTextEntry
+              style={[
+                styles.input,
+                focusedField === 'password' && styles.inputFocused
+              ]}
+              onFocus={() => setFocusedField('password')}
+              onBlur={() => setFocusedField(null)}
           />
         </View>
 
@@ -85,7 +96,7 @@ export default function LoginScreen() {
 
         <View style={styles.footer}>
           <TouchableOpacity onPress={() => router.push('./login/ForgetPassword')}>
-            <Text style={styles.footerLink}>Forgot password?</Text>
+            <Text style={styles.footerText}>Forgot password?</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push('./login/SignUp')}>
             <Text style={styles.footerLink}>Sign Up</Text>

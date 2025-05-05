@@ -11,6 +11,7 @@ const SignUpScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState('');
+  const [focusedField, setFocusedField] = useState(null);
 
   const validatePassword = () => {
     if (password !== confirmPassword) {
@@ -62,29 +63,33 @@ const SignUpScreen = () => {
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>E-mail</Text>
                 <TextInput
-                    style={styles.input}
                     placeholder='Enter an Email'
                     value={email}
                     onChangeText={setEmail}
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    style={[styles.input, focusedField === 'email' && styles.inputFocused]}
+                    onFocus={() => setFocusedField('email')}
+                    onBlur={() => setFocusedField(null)}
                 />
             </View>
+
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Mobile Number</Text>
                 <TextInput
-                    style={styles.input}
                     placeholder='Enter a phone number'
                     value={mobile}
                     onChangeText={setMobile}
                     keyboardType="phone-pad"
+                    style={[styles.input, focusedField === 'mobile' && styles.inputFocused]}
+                    onFocus={() => setFocusedField('mobile')}
+                    onBlur={() => setFocusedField(null)}
                 />
             </View>
 
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Password</Text>
                 <TextInput
-                    style={styles.input}
                     placeholder='Enter a password'
                     value={password}
                     onChangeText={(text) => {
@@ -92,6 +97,9 @@ const SignUpScreen = () => {
                         if (confirmPassword) validatePassword();
                     }}
                     secureTextEntry={!showPassword}
+                    style={[styles.input, focusedField === 'password' && styles.inputFocused]}
+                    onFocus={() => setFocusedField('password')}
+                    onBlur={() => setFocusedField(null)}
                 />
                 <TouchableOpacity
                     style={styles.toggleButton}
@@ -104,15 +112,23 @@ const SignUpScreen = () => {
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Confirm Password</Text>
                 <TextInput
-                    style={[styles.input, passwordError ? styles.errorInput : null]}
-                    value={confirmPassword}
                     placeholder='Confirm your password'
+                    value={confirmPassword}
                     onChangeText={(text) => {
                         setConfirmPassword(text);
                         validatePassword();
                     }}
                     secureTextEntry={!showPassword}
-                    onBlur={validatePassword}
+                    onBlur={() => {
+                        setFocusedField(null);
+                        validatePassword();
+                    }}
+                    onFocus={() => setFocusedField('confirmPassword')}
+                    style={[
+                        styles.input,
+                        focusedField === 'confirmPassword' && styles.inputFocused,
+                        passwordError ? styles.errorInput : null
+                    ]}
                 />
                 {passwordError ? (
                     <Text style={styles.errorText}>{passwordError}</Text>
@@ -121,20 +137,13 @@ const SignUpScreen = () => {
 
             <View style={styles.divider} />
 
-            {/* Sign Up Button */}
-            <TouchableOpacity
-                style={styles.primaryButton}
-                onPress={handleSignUp}
-            >
+            <TouchableOpacity style={styles.primaryButton} onPress={handleSignUp}>
                 <Text style={styles.primaryButtonText}>Sign Up</Text>
             </TouchableOpacity>
 
-            {/* Footer Links */}
             <View style={styles.footer}>
                 <Text style={styles.footerText}>Already have an account?</Text>
-                <TouchableOpacity onPress={() =>{
-                    router.push("/login");
-                }}>
+                <TouchableOpacity onPress={() => router.push("/login")}>
                     <Text style={styles.footerLink}>Log In</Text>
                 </TouchableOpacity>
             </View>

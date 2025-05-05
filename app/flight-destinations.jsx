@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions, Alert, TextInput } from "react-native"
 import { useRouter } from "expo-router"
@@ -7,13 +5,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Ionicons } from "@expo/vector-icons"
 import styles from "../styles/stylePages"
 import { getAllFlights } from "../services/flightService"
+import {getUserById} from "../services/userService";
+import {auth} from "../config/firebaseConfig";
+import defaultImage from "../assets/default-avatar.jpg";
 
 const { width } = Dimensions.get("window")
 const cardWidth = (width - 60) / 2
 
 export default function FlightDestinations() {
   const router = useRouter()
-  const [userName, setUserName] = useState("Kezia Anne")
+  const [userFirstName, setFirstName] = useState("")
   const [userEmail, setUserEmail] = useState("")
   const [profileImage, setProfileImage] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
@@ -41,6 +42,19 @@ export default function FlightDestinations() {
       }
     }
     checkLogin()
+    const getData = async () => {
+      console.log("Fetching user data");
+      try {
+        const data = await getUserById(auth.currentUser.email);
+        setProfileImage(data.profilePictureURL);
+        setFirstName(data.firstName);
+        console.log('fetched ', auth.currentUser.email)
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    getData();
   }, [])
 
   useEffect(() => {
@@ -102,23 +116,27 @@ export default function FlightDestinations() {
   return (
       <ScrollView style={styles.containerFlight} showsVerticalScrollIndicator={false}>
         <View style={styles.headerFlight}>
-          {/* Search Bar */}
-          <TextInput
-              style={styles.searchBar}
-              placeholder="Where to fly today..?"
-              onChangeText={(text) => setSearchQuery(text)}
-              value={searchQuery}
-          />
+          <View>
+            <Text style={styles.greeting}>Hello,</Text>
+            <Text style={styles.userName}>{userFirstName}</Text>
+            <Text style={styles.searchPrompt}>Where to fly today?</Text>
+          </View>
           <TouchableOpacity onPress={() => router.push("/profile/profile")}>
             <Image
-                source={require("../assets/default-avatar.jpg")}
+                source={ profileImage ? {uri: profileImage} : defaultImage }
                 style={styles.profileIcon}
             />
           </TouchableOpacity>
 
         </View>
 
-
+        {/* Search Bar */}
+        <TextInput
+            style={styles.searchBar}
+            placeholder="search destinations...."
+            onChangeText={(text) => setSearchQuery(text)}
+            value={searchQuery}
+        />
 
 
         {/* Featured Destinations */}

@@ -65,12 +65,12 @@ export default StyleSheet.create({
         top: 40,
     },
     toggleText: {
-        color: '#007AFF',
-        fontSize: 14,
+        color: '#5C40CC',
+        fontSize: 16,
     },
 
     primaryButton: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#5C40CC',
         borderRadius: 8,
         height: 48,
         justifyContent: 'center',
@@ -90,7 +90,7 @@ export default StyleSheet.create({
     },
     footerLink: {
         fontSize: 14,
-        color: '#007AFF',
+        color: '#5C40CC',
         fontWeight: '600',
     },
 
@@ -124,7 +124,7 @@ export default StyleSheet.create({
         color: '#000',
     },
     button: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#5C40CC',
         paddingVertical: 14,
         borderRadius: 8,
         alignItems: 'center',
@@ -162,7 +162,7 @@ export default StyleSheet.create({
         position: "absolute",
         bottom: 0,
         right: 0,
-        backgroundColor: "#007AFF",
+        backgroundColor: "#5C40CC",
         borderRadius: 20,
         padding: 6,
         marginRight: 135,
@@ -174,12 +174,31 @@ export default StyleSheet.create({
         // paddingLeft: 40,
     },
     saveButton: {
-        backgroundColor: "#007AFF",
+        backgroundColor: "#5C40CC",
         paddingVertical: 6,
         paddingHorizontal: 12,
         borderRadius: 6,
-        width:"20%",
+        width:"30%",
         alignItems: "center",
         marginBottom: 50,
+    },
+    inputFocused: {
+        borderColor: '#5C40CC',
+        borderWidth: 1.5,
+    },
+
+    back:{
+        backgroundColor: '#6C3BD4',   // Purple background
+        padding: 12,
+        borderRadius: 16,             // Rounded corners
+        width: 48,
+        height: 48,
+        justifyContent: 'center',
+        alignItems: 'center',
+        elevation: 4,                 // Shadow for Android
+        shadowColor: '#000',         // Shadow for iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
     }
 });

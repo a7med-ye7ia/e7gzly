@@ -5,11 +5,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../../styles/stylePages";
 import profileImage from '../../assets/default-avatar.jpg';
 import { auth } from "../../config/firebaseConfig";
-
+import {getUserById} from "../../services/userService";
+import {useEffect, useState} from "react";
 
 export default function Profile() {
     const router = useRouter();
     const user = auth.currentUser;
+    const [userFirstName, setUserFirstName] = useState("")
+    const [userLstName, setUserLastName] = useState("")
+    const [profilePicture, setProfilePicture] = useState("")
+
     const handleSignOut = async () => {
         try {
             await AsyncStorage.multiRemove(["isLoggedIn", "userName", "userEmail"]);
@@ -20,19 +25,40 @@ export default function Profile() {
         }
     };
 
+    useEffect(() => {
+        const getData = async () => {
+            console.log("Fetching user data");
+            try {
+                const data = await getUserById(auth.currentUser.email);
+                setProfilePicture(data.profilePictureURL);
+                setUserFirstName(data.firstName);
+                setUserLastName(data.lastName);
+                console.log('fetched ', auth.currentUser.email)
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+
+        getData();
+    }, []);
+
+
     return (
-        <ScrollView style={styles.containerSigUp}>
+        <ScrollView style={styles.container}>
             <View style={styles.profileHeaderRow}>
-                <TouchableOpacity onPress={() => router.back()}>
-                    <Ionicons name="arrow-back" size={24} color="black" />
+                <TouchableOpacity onPress={() => router.back()} style={styles.back}>
+                    <Ionicons name="arrow-back" size={24} color="white" />
                 </TouchableOpacity>
                 <Text style={styles.profileTitle}>My Profile</Text>
 
             </View>
 
             <View style={styles.profileTopSection}>
-                <Image source={profileImage} style={styles.profilePicLarge} />
-                <Text style={styles.profileName}>E7gzly Team</Text>
+                <Image
+                    source={ profilePicture ? {uri: profilePicture} : profileImage }
+                    style={styles.profilePicLarge}
+                />
+                <Text style={styles.profileName}>{userFirstName }{" "}{ userLstName}</Text>
                 <Text style={styles.profileEmail}>{user?.email}</Text>
                 <TouchableOpacity style={styles.editButton} onPress={() => router.push("/profile/editProfile")}>
                     <Text style={styles.editButtonText}>Edit Profile</Text>
