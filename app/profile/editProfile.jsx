@@ -58,6 +58,33 @@ export default function EditProfile() {
         return true;
     };
 
+    const handleSaveProfile = async () => {
+        const user = auth.currentUser;
+        if (!user) return Alert.alert("Error", "User not authenticated");
+
+        try {
+            const updates = {
+                firstName,
+                lastName,
+                phone,
+                profilePictureURL: profileImageUri || profilePicture
+            };
+
+            const { success, error } = await updateUser(user.email, updates);
+
+            if (success) {
+                Alert.alert("Success", "Profile updated successfully.");
+            } else {
+                console.error("Firestore update error:", error);
+                Alert.alert("Error", "Failed to update profile.");
+            }
+        } catch (err) {
+            console.error(err);
+            Alert.alert("Error", "Something went wrong.");
+        }
+    };
+
+
     const handleResetPassword = async () => {
         if (!validatePassword()) return;
 
@@ -65,7 +92,6 @@ export default function EditProfile() {
 
         if (success) {
             Alert.alert("Success", "Password updated successfully.");
-            router.back();
         } else {
             Alert.alert("Error", error.message || "Something went wrong.");
         }
@@ -131,6 +157,10 @@ export default function EditProfile() {
                     onBlur={() => setFocusedField(null)}
                 />
             </View>
+
+            <TouchableOpacity style={styles.saveButton} onPress={handleSaveProfile}>
+                <Text style={{ color: "white", fontSize: 14 }}>Save Changes</Text>
+            </TouchableOpacity>
 
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Password</Text>
