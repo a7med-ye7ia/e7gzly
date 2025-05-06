@@ -10,7 +10,7 @@ const upload = multer({ dest: 'uploads/' });
 
 // Load your service account key
 const auth = new google.auth.GoogleAuth({
-  keyFile: './service-account.json', // 🔐 downloaded from Google Cloud
+  keyFile: './service-account.json',
   scopes: ['https://www.googleapis.com/auth/drive'],
 });
 const drive = google.drive({ version: 'v3', auth });
@@ -20,7 +20,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   try {
     const fileMetadata = {
       name: req.file.originalname,
-      parents: ['1MFVXH3hoaur0PyQAuoGP1nDtp5lsYSIn'], // Optional: shared folder in Drive
+      parents: ['1MFVXH3hoaur0PyQAuoGP1nDtp5lsYSIn'],
     };
     const media = {
       mimeType: req.file.mimetype,
@@ -41,7 +41,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     const publicUrl = `https://drive.google.com/uc?export=view&id=${file.data.id}`;
     fs.unlinkSync(req.file.path); // Clean up
 
-    res.json({ url: publicUrl });
+    res.json({ url: publicUrl,  fileId: file.data.id });
   } catch (err) {
     console.error(err);
     res.status(500).send('Upload failed');

@@ -1,6 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
 
-async function uploadImage() {
+const uploadImage = async () =>{
   const result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     base64: false,
@@ -28,4 +28,11 @@ async function uploadImage() {
   }
 }
 
-export default uploadImage;
+const deleteImage = async (fileId) => {
+  await fetch(`http://192.168.1.29:3000/delete/${fileId}`, {
+    method: 'DELETE',
+  });  
+
+}
+
+export { uploadImage, deleteImage };

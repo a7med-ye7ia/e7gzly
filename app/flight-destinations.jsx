@@ -64,7 +64,7 @@ export default function FlightDestinations() {
 
       data.forEach((doc) => {
         console.log('fetching flights from fireStore:', doc.data().name);
-        console.log('fetching flights from fireStore:', doc.id);
+        // console.log('fetching flights from fireStore:', doc.id);
         getDestinations.push({
           id: doc.id,
           name: doc.data().name,

@@ -66,7 +66,7 @@ export default function manageFlights() {
             <Ionicons name="add" size={40} color={'grey'} style={{marginRight: 8, marginLeft: 10}} />
             <Text style={stylePages.newDestinationName}>Add flight</Text>
                
-          </TouchableOpacity>
+        </TouchableOpacity>
 
         {destinations.map((destination) => (
           <TouchableOpacity

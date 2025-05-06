@@ -14,6 +14,7 @@ export default function Profile() {
     const [userFirstName, setUserFirstName] = useState("")
     const [userLstName, setUserLastName] = useState("")
     const [profilePicture, setProfilePicture] = useState("")
+    const [isAdmin, setIsAdmin] = useState("")
 
     const handleSignOut = async () => {
         try {
@@ -33,6 +34,7 @@ export default function Profile() {
                 setProfilePicture(data.profilePictureURL);
                 setUserFirstName(data.firstName);
                 setUserLastName(data.lastName);
+                setIsAdmin(data.isAdmin);
                 console.log('fetched ', auth.currentUser.email)
             } catch (error) {
                 console.error("Error fetching user data:", error);
@@ -72,6 +74,7 @@ export default function Profile() {
                 <Option icon="card-outline" label="Subscription" />
                 <Option icon="airplane-outline" label="Booked Trips" onPress={() => router.push("/profile/bookedTravels")} />
                 <Option icon="time-outline" label="Trips History" onPress={() => router.push("/profile/TravelsLog")} />
+                {isAdmin && <Option icon="shield-checkmark" label="Admin dashBoard" onPress={() => router.push("/admin/admin")} />}
                 <Option icon="log-out-outline" label="Log Out" onPress={handleSignOut} />
             </View>
         </ScrollView>

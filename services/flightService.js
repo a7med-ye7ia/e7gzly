@@ -8,8 +8,6 @@ const getAllFlights = async () => {
 }
 
 const getFlightById = async (documentId) => {
-  const users = await getAllUsers();
-
   return await getDocumentById(collectionName, documentId)
 };
 

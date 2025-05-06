@@ -33,6 +33,15 @@ const addDocument = async (collectionName, doc) => {
   }
 };
 
+const addDocumentWithId = async (collectionName, documentId, doc) => {
+  try {
+    const docRef = await addDoc(doc(db, collectionName, documentId), doc);
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    return { success: false, error };
+  }
+};
+
 const updateDocument = async (collectionName, documentId, updates) => {
   const docRef = doc(db, collectionName, documentId);
 
@@ -56,4 +65,4 @@ const deleteDocument = async (collectionName, documentId) => {
   }
 };
 
-export { getAllDocuments, addDocument, updateDocument, deleteDocument, getDocumentById };
+export { getAllDocuments, addDocument, addDocumentWithId, updateDocument, deleteDocument, getDocumentById };

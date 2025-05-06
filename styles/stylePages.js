@@ -577,6 +577,15 @@ export default StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 4,
+    },
+
+    // manage flight (admin dashboard)
+
+    switchContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        // marginBottom: 20,
+        justifyContent: "space-between",
     }
 
 });

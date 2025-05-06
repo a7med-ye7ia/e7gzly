@@ -1,12 +1,14 @@
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Switch } from "react-native"
+import { View, Text, ScrollView, TextInput, TouchableOpacity, Switch, Image } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { useState } from "react";
+import { Ionicons } from '@expo/vector-icons';
 
 import stylesAuth from "../../styles/stylesAuth";
 import stylePages from "../../styles/stylePages";
 
-import { addFlight, deleteFlight, updateFlight } from "../../services/flightService";
-import uploadImage from "../../upload-server/imagePicker";
+import { addFlight, deleteFlight, updateFlight, getFlightById } from "../../services/flightService";
+import { uploadImage, deleteImage, pickImage } from "../../hooks/imagePiker2";
+
 
 
 
@@ -23,19 +25,25 @@ export default function ProductInfo() {
   const [rating, setRating] = useState(params.rating)
   const [price, setPrice] = useState(params.price)
   const [neww, setNeww] = useState(params.new)
+  const [imageFile, setImageFile] = useState(null)
+  const [imageUpdated, setImageUpdated] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
 
 
   const handleSave = async () => {
-    if (isUploading){
-      console.log("Image is uploading, please wait...");
-      return;
+    console.log("updates is uploading, please wait...");
+   
+    setIsUploading(true);
+    let res = {}
+    if (imageUpdated) {
+      res = await uploadImage(imageFile);
     }
+    
 
     const updates = {
       name: name,
       location: location,
-      image: image,
+      image: imageUpdated ? res.url : image,
       featured: featured,
       rating: rating || 0,
       price: price,
@@ -60,9 +68,15 @@ export default function ProductInfo() {
         console.log(error)
       }
     }
+
+    setIsUploading(false);
+    router.back();
   }
   const handleDelete =  async () => {
+    const data = await getFlightById(params.id);
+    const imageUrl = data.image;
     const { success, error } = await deleteFlight(params.id);
+
     if (success) {
       console.log("Document deleted successfully");
     }
@@ -70,6 +84,18 @@ export default function ProductInfo() {
       console.log(error)
     }
     router.back();
+  }
+
+  const getImage = async () => {
+    setImageUpdated(true);
+    const result = await pickImage();
+    if (result.success) {
+      setImage(result.file.uri);
+      setImageFile(result.file);
+      console.log("Image selected successfully");
+    } else {
+      console.log("Image selection failed", error);
+    }
   }
 
   const handleUpload = async () => {
@@ -81,7 +107,7 @@ export default function ProductInfo() {
 
   return (
     <ScrollView style={stylesAuth.containerSigUp}>
-      <Text style={stylesAuth.title}>Edit flight</Text>
+      <Text style={stylesAuth.title}>{params.id ? "Edit flight" : "Add flight"}</Text>
 
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>Name</Text>
@@ -104,16 +130,6 @@ export default function ProductInfo() {
       </View>
 
       <View style={stylesAuth.inputContainer}>
-        <Text style={stylesAuth.label}>Image</Text>
-        <TextInput
-          style={stylesAuth.input}
-          placeholder='Enter an image'
-          value={image}
-          onChangeText={setImage}
-        />
-      </View>
-
-      <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>price</Text>
         <TextInput
           style={stylesAuth.input}
@@ -123,23 +139,48 @@ export default function ProductInfo() {
         />
       </View>
 
-      <Switch
-        trackColor={{ false: "red", true: "green" }}
-        thumbColor={featured ? "#007AFF" : "#f4f3f4"}
-        onValueChange={() => setFeatured(!featured)}
+      <View style={stylePages.switchContainer}>
+        <Text style={stylesAuth.label}>
+          Set as a featured flight:
+        </Text>
+        
+        <Switch
         value={featured}
+        onValueChange={() => setFeatured(!featured)}
+        trackColor={{ false: '#767577', true: '#81b0ff' }}
+        thumbColor={featured ? 'green' : 'red'}
+        ios_backgroundColor="#3e3e3e"
       />
+      </View>
 
-      <Switch
-        trackColor={{ false: "red", true: "green" }}
-        thumbColor={neww ? "#007AFF" : "#f4f3f4"}
-        onValueChange={() => setNeww(!neww)}
+      <View style={stylePages.switchContainer}>
+        <Text style={stylesAuth.label}>
+          Set as a new flight:
+        </Text>
+        
+        <Switch
         value={neww}
+        onValueChange={() => setNeww(!neww)}
+        trackColor={{ false: '#767577', true: '#81b0ff' }}
+        thumbColor={neww ? 'green' : 'red'}
+        ios_backgroundColor="#3e3e3e"
       />
+      </View>
 
-      <TouchableOpacity style={stylePages.editButton} onPress={handleUpload}>
-        <Text style={stylePages.editButtonText}> upload </Text>
+      <TouchableOpacity onPress={getImage}> 
+        <View style={{flex:1, justifyContent: 'center', alignItems: 'center', marginVertical: 10, width: '100%', height: image ? 'auto' : 200, backgroundColor: '#eeeee4'}}>
+          {image ? <Image source={{ uri: image }} style={stylePages.mainImage} resizeMode="cover" />
+                : <Ionicons name="add" size={40} color={'grey'} />}
+        </View>    
       </TouchableOpacity>
+
+      {/* <View style={stylePages.section}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={stylePages.photosScroll}>
+          {photos.map((photo, index) => (
+            <Image key={index} source={{ uri: photo }} style={stylePages.thumbnail} resizeMode="cover" />
+          ))}
+        </ScrollView>
+      </View> */}
       
       <TouchableOpacity style={stylePages.editButton} onPress={handleSave}>
         <Text style={stylePages.editButtonText}>{params.id ? 'update' : 'save'}</Text>
@@ -148,6 +189,6 @@ export default function ProductInfo() {
       {params.id && (<TouchableOpacity style={[stylePages.editButton, { backgroundColor: "red", marginTop: '10' }]} onPress={handleDelete}>
         <Text style={stylePages.editButtonText}>delete</Text>
       </TouchableOpacity>)}
-    </ScrollView>
+      </ScrollView>
   )
 }

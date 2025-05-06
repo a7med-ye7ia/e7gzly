@@ -17,6 +17,10 @@ const addUser = async (doc) => {
   return await addDocument(collectionName, doc);
 }
 
+const addUserWithId = async (documentId, doc) => {
+  return await addDocumentWithId(collectionName, documentId, doc);
+}
+
 const updateUser = async (documentId, updates) => {
   return updateDocument(collectionName, documentId, updates);
 }
@@ -25,4 +29,4 @@ const deleteUser = async (documentId) => {
   return deleteDocument(collectionName, documentId);
 }
 
-export { getAllUsers, getUserById, addUser, updateUser, deleteUser };
+export { getAllUsers, getUserById, addUser, addUserWithId, updateUser, deleteUser };
