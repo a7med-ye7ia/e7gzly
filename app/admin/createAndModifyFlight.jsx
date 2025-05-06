@@ -6,6 +6,7 @@ import stylesAuth from "../../styles/stylesAuth";
 import stylePages from "../../styles/stylePages";
 
 import { addFlight, deleteFlight, updateFlight } from "../../services/flightService";
+import uploadImage from "../../upload-server/imagePicker";
 
 
 
@@ -18,19 +19,25 @@ export default function ProductInfo() {
   const [name, setName] = useState(params.name)
   const [location, setLocation] = useState(params.location)
   const [image, setImage] = useState(params.image)
-  const [featured, setFeatured] = useState(params.featured)
+  const [featured, setFeatured] = useState(params.featured || false)
   const [rating, setRating] = useState(params.rating)
   const [price, setPrice] = useState(params.price)
   const [neww, setNeww] = useState(params.new)
+  const [isUploading, setIsUploading] = useState(false)
 
 
   const handleSave = async () => {
+    if (isUploading){
+      console.log("Image is uploading, please wait...");
+      return;
+    }
+
     const updates = {
       name: name,
       location: location,
       image: image,
       featured: featured,
-      rating: rating || 5,
+      rating: rating || 0,
       price: price,
       new: neww || true, // ! update this when the search page is done
     }
@@ -63,6 +70,13 @@ export default function ProductInfo() {
       console.log(error)
     }
     router.back();
+  }
+
+  const handleUpload = async () => {
+    setIsUploading(true);
+    const imageUrl = await uploadImage();
+    setIsUploading(false);
+    setImage(imageUrl);
   }
 
   return (
@@ -123,6 +137,10 @@ export default function ProductInfo() {
         value={neww}
       />
 
+      <TouchableOpacity style={stylePages.editButton} onPress={handleUpload}>
+        <Text style={stylePages.editButtonText}> upload </Text>
+      </TouchableOpacity>
+      
       <TouchableOpacity style={stylePages.editButton} onPress={handleSave}>
         <Text style={stylePages.editButtonText}>{params.id ? 'update' : 'save'}</Text>
       </TouchableOpacity>

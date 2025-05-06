@@ -38,3 +38,8 @@ yarn-error.*
 # editor files
 .idea
 .vscode
+
+# upload sever
+upload-server/node_modules
+upload-server/uploads
+upload-server/configAccount.json
