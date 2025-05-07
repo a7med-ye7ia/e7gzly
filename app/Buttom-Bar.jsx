@@ -30,19 +30,19 @@ export default function ButtomBar() {
       </TouchableOpacity>
 
       {/*  Search */}
-      <TouchableOpacity style={buttonBarStyles.button} onPress={() => router.push("/Search")}>
+      <TouchableOpacity style={buttonBarStyles.button} onPress={() => router.push("/Book")}>
         <Ionicons
-          name="search"
+          name="book"
           size={24}
-          color={currentPath === "/Search" ? activeColor : inactiveColor}
+          color={currentPath === "/Book" ? activeColor : inactiveColor}
         />
         <Text
           style={[
             buttonBarStyles.buttonText,
-            { color: currentPath === "/Search" ? activeColor : inactiveColor }
+            { color: currentPath === "/Book" ? activeColor : inactiveColor }
           ]}
         >
-          Search
+          Booking
         </Text>
       </TouchableOpacity>
 
@@ -56,7 +56,6 @@ export default function ButtomBar() {
         <Text
           style={[
             buttonBarStyles.buttonText,
-            // تحديد لون النص بناءً على المسار الحالي
             { color: currentPath === "/profile/bookedTravels" ? activeColor : inactiveColor }
           ]}
         >
