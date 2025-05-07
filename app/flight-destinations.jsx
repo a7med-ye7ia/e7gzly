@@ -20,7 +20,7 @@ export default function FlightDestinations() {
   const [searchQuery, setSearchQuery] = useState("")
   const [destinations, setDestinations] = useState([])
   const [filteredDestinations, setFilteredDestinations] = useState(destinations)
-  const [isLoading, setIsLoading] = useState(false) // ! use it to put a loading animation
+  const [isLoading, setIsLoading] = useState(false) 
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -64,7 +64,6 @@ export default function FlightDestinations() {
 
       data.forEach((doc) => {
         console.log('fetching flights from fireStore:', doc.data().name);
-        // console.log('fetching flights from fireStore:', doc.id);
         getDestinations.push({
           id: doc.id,
           name: doc.data().name,
