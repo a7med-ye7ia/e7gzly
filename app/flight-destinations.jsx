@@ -140,27 +140,36 @@ export default function FlightDestinations() {
 
 
         {/* Featured Destinations */}
-        <View style={styles.featuredContainer}>
-          {featuredDestinations.map((destination, index) => (
-              <TouchableOpacity
-                  key={destination.id}
-                  style={[styles.featuredCard, { marginRight: index === 0 ? 10 : 0 }]}
-                  onPress={() => navigateToProductInfo(destination)}
-              >
-                <Image source={{ uri: destination.image }} style={styles.featuredImage} />
-                {destination.rating && (
-                    <View style={styles.ratingBadge}>
-                      <Ionicons name="star" size={12} color="#FFD700" />
-                      <Text style={styles.ratingText}>{destination.rating}</Text>
-                    </View>
-                )}
-                <View style={styles.featuredInfo}>
-                  <Text style={styles.destinationName}>{destination.name}</Text>
-                  <Text style={styles.destinationLocation}>{destination.location}</Text>
-                </View>
-              </TouchableOpacity>
-          ))}
+        {/* Featured Destinations */}
+<View style={styles.sectionContainer}>
+  <Text style={styles.sectionTitle}>Featured Destinations</Text>
+
+  <ScrollView
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={{ paddingHorizontal: 10 }}
+  >
+    {featuredDestinations.map((destination, index) => (
+      <TouchableOpacity
+        key={destination.id}
+        style={[styles.featuredCard, { marginRight: 15 }]}
+        onPress={() => navigateToProductInfo(destination)}
+      >
+        <Image source={{ uri: destination.image }} style={styles.featuredImage} />
+        {destination.rating && (
+          <View style={styles.ratingBadge}>
+            <Ionicons name="star" size={12} color="#FFD700" />
+            <Text style={styles.ratingText}>{destination.rating}</Text>
+          </View>
+        )}
+        <View style={styles.featuredInfo}>
+          <Text style={styles.destinationName}>{destination.name}</Text>
+          <Text style={styles.destinationLocation}>{destination.location}</Text>
         </View>
+      </TouchableOpacity>
+    ))}
+  </ScrollView>
+</View>
 
         {/* New This Year Section */}
         <View style={styles.sectionContainer}>
@@ -189,4 +198,3 @@ export default function FlightDestinations() {
       </ScrollView>
   )
 }
-
