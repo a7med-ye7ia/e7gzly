@@ -24,6 +24,16 @@ export default function ProductInfo() {
         price: params.price,
       },
     })
+  } 
+
+  const handelDetailTraveler = () => {
+    router.push({
+      pathname: "/flight/DetailTraveler",
+      params: {
+        name: params.name,
+        price: params.price,
+      },
+    })
   }
 
   return (
@@ -77,7 +87,7 @@ export default function ProductInfo() {
             <Text style={styles.priceLabel}>start from</Text>
             <Text style={styles.price}>IDR {params.price}</Text>
           </View>
-          <TouchableOpacity style={styles.bookButton} onPress={handleBookNow}>
+          <TouchableOpacity style={styles.bookButton} onPress={handelDetailTraveler}>
             <Text style={styles.bookButtonText}>Book Now</Text>
           </TouchableOpacity>
         </View>
