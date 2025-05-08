@@ -1,13 +1,15 @@
+"use client"
+
 import { useState, useEffect } from "react"
-import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions, Alert, TextInput } from "react-native"
+import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions, TextInput } from "react-native"
 import { useRouter } from "expo-router"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { Ionicons } from "@expo/vector-icons"
 import styles from "../styles/stylePages"
 import { getAllFlights } from "../services/flightService"
-import {getUserById} from "../services/userService";
-import {auth} from "../config/firebaseConfig";
-import defaultImage from "../assets/default-avatar.jpg";
+import { getUserById } from "../services/userService"
+import { auth } from "../config/firebaseConfig"
+import defaultImage from "../assets/default-avatar.jpg"
 
 const { width } = Dimensions.get("window")
 const cardWidth = (width - 60) / 2
@@ -19,8 +21,6 @@ export default function FlightDestinations() {
   const [profileImage, setProfileImage] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [destinations, setDestinations] = useState([])
-  const [filteredDestinations, setFilteredDestinations] = useState(destinations)
-  const [isLoading, setIsLoading] = useState(false) 
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -33,7 +33,7 @@ export default function FlightDestinations() {
         const storedUserEmail = await AsyncStorage.getItem("userEmail")
 
         if (storedUserName) {
-          setUserName(storedUserName)
+          setFirstName(storedUserName) // Fixed: using the correct setter
         }
 
         if (storedUserEmail) {
@@ -41,59 +41,82 @@ export default function FlightDestinations() {
         }
       }
     }
-    checkLogin()
-    const getData = async () => {
-      console.log("Fetching user data");
-      try {
-        const data = await getUserById(auth.currentUser.email);
-        setProfileImage(data.profilePictureURL);
-        setFirstName(data.firstName);
-        console.log('fetched ', auth.currentUser.email)
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
 
-    getData();
+    checkLogin()
+
+    const getData = async () => {
+      console.log("Fetching user data")
+      try {
+        const userEmail = auth.currentUser?.email
+        if (!userEmail) {
+          console.error("User is not logged in or email is missing")
+          return
+        }
+
+        const data = await getUserById(userEmail)
+
+        if (data) {
+          setProfileImage(data.profilePictureURL ?? null)
+          setFirstName(data.firstName ?? "")
+        } else {
+          console.warn("User data not found")
+        }
+
+        console.log("fetched", userEmail)
+      } catch (error) {
+        console.error("Error fetching user data:", error)
+      }
+    }
+
+    getData()
   }, [])
 
   useEffect(() => {
     const getFlights = async () => {
-      const {success, data, error} = await getAllFlights();
-      const getDestinations = [];
+      setIsLoading(true)
+      try {
+        const { success, data, error } = await getAllFlights()
+        if (success && data) {
+          const getDestinations = []
 
-      data.forEach((doc) => {
-        console.log('fetching flights from fireStore:', doc.data().name);
-        getDestinations.push({
-          id: doc.id,
-          name: doc.data().name,
-          location: doc.data().location,
-          image: doc.data().image,
-          rating: doc.data().rating,
-          featured: doc.data().featured,
-          price: doc.data().price,
-          museumLink: doc.data().museumLink,
-          new : doc.data().new,
-        })
-      });
-      console.log("=====================");
+          data.forEach((doc) => {
+            console.log("fetching flights from fireStore:", doc.data().name)
+            getDestinations.push({
+              id: doc.id,
+              name: doc.data().name,
+              location: doc.data().location,
+              image: doc.data().image,
+              rating: doc.data().rating,
+              featured: doc.data().featured,
+              price: doc.data().price,
+              museumLink: doc.data().museumLink,
+              new: doc.data().new,
+            })
+          })
 
-      setDestinations(getDestinations);
-      setFilteredDestinations(getDestinations);
-    };
-    
-    setIsLoading(true);
-    getFlights();
-    setIsLoading(false);
-  }, []);
+          setDestinations(getDestinations)
+          setFilteredDestinations(getDestinations) // Initialize filtered destinations
+        } else if (error) {
+          console.error("Error fetching flights:", error)
+        }
+      } catch (error) {
+        console.error("Exception fetching flights:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    getFlights()
+  }, [])
 
   useEffect(() => {
-    const filteredData = destinations.filter((destination) =>
+    const filteredData = destinations.filter(
+      (destination) =>
         destination.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        destination.location.toLowerCase().includes(searchQuery.toLowerCase())
+        destination.location.toLowerCase().includes(searchQuery.toLowerCase()),
     )
     setFilteredDestinations(filteredData)
-  }, [searchQuery])
+  }, [searchQuery, destinations])
 
   const navigateToProductInfo = (destination) => {
     router.push({
@@ -113,87 +136,93 @@ export default function FlightDestinations() {
   const newDestinations = filteredDestinations.filter((dest) => dest.new)
 
   return (
-      <ScrollView style={styles.containerFlight} showsVerticalScrollIndicator={false}>
-        <View style={styles.headerFlight}>
-          <View>
-            <Text style={styles.greeting}>Hello,</Text>
-            <Text style={styles.userName}>{userFirstName}</Text>
-            <Text style={styles.searchPrompt}>Where to fly today?</Text>
-          </View>
-          <TouchableOpacity onPress={() => router.push("/profile/profile")}>
-            <Image
-                source={ profileImage ? {uri: profileImage} : defaultImage }
-                style={styles.profileIcon}
-            />
-          </TouchableOpacity>
-
+    <ScrollView style={styles.containerFlight} showsVerticalScrollIndicator={false}>
+      <View style={styles.headerFlight}>
+        <View>
+          <Text style={styles.greeting}>Hello,</Text>
+          <Text style={styles.userName}>{userFirstName}</Text>
+          <Text style={styles.searchPrompt}>Where to fly today?</Text>
         </View>
+        <TouchableOpacity onPress={() => router.push("/profile/profile")}>
+          <Image source={profileImage ? { uri: profileImage } : defaultImage} style={styles.profileIcon} />
+        </TouchableOpacity>
+      </View>
 
-        {/* Search Bar */}
-        <TextInput
-            style={styles.searchBar}
-            placeholder="search destinations...."
-            onChangeText={(text) => setSearchQuery(text)}
-            value={searchQuery}
-        />
+      {/* Search Bar */}
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search destinations..."
+        onChangeText={(text) => setSearchQuery(text)}
+        value={searchQuery}
+      />
 
+      {/* Featured Destinations */}
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>Featured Destinations</Text>
 
-        {/* Featured Destinations */}
-        {/* Featured Destinations */}
-<View style={styles.sectionContainer}>
-  <Text style={styles.sectionTitle}>Featured Destinations</Text>
-
-  <ScrollView
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    contentContainerStyle={{ paddingHorizontal: 10 }}
-  >
-    {featuredDestinations.map((destination, index) => (
-      <TouchableOpacity
-        key={destination.id}
-        style={[styles.featuredCard, { marginRight: 15 }]}
-        onPress={() => navigateToProductInfo(destination)}
-      >
-        <Image source={{ uri: destination.image }} style={styles.featuredImage} />
-        {destination.rating && (
-          <View style={styles.ratingBadge}>
-            <Ionicons name="star" size={12} color="#FFD700" />
-            <Text style={styles.ratingText}>{destination.rating}</Text>
-          </View>
-        )}
-        <View style={styles.featuredInfo}>
-          <Text style={styles.destinationName}>{destination.name}</Text>
-          <Text style={styles.destinationLocation}>{destination.location}</Text>
-        </View>
-      </TouchableOpacity>
-    ))}
-  </ScrollView>
-</View>
-
-        {/* New This Year Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>New This Year</Text>
-
-          {newDestinations.map((destination) => (
+        {isLoading ? (
+          <Text>Loading featured destinations...</Text>
+        ) : featuredDestinations.length > 0 ? (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 10 }}
+          >
+            {featuredDestinations.map((destination) => (
               <TouchableOpacity
-                  key={destination.id}
-                  style={styles.newDestinationCard}
-                  onPress={() => navigateToProductInfo(destination)}
+                key={destination.id}
+                style={[styles.featuredCard, { marginRight: 15 }]}
+                onPress={() => navigateToProductInfo(destination)}
               >
-                <Image source={{ uri: destination.image }} style={styles.newDestinationImage} />
-                <View style={styles.newDestinationInfo}>
-                  <View>
-                    <Text style={styles.newDestinationName}>{destination.name}</Text>
-                    <Text style={styles.newDestinationLocation}>{destination.location}</Text>
+                <Image source={{ uri: destination.image }} style={styles.featuredImage} />
+                {destination.rating && (
+                  <View style={styles.ratingBadge}>
+                    <Ionicons name="star" size={12} color="#FFD700" />
+                    <Text style={styles.ratingText}>{destination.rating}</Text>
                   </View>
-                  <View style={styles.newDestinationRating}>
-                    <Ionicons name="star" size={14} color="#FFD700" />
-                    <Text style={styles.newDestinationRatingText}>{destination.rating}</Text>
-                  </View>
+                )}
+                <View style={styles.featuredInfo}>
+                  <Text style={styles.destinationName}>{destination.name}</Text>
+                  <Text style={styles.destinationLocation}>{destination.location}</Text>
                 </View>
               </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
+            ))}
+          </ScrollView>
+        ) : (
+          <Text>No featured destinations available</Text>
+        )}
+      </View>
+
+      {/* New This Year Section */}
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>New This Year</Text>
+
+        {isLoading ? (
+          <Text>Loading new destinations...</Text>
+        ) : newDestinations.length > 0 ? (
+          newDestinations.map((destination) => (
+            <TouchableOpacity
+              key={destination.id}
+              style={styles.newDestinationCard}
+              onPress={() => navigateToProductInfo(destination)}
+            >
+              <Image source={{ uri: destination.image }} style={styles.newDestinationImage} />
+              <View style={styles.newDestinationInfo}>
+                <View>
+                  <Text style={styles.newDestinationName}>{destination.name}</Text>
+                  <Text style={styles.newDestinationLocation}>{destination.location}</Text>
+                </View>
+                <View style={styles.newDestinationRating}>
+                  <Ionicons name="star" size={14} color="#FFD700" />
+                  <Text style={styles.newDestinationRatingText}>{destination.rating}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))
+        ) : (
+          <Text>No new destinations available</Text>
+        )}
+      </View>
+    </ScrollView>
   )
 }
