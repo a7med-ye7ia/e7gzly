@@ -95,10 +95,41 @@ export default function Book() {
       Alert.alert("Selection Missing", "Please select both From and To.");
       return;
     }
-    Alert.alert(
-      "Booking",
-      `From: ${selectedFrom.name}\nTo: ${selectedTo.name}\nDate: ${selectedDate}\nSeats: ${selectedSeats}`
-    );
+
+    // Calculate a return date for round trips (1 week later)
+    const returnDate = new Date(date);
+    returnDate.setDate(returnDate.getDate() + 7);
+
+    setBookingDetails({
+      from: selectedFrom.name,
+      to: selectedTo.name,
+      date: selectedDate,
+      departureDate: selectedDate, 
+      returnDate: tripType === "oneWay" ? "N/A" : returnDate.toLocaleDateString(),
+      seats: selectedSeats,
+      passengers: selectedSeats, 
+      tripType: tripType === "oneWay" ? "One Way" : "Round Trip",
+      totalPrice: calculatePrice(selectedSeats).toString()  
+    });
+
+    setIsBookingModalVisible(true);
+  };
+
+  // On navigation, keep state
+  const goToDetailTraveler = () => {
+    setIsBookingModalVisible(false);
+
+    // Don't clear async storage
+    router.push({
+      pathname: '/book/DetailTraveler',
+      params: {  
+        from: selectedFrom.name,
+        to: selectedTo.name,
+        date: selectedDate,
+        seats: selectedSeats,
+        tripType: tripType === "oneWay" ? "One Way" : "Round Trip"
+      }
+    });
   };
 
   return (
