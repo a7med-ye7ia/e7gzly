@@ -17,6 +17,7 @@
     "@react-native-firebase/auth": "^21.14.0",
     "@react-native-picker/picker": "^2.9.0",
     "country-state-city": "^3.2.1",
+    "eas-cli": "^16.4.1",
     "expo": "~52.0.46",
     "expo-auth-session": "~6.0.3",
     "expo-constants": "~17.0.8",
@@ -31,8 +32,8 @@
     "react-native": "0.76.9",
     "react-native-date-picker": "^5.0.12",
     "react-native-modal-datetime-picker": "^18.0.0",
-    "react-native-web": "~0.19.13",
-    "react-native-svg": "15.8.0"
+    "react-native-svg": "15.8.0",
+    "react-native-web": "~0.19.13"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
