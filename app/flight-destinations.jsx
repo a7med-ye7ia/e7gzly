@@ -21,13 +21,52 @@ export default function FlightDestinations() {
   const [profileImage, setProfileImage] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [destinations, setDestinations] = useState([])
-<<<<<<< HEAD
-  const [filteredDestinations, setFilteredDestinations] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-=======
+
   const [filteredDestinations, setFilteredDestinations] = useState(destinations)
-  const [isLoading, setIsLoading] = useState(false) 
->>>>>>> a78634d18202cd36b26e76cc56d5b06a1e393d34
+  const [isLoading, setIsLoading] = useState(false)
+
+  const getData = async () => {
+    console.log("Fetching user data")
+    try {
+      // Check if auth is initialized and user is logged in
+      if (!auth || !auth.currentUser) {
+        console.log("Auth not initialized or user not logged in yet")
+        // Try to get user info from AsyncStorage instead
+        const storedUserName = await AsyncStorage.getItem("userName")
+        const storedUserEmail = await AsyncStorage.getItem("userEmail")
+        const storedProfilePic = await AsyncStorage.getItem("userProfilePic")
+
+        if (storedUserName) setFirstName(storedUserName)
+        if (storedUserEmail) setUserEmail(storedUserEmail)
+        if (storedProfilePic) setProfileImage(storedProfilePic)
+
+        return
+      }
+
+      const userEmail = auth.currentUser.email
+      if (!userEmail) {
+        console.error("User is logged in but email is missing")
+        return
+      }
+
+      const data = await getUserById(userEmail)
+
+      if (data) {
+        setProfileImage(data.profilePictureURL ?? null)
+        setFirstName(data.firstName ?? "")
+
+        // Store in AsyncStorage for future use
+        await AsyncStorage.setItem("userProfilePic", data.profilePictureURL ?? "")
+        await AsyncStorage.setItem("userName", data.firstName ?? "")
+      } else {
+        console.warn("User data not found")
+      }
+
+      console.log("fetched", userEmail)
+    } catch (error) {
+      console.error("Error fetching user data:", error)
+    }
+  }
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -50,32 +89,22 @@ export default function FlightDestinations() {
     }
 
     checkLogin()
+  }, [])
 
-    const getData = async () => {
-      console.log("Fetching user data")
-      try {
-        const userEmail = auth.currentUser?.email
-        if (!userEmail) {
-          console.error("User is not logged in or email is missing")
-          return
-        }
-
-        const data = await getUserById(userEmail)
-
-        if (data) {
-          setProfileImage(data.profilePictureURL ?? null)
-          setFirstName(data.firstName ?? "")
-        } else {
-          console.warn("User data not found")
-        }
-
-        console.log("fetched", userEmail)
-      } catch (error) {
-        console.error("Error fetching user data:", error)
+  useEffect(() => {
+    // Set up auth state listener
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("User is signed in:", user.email)
+        getData() // Fetch user data when auth state changes to signed in
+      } else {
+        console.log("User is signed out")
+        // Handle signed out state
       }
-    }
+    })
 
-    getData()
+    // Clean up subscription
+    return () => unsubscribe()
   }, [])
 
   useEffect(() => {
@@ -86,7 +115,6 @@ export default function FlightDestinations() {
         if (success && data) {
           const getDestinations = []
 
-<<<<<<< HEAD
           data.forEach((doc) => {
             console.log("fetching flights from fireStore:", doc.data().name)
             getDestinations.push({
@@ -101,23 +129,6 @@ export default function FlightDestinations() {
               new: doc.data().new,
             })
           })
-=======
-      data.forEach((doc) => {
-        console.log('fetching flights from fireStore:', doc.data().name);
-        getDestinations.push({
-          id: doc.id,
-          name: doc.data().name,
-          location: doc.data().location,
-          image: doc.data().image,
-          rating: doc.data().rating,
-          featured: doc.data().featured,
-          price: doc.data().price,
-          museumLink: doc.data().museumLink,
-          new : doc.data().new,
-        })
-      });
-      console.log("=====================");
->>>>>>> a78634d18202cd36b26e76cc56d5b06a1e393d34
 
           setDestinations(getDestinations)
           setFilteredDestinations(getDestinations) // Initialize filtered destinations
@@ -192,11 +203,13 @@ export default function FlightDestinations() {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 10 }}
+            snapToInterval={cardWidth + 15} // Add this for snapping effect
+            decelerationRate="fast" // Add this for better scrolling
           >
             {featuredDestinations.map((destination) => (
               <TouchableOpacity
                 key={destination.id}
-                style={[styles.featuredCard, { marginRight: 15 }]}
+                style={[styles.featuredCard, { marginRight: 15, width: cardWidth }]}
                 onPress={() => navigateToProductInfo(destination)}
               >
                 <Image source={{ uri: destination.image }} style={styles.featuredImage} />
