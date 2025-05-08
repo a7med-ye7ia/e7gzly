@@ -21,11 +21,6 @@ export default function FlightDestinations() {
   const [profileImage, setProfileImage] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [destinations, setDestinations] = useState([])
-<<<<<<< HEAD
-  const [filteredDestinations, setFilteredDestinations] = useState(destinations)
-  const [isLoading, setIsLoading] = useState(false) 
-=======
-
   const [filteredDestinations, setFilteredDestinations] = useState(destinations)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -71,7 +66,6 @@ export default function FlightDestinations() {
       console.error("Error fetching user data:", error)
     }
   }
->>>>>>> b055367afd03bcd685c14d57832a8bd3eac29524
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -135,7 +129,6 @@ export default function FlightDestinations() {
         if (success && data) {
           const getDestinations = []
 
-<<<<<<< HEAD
         data.forEach((doc) => {
           // console.log("fetching flights from fireStore:", doc.data().name)
           getDestinations.push({
@@ -151,22 +144,6 @@ export default function FlightDestinations() {
           })
         })
 
-=======
-          data.forEach((doc) => {
-            console.log("fetching flights from fireStore:", doc.data().name)
-            getDestinations.push({
-              id: doc.id,
-              name: doc.data().name,
-              location: doc.data().location,
-              image: doc.data().image,
-              rating: doc.data().rating,
-              featured: doc.data().featured,
-              price: doc.data().price,
-              museumLink: doc.data().museumLink,
-              new: doc.data().new,
-            })
-          })
->>>>>>> b055367afd03bcd685c14d57832a8bd3eac29524
 
           setDestinations(getDestinations)
           setFilteredDestinations(getDestinations) // Initialize filtered destinations
