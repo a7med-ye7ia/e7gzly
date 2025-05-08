@@ -9,13 +9,20 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@cloudinary/url-gen": "^1.21.0",
     "@expo/metro-runtime": "~4.0.1",
     "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-community/datetimepicker": "8.2.0",
     "@react-native-firebase/app": "^21.14.0",
     "@react-native-firebase/auth": "^21.14.0",
+<<<<<<< HEAD
+    "@react-native-picker/picker": "^2.11.0",
+    "cloudinary": "^2.6.1",
+    "cloudinary-react-native": "^1.0.1",
+=======
     "@react-native-picker/picker": "^2.9.0",
+>>>>>>> b055367afd03bcd685c14d57832a8bd3eac29524
     "country-state-city": "^3.2.1",
     "expo": "~52.0.46",
     "expo-auth-session": "~6.0.3",
