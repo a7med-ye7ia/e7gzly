@@ -12,6 +12,7 @@ import defaultImage from "../assets/default-avatar.jpg";
 const { width } = Dimensions.get("window")
 const cardWidth = (width - 60) / 2
 
+
 export default function FlightDestinations() {
   const router = useRouter()
   const [userFirstName, setFirstName] = useState("")
