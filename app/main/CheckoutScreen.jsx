@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   ScrollView
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // for the airplane icon
+import { Ionicons } from '@expo/vector-icons';
+import Svg, { Path, Circle } from 'react-native-svg';
 
 const ROUTE = {
   from: { code: 'CGK', city: 'Tangerang' },
@@ -17,7 +18,7 @@ const ROUTE = {
 };
 
 const BOOKING = {
-  imageUri: '/assets/img.png', // replace with your image URL
+  imageUri: '/assets/img.png',
   location: 'Ciliwung',
   region:   'Tangerang',
   rating:   4.8,
@@ -38,188 +39,306 @@ const PAYMENT = {
   amount: 'IDR 80.400.000',
 };
 
+const FlightPath = () => (
+  <View style={styles.flightPathContainer}>
+    <View style={styles.routePointsContainer}>
+      <View style={styles.routePoint}>
+        <View style={styles.originDot} />
+        <Text style={styles.codeText}>{ROUTE.from.code}</Text>
+        <Text style={styles.cityText}>{ROUTE.from.city}</Text>
+      </View>
+      
+      <View style={styles.routePoint}>
+        <View style={styles.destinationDot} />
+        <Text style={styles.codeText}>{ROUTE.to.code}</Text>
+        <Text style={styles.cityText}>{ROUTE.to.city}</Text>
+      </View>
+    </View>
+    
+    {/* This is the key part that needs fixing */}
+    <View style={styles.arcContainer}>
+      <Svg height="80" width="100%" style={{position: 'absolute', top: 0}}>
+        <Path
+          d="M 40 50 Q 175 -20 310 50"
+          stroke="#E0E0E0"
+          strokeWidth="2"
+          strokeDasharray="5,5"
+          fill="transparent"
+        />
+      </Svg>
+      <View style={styles.planeIconContainer}>
+        <Ionicons name="airplane" size={16} color="#FFFFFF" />
+      </View>
+    </View>
+  </View>
+);
+
 export default function CheckoutScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
+        <FlightPath />
 
-        <View style={styles.routeCard}>
-          <View style={styles.routePoint}>
-            <View style={styles.dot} />
-            <Text style={styles.code}>{ROUTE.from.code}</Text>
-            <Text style={styles.city}>{ROUTE.from.city}</Text>
+        <View style={styles.bookingInfoContainer}>
+          <Image source={{ uri: BOOKING.imageUri }} style={styles.locationImage} />
+          <View style={styles.locationInfo}>
+            <Text style={styles.locationName}>{BOOKING.location}</Text>
+            <Text style={styles.regionName}>{BOOKING.region}</Text>
           </View>
-          
-          <View style={styles.planeContainer}>
-            <View style={styles.dashedLine} />
-            <Ionicons name="airplane" size={24} color="#5E50A1" style={styles.planeIcon}/>
-          </View>
-
-          <View style={styles.routePoint}>
-            <View style={[styles.dot, { backgroundColor: '#2ECE81' }]} />
-            <Text style={styles.code}>{ROUTE.to.code}</Text>
-            <Text style={styles.city}>{ROUTE.to.city}</Text>
+          <View style={styles.ratingContainer}>
+            <Ionicons name="star" size={16} color="#FF9F43" style={styles.starIcon} />
+            <Text style={styles.ratingText}>{BOOKING.rating}</Text>
           </View>
         </View>
 
-        <View style={styles.card}>
-          <Image source={{ uri: BOOKING.imageUri }} style={styles.image} />
-
-          <View style={styles.titleRow}>
-            <View>
-              <Text style={styles.location}>{BOOKING.location}</Text>
-              <Text style={styles.region}>{BOOKING.region}</Text>
-            </View>
-            <View style={styles.rating}>
-              <Ionicons name="star" size={16} color="#FFD700" />
-              <Text style={styles.ratingText}>{BOOKING.rating}</Text>
-            </View>
-          </View>
-
-          <Text style={styles.sectionHeader}>Booking Details</Text>
-          {BOOKING.details.map((item, i) => (
-            <View key={i} style={styles.detailRow}>
+        <Text style={styles.sectionTitle}>Booking Details</Text>
+        
+        {BOOKING.details.map((item, i) => (
+          <View key={i} style={styles.detailRow}>
+            <View style={styles.detailLabelContainer}>
+              <View style={styles.checkCircle}>
+                <Ionicons name="checkmark" size={12} color="#6C5CE7" />
+              </View>
               <Text style={styles.detailLabel}>{item.label}</Text>
-              <Text style={styles.detailValue}>{item.value}</Text>
             </View>
-          ))}
-        </View>
-
-        <View style={styles.paymentCard}>
-          <View style={styles.paymentRow}>
-            <Ionicons name="card-outline" size={20} color="#5E50A1" />
-            <Text style={styles.paymentLabel}>{PAYMENT.label}</Text>
-            <Text style={styles.paymentAmount}>{PAYMENT.amount}</Text>
+            <Text 
+              style={[
+                styles.detailValue, 
+                item.label === 'Refundable' && styles.refundableValue,
+                item.label === 'Grand Total' && styles.totalValue
+              ]}
+            >
+              {item.value}
+            </Text>
           </View>
-          <TouchableOpacity style={styles.payButton}>
-            <Text style={styles.payButtonText}>Pay</Text>
-          </TouchableOpacity>
+        ))}
+
+        <Text style={[styles.sectionTitle, {marginTop: 24}]}>Payment Details</Text>
+        
+        <View style={styles.paymentContainer}>
+          <View style={styles.paymentIconContainer}>
+            <Ionicons name="airplane" size={20} color="white" />
+            <Text style={styles.payText}>Pay</Text>
+          </View>
+          <View style={styles.paymentInfo}>
+            <Text style={styles.paymentAmount}>{PAYMENT.amount}</Text>
+            <Text style={styles.paymentLabel}>{PAYMENT.label}</Text>
+          </View>
         </View>
 
-        <TouchableOpacity style={styles.submitButton}>
-          <Text style={styles.submitButtonText}>Pay Now</Text>
+        <TouchableOpacity style={styles.payButton}>
+          <Text style={styles.payButtonText}>Pay Now</Text>
         </TouchableOpacity>
 
-        <Text style={styles.terms}>Terms and Conditions</Text>
+        <TouchableOpacity>
+          <Text style={styles.termsText}>Terms and Conditions</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#F8F8F8' },
+  safe: { 
+    flex: 1, 
+    backgroundColor: '#F8F8F8' 
+  },
   container: {
-    padding: 20,
-    alignItems: 'center',
+    padding: 24,
+    paddingBottom: 40,
   },
-  routeCard: {
-    width: '100%',
-    padding: 20,
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  routePoint: { alignItems: 'center', width: 60 },
-  dot: {
-    width: 8, height: 8, borderRadius: 4,
-    backgroundColor: '#9CA3AF', marginBottom: 8
-  },
-  code: { fontSize: 16, fontWeight: 'bold' },
-  city: { fontSize: 12, color: '#6B7280' },
-  planeContainer: {
-    flex: 1,
-    position: 'relative',
-    alignItems: 'center',
-  },
-  dashedLine: {
-    position: 'absolute',
-    top: '50%',
-    width: '100%',
-    borderTopWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: '#D1D5DB',
-  },
-  planeIcon: {
-    backgroundColor: '#fff',
-    padding: 4,
-    borderRadius: 12,
-  },
-  card: {
-    width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 16,
-    marginBottom: 20,
-  },
-  image: {
-    width: '100%',
+  flightPathContainer: {
     height: 120,
-    borderRadius: 16,
-    marginBottom: 12,
+    marginBottom: 20,
+    position: 'relative',
   },
-  titleRow: {
+  routePointsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+    paddingHorizontal: 20,
+    position: 'absolute',
+    top: 60,
+    left: 0,
+    right: 0,
+    zIndex: 2,
   },
-  location: { fontSize: 18, fontWeight: 'bold' },
-  region: { fontSize: 14, color: '#6B7280' },
-  rating: { flexDirection: 'row', alignItems: 'center' },
-  ratingText: { marginLeft: 4, fontSize: 14, fontWeight: '600' },
-  sectionHeader: {
+  arcContainer: {
+    position: 'relative',
+    height: 80,
+    width: '100%',
+  },
+  planeIconContainer: {
+    position: 'absolute',
+    top: 0, // Adjust based on where the highest point of your arc is
+    left: 175, // The x-coordinate of the control point
+    marginLeft: -12,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#6C5CE7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 10,
+  },
+  originDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#9CA3AF',
+    marginBottom: 8,
+  },
+  destinationDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#4CD080',
+    marginBottom: 8,
+  },
+  codeText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1A1A3F',
+  },
+  cityText: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  planeIconContainer: {
+    position: 'absolute',
+    top: 10,
+    left: '50%',
+    marginLeft: -12,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#6C5CE7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 10,
+  },
+  bookingInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  locationImage: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    marginRight: 16,
+  },
+  locationInfo: {
+    flex: 1,
+  },
+  locationName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1A1A3F',
+  },
+  regionName: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  starIcon: {
+    marginRight: 4,
+  },
+  ratingText: {
     fontSize: 16,
-    fontWeight: '600',
-    marginVertical: 8,
+    fontWeight: 'bold',
+    color: '#FF9F43',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1A1A3F',
+    marginBottom: 16,
   },
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 6,
-  },
-  detailLabel: { fontSize: 14, color: '#4B5563' },
-  detailValue: { fontSize: 14, fontWeight: '500' },
-  paymentCard: {
-    width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 16,
-    marginBottom: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  paymentRow: { flex: 1, flexDirection: 'row', alignItems: 'center' },
-  paymentLabel: { marginLeft: 8, fontSize: 14, flex: 1 },
-  paymentAmount: { fontSize: 14, fontWeight: '600' },
-  payButton: {
-    backgroundColor: '#5E50A1',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-  },
-  payButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-  submitButton: {
-    width: '100%',
-    backgroundColor: '#5E50A1',
-    paddingVertical: 16,
-    borderRadius: 20,
     alignItems: 'center',
     marginBottom: 12,
   },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+  detailLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  terms: {
+  checkCircle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(108, 92, 231, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+  },
+  detailLabel: {
+    fontSize: 16,
+    color: '#1A1A3F',
+  },
+  detailValue: {
+    fontSize: 16,
+    color: '#1A1A3F',
+    fontWeight: '500',
+  },
+  refundableValue: {
+    color: '#FF4F7E',
+  },
+  totalValue: {
+    color: '#6C5CE7',
+    fontWeight: 'bold',
+  },
+  paymentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  paymentIconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    backgroundColor: '#6C5CE7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+  },
+  payText: {
+    color: 'white',
     fontSize: 12,
+    marginTop: 4,
+  },
+  paymentInfo: {
+    flex: 1,
+  },
+  paymentAmount: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1A1A3F',
+  },
+  paymentLabel: {
+    fontSize: 14,
     color: '#9CA3AF',
-    textDecorationLine: 'underline',
+  },
+  payButton: {
+    backgroundColor: '#6C5CE7',
+    borderRadius: 30,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  payButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  termsText: {
+    textAlign: 'center',
+    color: '#9CA3AF',
+    fontSize: 14,
   },
 });

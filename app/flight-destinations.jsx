@@ -22,6 +22,7 @@ export default function FlightDestinations() {
   const [searchQuery, setSearchQuery] = useState("")
   const [destinations, setDestinations] = useState([])
 
+
   useEffect(() => {
     const checkLogin = async () => {
       const isLoggedIn = await AsyncStorage.getItem("isLoggedIn")
