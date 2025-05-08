@@ -67,7 +67,6 @@ export default function FlightDestinations() {
       console.error("Error fetching user data:", error)
     }
   }
->>>>>>> b055367afd03bcd685c14d57832a8bd3eac29524
 
   useEffect(() => {
     const checkLogin = async () => {
