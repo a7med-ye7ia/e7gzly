@@ -14,6 +14,7 @@ import defaultImage from "../assets/default-avatar.jpg"
 const { width } = Dimensions.get("window")
 const cardWidth = (width - 60) / 2
 
+
 export default function FlightDestinations() {
   const router = useRouter()
   const [userFirstName, setFirstName] = useState("")
@@ -92,28 +93,13 @@ export default function FlightDestinations() {
 
   useEffect(() => {
     // Set up auth state listener
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         console.log("User is signed in:", user.email)
-        try {
-          // Store basic user info in AsyncStorage
-          await AsyncStorage.setItem("isLoggedIn", "true")
-          await AsyncStorage.setItem("userEmail", user.email || "")
-
-          // Fetch additional user data
-          getData()
-        } catch (error) {
-          console.error("Error saving auth state:", error)
-        }
+        getData() // Fetch user data when auth state changes to signed in
       } else {
         console.log("User is signed out")
         // Handle signed out state
-        try {
-          await AsyncStorage.removeItem("isLoggedIn")
-          router.replace("/")
-        } catch (error) {
-          console.error("Error clearing auth state:", error)
-        }
       }
     })
 
@@ -129,21 +115,20 @@ export default function FlightDestinations() {
         if (success && data) {
           const getDestinations = []
 
-        data.forEach((doc) => {
-          // console.log("fetching flights from fireStore:", doc.data().name)
-          getDestinations.push({
-            id: doc.id,
-            name: doc.data().name,
-            location: doc.data().location,
-            image: doc.data().image,
-            rating: doc.data().rating,
-            featured: doc.data().featured,
-            price: doc.data().price,
-            museumLink: doc.data().museumLink,
-            new: doc.data().new,
+          data.forEach((doc) => {
+            console.log("fetching flights from fireStore:", doc.data().name)
+            getDestinations.push({
+              id: doc.id,
+              name: doc.data().name,
+              location: doc.data().location,
+              image: doc.data().image,
+              rating: doc.data().rating,
+              featured: doc.data().featured,
+              price: doc.data().price,
+              museumLink: doc.data().museumLink,
+              new: doc.data().new,
+            })
           })
-        })
-
 
           setDestinations(getDestinations)
           setFilteredDestinations(getDestinations) // Initialize filtered destinations
@@ -279,3 +264,4 @@ export default function FlightDestinations() {
     </ScrollView>
   )
 }
+

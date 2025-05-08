@@ -53,7 +53,7 @@ export default function Page() {
                 </Link>
               </>
             )}
-            <Link href="/main/CheckoutScreen" style={styles.secondaryButton}>
+            <Link href="/book/FlightResult" style={styles.secondaryButton}>
               <Text style={styles.secondaryButtonText}>test</Text>
             </Link>
           </View>
