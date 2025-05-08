@@ -11,23 +11,11 @@
   "dependencies": {
     "@expo/metro-runtime": "~4.0.1",
     "@expo/vector-icons": "^14.0.2",
-<<<<<<< HEAD
-    "@google/generative-ai": "^0.24.1",
-    "@react-native-async-storage/async-storage": "^1.24.0",
-    "@react-native-community/datetimepicker": "^8.3.0",
-    "@react-native-firebase/app": "^21.14.0",
-    "@react-native-firebase/auth": "^21.14.0",
-    "@react-native-picker/picker": "^2.11.0",
-    "@react-navigation/native": "^7.1.8",
-    "@react-navigation/stack": "^7.3.1",
-    "axios": "^1.9.0",
-=======
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-community/datetimepicker": "8.2.0",
     "@react-native-firebase/app": "^21.14.0",
     "@react-native-firebase/auth": "^21.14.0",
     "@react-native-picker/picker": "^2.9.0",
->>>>>>> e78b5faa8879a192cec073f380a09dcb1a8f0dee
     "country-state-city": "^3.2.1",
     "expo": "~52.0.46",
     "expo-auth-session": "~6.0.3",
@@ -36,17 +24,15 @@
     "expo-linking": "~7.0.5",
     "expo-notifications": "~0.29.14",
     "expo-router": "~4.0.20",
-    "expo-speech": "~13.0.1",
     "expo-status-bar": "~2.0.1",
     "firebase": "^11.6.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.9",
     "react-native-date-picker": "^5.0.12",
-    "react-native-feather": "^1.1.2",
-    "react-native-flash-message": "^0.4.2",
     "react-native-modal-datetime-picker": "^18.0.0",
-    "react-native-web": "~0.19.13"
+    "react-native-web": "~0.19.13",
+    "react-native-svg": "15.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

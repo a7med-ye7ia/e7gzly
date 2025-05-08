@@ -1,7 +1,11 @@
-import { Link } from "expo-router";
-import { SafeAreaView, Text, View, ImageBackground, TouchableOpacity, StatusBar } from "react-native";
-import styles from '../styles/stylePages';
+"use client"
 
+import { Link } from "expo-router"
+import { useEffect, useState } from "react"
+import { SafeAreaView, Text, View, ImageBackground, TouchableOpacity, StatusBar } from "react-native"
+import styles from "../styles/stylePages"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { useRouter } from "expo-router"
 
 export default function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -33,13 +37,25 @@ export default function Page() {
             <Text style={styles.subtitle}>Explore new world with us and let yourself get amazing experiences</Text>
           </View>
           <View style={styles.buttonContainer}>
-            <Link href="/login" style={styles.button}>
-              <Text style={styles.buttonText}>Login</Text>
+            {isLoggedIn ? (
+              // Show Go button if user is logged in
+              <TouchableOpacity style={styles.button} onPress={handleGoPress}>
+                <Text style={styles.buttonText}>Home</Text>
+              </TouchableOpacity>
+            ) : (
+              // Show Login and Sign Up buttons if user is not logged in
+              <>
+                <Link href="/login" style={styles.button}>
+                  <Text style={styles.buttonText}>Login</Text>
+                </Link>
+                <Link href="/login/SignUp" style={styles.secondaryButton}>
+                  <Text style={styles.secondaryButtonText}>Sign Up</Text>
+                </Link>
+              </>
+            )}
+            <Link href="/book/FlightResult" style={styles.secondaryButton}>
+              <Text style={styles.secondaryButtonText}>test</Text>
             </Link>
-            <Link href="/login/SignUp" style={styles.secondaryButton}>
-              <Text style={styles.secondaryButtonText}>Sign Up</Text>
-            </Link>
-           
           </View>
         </View>
       </ImageBackground>
