@@ -33,6 +33,7 @@ export default function FlightDestinations() {
       } else {
         // Fetch user data from AsyncStorage
         const storedUserName = await AsyncStorage.getItem("userName")
+        
         const storedUserEmail = await AsyncStorage.getItem("userEmail")
 
         if (storedUserName) {

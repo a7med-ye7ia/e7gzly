@@ -3,6 +3,7 @@ import { SafeAreaView, Text, View, ImageBackground, TouchableOpacity, StatusBar 
 import styles from '../styles/stylePages';
 
 
+
 export default function Page() {
   return (
     <SafeAreaView style={styles.containerIndex}>
@@ -23,7 +24,7 @@ export default function Page() {
             <Link href="/login/SignUp" style={styles.secondaryButton}>
               <Text style={styles.secondaryButtonText}>Sign Up</Text>
             </Link>
-            <Link href="/main/CheckoutScreen" style={styles.secondaryButton}>
+            <Link href="/flight/FlightResult" style={styles.secondaryButton}>
               <Text style={styles.secondaryButtonText}>test</Text>
             </Link>
           </View>
