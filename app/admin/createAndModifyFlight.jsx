@@ -116,7 +116,12 @@ export default function ProductInfo() {
   }
 
   return (
-    <ScrollView style={[stylesAuth.containerSigUp, {paddingBottom:100}]}>
+
+      <ScrollView
+          style={stylesAuth.containerSigUp}
+          contentContainerStyle={{ paddingBottom: 80 }}
+      >
+
       <Text style={stylesAuth.title}>{params.id ? "Edit flight" : "Add flight"}</Text>
 
       <View style={stylesAuth.inputContainer}>
@@ -157,9 +162,8 @@ export default function ProductInfo() {
         <Switch
         value={featured}
         onValueChange={() => setFeatured(!featured)}
-        trackColor={{ false: '#767577', true: '#81b0ff' }}
-        thumbColor={featured ? 'green' : 'red'}
-        ios_backgroundColor="#3e3e3e"
+        trackColor={{ false: '#9f9d9d', true: '#766bbd' }}
+        thumbColor={featured ? '#5D50C6' : '#4c4c4e'}
       />
       </View>
 
@@ -171,9 +175,8 @@ export default function ProductInfo() {
         <Switch
         value={neww}
         onValueChange={() => setNeww(!neww)}
-        trackColor={{ false: '#767577', true: '#81b0ff' }}
-        thumbColor={neww ? 'green' : 'red'}
-        ios_backgroundColor="#3e3e3e"
+        trackColor={{ false: '#9f9d9d', true: '#857cbf' }}
+        thumbColor={neww ? '#5D50C6' : '#4c4c4e'}
       />
       </View>
 
@@ -193,7 +196,7 @@ export default function ProductInfo() {
         </ScrollView>
       </View> */}
       
-      <TouchableOpacity style={stylePages.editButton} onPress={handleSave}>
+      <TouchableOpacity style={[stylePages.editButton]} onPress={handleSave}>
         <Text style={stylePages.editButtonText}>{params.id ? 'update' : 'save'}</Text>
       </TouchableOpacity>
 

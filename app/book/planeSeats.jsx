@@ -2,24 +2,35 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import styles from "../../styles/styleBooking";
 import { Ionicons } from "@expo/vector-icons";
-
+import { useRouter } from 'expo-router';
+import stylesAuth from "../../styles/stylesAuth";
 
 const rows = [1, 2, 3, 4, 5 , 6 , 7 ];
 const columns = ['A', 'B', 'C', 'D'];
 const unavailableSeats = ['D1', 'D2', 'B4', 'C5' , 'A1']; // example unavailable seats
+<<<<<<< HEAD
 const seatPrice = 6000000; 
+=======
+const seatPrice = 6000000; // IDR 6,000,000 per seat
+const numberOfSeats = 2;
+>>>>>>> 0f9df74 (add plane seats page and extra services page)
 
 export default function SelectSeat() {
+    const router = useRouter();
     const [selectedSeats, setSelectedSeats] = useState([]);
 
     const toggleSeat = (seatId) => {
         if (unavailableSeats.includes(seatId)) return;
-
-        setSelectedSeats(prev =>
-            prev.includes(seatId)
-                ? prev.filter(seat => seat !== seatId)
-                : [...prev, seatId]
-        );
+        setSelectedSeats((prev) => {
+            if (prev.includes(seatId)) {
+                return prev.filter(seat => seat !== seatId);
+            }
+            if (prev.length >= numberOfSeats) {
+                alert(`You can only select up to ${numberOfSeats} seats.`);
+                return prev;
+            }
+            return [...prev, seatId];
+        });
     };
 
     const isSelected = (seatId) => selectedSeats.includes(seatId);
@@ -27,10 +38,16 @@ export default function SelectSeat() {
 
     return (
         <ScrollView
+<<<<<<< HEAD
             style={styles.container}
             contentContainerStyle={{ paddingBottom: 80 }}
         >
         {/* Step Indicator */}
+=======
+            style={stylesAuth.containerSigUp}
+            contentContainerStyle={{ paddingBottom: 80 }}
+        >
+>>>>>>> 0f9df74 (add plane seats page and extra services page)
             <View style={styles.stepsContainer}>
                 <View style={styles.stepsRow}>
                     <Text style={styles.stepNumber}>①</Text>
@@ -45,20 +62,17 @@ export default function SelectSeat() {
                 </View>
             </View>
 
-
-            {/* Legend */}
             <View style={styles.legend}>
                 <LegendItem label="Available" color="#E0D9FF" />
                 <LegendItem label="Selected" color="#5D50C6" />
                 <LegendItem label="Unavailable" color="#ccc" />
             </View>
 
-            {/* Column Labels */}
             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <Text style={{ width: 40 }}></Text>
                 {columns.map(col => (
-                    <Text key={col} style={{ width: 20, textAlign: 'center' , marginHorizontal: 30}}>{col}</Text>
+                    <Text key={col} style={{ width: 20, textAlign: 'center' , marginHorizontal: 28 }}>{col}</Text>
                 ))}
+
             </View>
 
             <View>
@@ -72,7 +86,6 @@ export default function SelectSeat() {
                             marginVertical: 5,
                         }}
                     >
-                        {/* Left side seats (e.g., A, B) */}
                         {columns.slice(0, 2).map((col) => {
                             const seatId = `${col}${row}`;
                             const selected = isSelected(seatId);
@@ -95,12 +108,10 @@ export default function SelectSeat() {
                             );
                         })}
 
-                        {/* Row number in the center */}
                         <Text style={{ width: 40, textAlign: 'center' }}>
                             {row}
                         </Text>
 
-                        {/* Right side seats (e.g., C, D) */}
                         {columns.slice(2).map((col) => {
                             const seatId = `${col}${row}`;
                             const selected = isSelected(seatId);
@@ -127,7 +138,6 @@ export default function SelectSeat() {
             </View>
 
 
-            {/* Selected Seat Summary */}
             <Text style={{ marginTop: 20, fontSize: 16 }}>
                 Your seat: {selectedSeats.join(', ') || ' '}
             </Text>
@@ -135,8 +145,7 @@ export default function SelectSeat() {
                 Total: IDR{(seatPrice * selectedSeats.length).toLocaleString()}
             </Text>
 
-            {/* Continue Button */}
-            <TouchableOpacity style={styles.continueButton}>
+            <TouchableOpacity style={styles.continueButton} onPress={() => router.push('/book/extraServices')}>
                 <Text style={styles.continueButtonText}>Continue to Extras</Text>
             </TouchableOpacity>
         </ScrollView>
