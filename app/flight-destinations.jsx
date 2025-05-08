@@ -116,23 +116,6 @@ export default function FlightDestinations() {
         if (success && data) {
           const getDestinations = []
 
-<<<<<<< HEAD
-        data.forEach((doc) => {
-          // console.log("fetching flights from fireStore:", doc.data().name)
-          getDestinations.push({
-            id: doc.id,
-            name: doc.data().name,
-            location: doc.data().location,
-            image: doc.data().image,
-            rating: doc.data().rating,
-            featured: doc.data().featured,
-            price: doc.data().price,
-            museumLink: doc.data().museumLink,
-            new: doc.data().new,
-          })
-        })
-
-=======
           data.forEach((doc) => {
             console.log("fetching flights from fireStore:", doc.data().name)
             getDestinations.push({
@@ -147,7 +130,6 @@ export default function FlightDestinations() {
               new: doc.data().new,
             })
           })
->>>>>>> b055367afd03bcd685c14d57832a8bd3eac29524
 
           setDestinations(getDestinations)
           setFilteredDestinations(getDestinations) // Initialize filtered destinations
