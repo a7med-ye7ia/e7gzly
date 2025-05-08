@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import stylesAuth from "./stylesAuth";
 
 const primaryColor = "#5C40CC";
 const grayText = "#666";
@@ -11,6 +12,7 @@ export default StyleSheet.create({
     backgroundColor: white,
     paddingHorizontal: 20,
     paddingTop: 40,
+    paddingBottom: 80
   },
 
   h1: {
@@ -313,5 +315,72 @@ export default StyleSheet.create({
   emptyCell: {
     width: 40,
   },
+  // Extra Services styles :
+
+  card: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#5D50C6',
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 20,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#5D50C6',
+    marginBottom: 5,
+  },
+  cardSubtitle: {
+    color: '#888',
+    fontSize: 12,
+    marginBottom: 10,
+  },
+  baggageOptions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  baggageButton: {
+    borderColor: '#5D50C6',
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    width: '30%',
+    alignItems: 'center',
+  },
+  baggageLabel: {
+    fontWeight: 'bold',
+    color: '#5D50C6',
+  },
+  baggagePrice: {
+    fontSize: 12,
+    color: '#5D50C6',
+  },
+  serviceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  radioCircle: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#5D50C6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioDot: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: '#5D50C6',
+  },
+  cardPrice: {
+    fontWeight: 'bold',
+    color: '#5D50C6',
+    marginTop: 10,
+  },
+
 
 });
