@@ -31,7 +31,8 @@
     "react-native": "0.76.9",
     "react-native-date-picker": "^5.0.12",
     "react-native-modal-datetime-picker": "^18.0.0",
-    "react-native-web": "~0.19.13"
+    "react-native-web": "~0.19.13",
+    "react-native-svg": "15.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
