@@ -9,7 +9,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [focusedField, setFocusedField] = useState(null); // 👈 use this instead
+  const [focusedField, setFocusedField] = useState(null); 
 
   useEffect(() => {
     const checkLoginStatus = async () => {
