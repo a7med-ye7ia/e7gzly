@@ -81,7 +81,6 @@ export default function Profile() {
     );
 }
 
-// Reusable Option component
 const Option = ({ icon, label, onPress }) => (
     <TouchableOpacity style={styles.optionRow} onPress={onPress}>
         <Ionicons name={icon} size={22} color="black" />
