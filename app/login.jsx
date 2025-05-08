@@ -4,6 +4,9 @@ import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginUser } from '../auth/login';
 import styles from '../styles/stylesAuth';
+import { auth } from '../config/firebaseConfig';
+import { getUserById } from '../services/userService';
+  
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -21,36 +24,61 @@ export default function LoginScreen() {
     checkLoginStatus();
   }, []);
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill out both fields');
-      return;
-    }
-  
-    setLoading(true);
-  
+// Add proper error handling for AsyncStorage operations
+const handleLogin = async () => {
+  if (!email || !password) {
+    Alert.alert('Error', 'Please fill out both fields');
+    return;
+  }
+
+  setLoading(true);
+
+  try {
     const { user, error } = await loginUser(email, password);
-  
+
     if (user) {
-      Alert.alert('Success', 'Login successful');
-      await AsyncStorage.setItem('isLoggedIn', 'true');
-      await AsyncStorage.setItem('userName', user.displayName ?? '');
-      await AsyncStorage.setItem('userEmail', user.email ?? '');
-      
-      router.replace('./flight-destinations');
-    } else {
-      setLoading(false);
-      if (error.code === 'auth/invalid-email') {
-        Alert.alert('Invalid Email', 'The email address is not valid');
-      } else if (error.code === 'auth/user-not-found') {
-        Alert.alert('User Not Found', 'No account found with this email');
-      } else if (error.code === 'auth/wrong-password') {
-        Alert.alert('Wrong Password', 'The password is incorrect');
-      } else {
-        Alert.alert('Login Failed', error.message);
+      try {
+        // Store all items in a single operation for better atomicity
+        await Promise.all([
+          AsyncStorage.setItem('isLoggedIn', 'true'),
+          AsyncStorage.setItem('userName', user.displayName ?? ''),
+          AsyncStorage.setItem('userEmail', user.email ?? '')
+        ]);
+        
+        console.log('Data saved successfully:', {
+          isLoggedIn: 'true',
+          userName: user.displayName ?? '',
+          userEmail: user.email ?? ''
+        });
+        
+        Alert.alert('Success', 'Login successful');
+        router.replace('./flight-destinations');
+      } catch (storageError) {
+        console.error('AsyncStorage error:', storageError);
+        Alert.alert('Storage Error', 'Failed to save login information');
       }
+    } else {
+      handleLoginError(error);
     }
-  };
+  } catch (e) {
+    console.error('Login process error:', e);
+    Alert.alert('Login Failed', 'An unexpected error occurred');
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleLoginError = (error) => {
+  if (error.code === 'auth/invalid-email') {
+    Alert.alert('Invalid Email', 'The email address is not valid');
+  } else if (error.code === 'auth/user-not-found') {
+    Alert.alert('User Not Found', 'No account found with this email');
+  } else if (error.code === 'auth/wrong-password') {
+    Alert.alert('Wrong Password', 'The password is incorrect');
+  } else {
+    Alert.alert('Login Failed', error.message);
+  }
+};
   
   return (
       <ScrollView style={styles.containerLogin}>
