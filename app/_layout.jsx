@@ -1,21 +1,20 @@
 import { Slot } from 'expo-router';
-import ButtomBar from './Buttom-Bar';
+import BottomBar from './Buttom-Bar';
 import { View } from 'react-native';
-import { usePathname } from 'expo-router'; 
+import { usePathname } from 'expo-router';
 
 export default function RootLayout() {
-  const currentPath = usePathname();
+  const currentPath = usePathname();  
 
-  const pathsWithoutButtomBar = ['./login', './login/ForgetPassword','./login/SignUp']; 
-
-  const shouldShowButtomBar = !pathsWithoutButtomBar.includes(currentPath);
+  const hidePrefixes = ['/', '/login', '/login/ForgetPassword', '/login/SignUp'];
+const shouldShowBottomBar = !hidePrefixes.some(prefix =>
+    prefix === '/' ? currentPath === '/' : currentPath.startsWith(prefix)
+  );
 
   return (
     <View style={{ flex: 1 }}>
       <Slot />
-
-      {shouldShowButtomBar && <ButtomBar />}
+      {shouldShowBottomBar && <BottomBar />}
     </View>
   );
 }
-
