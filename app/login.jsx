@@ -26,14 +26,17 @@ export default function LoginScreen() {
       Alert.alert('Error', 'Please fill out both fields');
       return;
     }
-
+  
     setLoading(true);
-
+  
     const { user, error } = await loginUser(email, password);
-
+  
     if (user) {
       Alert.alert('Success', 'Login successful');
       await AsyncStorage.setItem('isLoggedIn', 'true');
+      await AsyncStorage.setItem('userName', user.displayName ?? '');
+      await AsyncStorage.setItem('userEmail', user.email ?? '');
+      
       router.replace('./flight-destinations');
     } else {
       setLoading(false);
@@ -48,7 +51,7 @@ export default function LoginScreen() {
       }
     }
   };
-
+  
   return (
       <ScrollView style={styles.containerLogin}>
         <Text style={styles.title}>Log In</Text>
