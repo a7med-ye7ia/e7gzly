@@ -179,7 +179,7 @@ export default function Book() {
 
     // Don't clear async storage
     router.push({
-      pathname: '/flight/DetailTraveler',
+      pathname: '/book/DetailTraveler',
       params: {  
         from: selectedFrom.name,
         to: selectedTo.name,
