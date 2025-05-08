@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, Alert, Modal } from "react-native";
+import { useState, useEffect ,useCallback } from "react";
+import {StyleSheet,View,Text,Image,ScrollView,TouchableOpacity,DimensionsAlert,TextInput,Modal,Alert
+} from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-//import DateTimePicker from '@react-native-community/datetimepicker';
-//import { Picker } from '@react-native-picker/picker';
-import { getAllFlights } from "../services/flightService";
 import styles from "../styles/styleSearch";
+import { getAllFlightsTWO ,addBooking } from "../services/flightService";
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 const primaryColor = "#6A0DAD";
 const grayText = "#666";
@@ -14,33 +14,37 @@ const white = "#fff";
 
 export default function Search() {
   const router = useRouter();
-
   const [destinations, setDestinations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFrom, setSelectedFrom] = useState(null);
   const [selectedTo, setSelectedTo] = useState(null);
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectionType, setSelectionType] = useState(null);
-
-  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [date, setDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState("25/06/2023");
-  
-  const [isPassengerPickerVisible, setIsPassengerPickerVisible] = useState(false);
-  const [selectedPassengers, setSelectedPassengers] = useState("2 Seats");
-  
+  const [selectedPassengers, setSelectedPassengers] = useState("2 Seat");
   const [tripType, setTripType] = useState('oneWay');
-
-
+  const [expirationDate, setExpirationDate] = useState('');
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [isPassengerModalVisible, setIsPassengerModalVisible] = useState(false);
+  const passengerOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; 
+  const [isSaving, setIsSaving] = useState(false);
   useEffect(() => {
     const getFlights = async () => {
       try {
         setIsLoading(true);
-        const { success, data, error } = await getAllFlights();
+        const { success, data, error } = await getAllFlightsTWO();
+        
         if (!success) {
+          console.error('API Error fetching flights:', error);
           throw new Error(error || 'Failed to fetch flights');
         }
+        
+        if (!Array.isArray(data)) {
+          console.error('Unexpected data format received from API:', data);
+          throw new Error('Invalid data format received');
+        }
+        
         const fetchedDestinations = data.map((doc) => ({
           id: doc.id,
           name: doc.data().name,
@@ -52,17 +56,16 @@ export default function Search() {
           museumLink: doc.data().museumLink,
           new: doc.data().new,
         }));
-
+  
         setDestinations(fetchedDestinations);
-
       } catch (err) {
-        console.error('Error fetching flights:', err);
+        console.error('Error in Search component processing flights:', err);
         Alert.alert('Error', 'Failed to load flight destinations. Please try again later.');
       } finally {
         setIsLoading(false);
       }
     };
-
+    
     getFlights();
   }, []);
 
@@ -72,11 +75,8 @@ export default function Search() {
   };
 
   const selectDestination = (destination) => {
-    if (selectionType === 'from') {
-      setSelectedFrom(destination);
-    } else if (selectionType === 'to') {
-      setSelectedTo(destination);
-    }
+    if (selectionType === 'from') setSelectedFrom(destination);
+    else if (selectionType === 'to') setSelectedTo(destination);
     setIsModalVisible(false);
     setSelectionType(null);
   };
@@ -101,24 +101,34 @@ export default function Search() {
     });
     Alert.alert("Booking Initiated", `Booking from ${selectedFrom.name} to ${selectedTo.name} on ${selectedDate}`);
   };
+  const showDatePicker = useCallback(() => {
+          setDatePickerVisibility(true);
+      }, []);
+  
+      const hideDatePicker = useCallback(() => {
+          setDatePickerVisibility(false);
+      }, []);
+  
+      const handleConfirm = (selectedDate) => {
+          if (selectedDate) {
+              setDate(selectedDate);
+              const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+              const year = selectedDate.getFullYear();
+              setExpirationDate(`${month}/${year}`);
+          }
+          hideDatePicker();
+      };
 
-  const showDatePicker = () => {
-    setIsDatePickerVisible(true);
-  };
-
-  const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setIsDatePickerVisible(false);
-    setSelectedDate(currentDate.toLocaleDateString());
-  };
-
-  const showPassengerPicker = () => {
-    setIsPassengerPickerVisible(true);
-  };
-
+      const openPassengerModal = () => {
+        setIsPassengerModalVisible(true);
+    };
+  
+    const selectPassenger = (passengerCount) => {
+        setSelectedPassengers(passengerCount); 
+        setIsPassengerModalVisible(false); 
+    }
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Header / Form Area */}
       <View style={styles.formContainer}>
         {/* Trip Type Buttons */}
         <View style={styles.tripTypeButtons}>
@@ -136,18 +146,15 @@ export default function Search() {
           </TouchableOpacity>
         </View>
 
-        {/* From Input */}
         <TouchableOpacity style={styles.inputField} onPress={() => openModal('from')}>
           <Text style={styles.inputLabel}>From</Text>
           <Text style={styles.inputValue}>{selectedFrom ? `${selectedFrom.name}, ${selectedFrom.location}` : "Select Origin"}</Text>
         </TouchableOpacity>
 
-        {/* Swap Button */}
         <TouchableOpacity style={styles.swapButton} onPress={swapDestinations}>
           <Ionicons name="swap-vertical" size={24} color={white} />
         </TouchableOpacity>
 
-        {/* To Input */}
         <TouchableOpacity style={styles.inputField} onPress={() => openModal('to')}>
           <Text style={styles.inputLabel}>To</Text>
           <Text style={styles.inputValue}>{selectedTo ? `${selectedTo.name}, ${selectedTo.location}` : "Select Destination"}</Text>
@@ -155,20 +162,36 @@ export default function Search() {
 
         {/* Date and Passenger Inputs */}
         <View style={styles.dateTimePassengerContainer}>
-          <TouchableOpacity style={styles.datePassengerField} onPress={showDatePicker}>
-            <Text style={styles.inputLabel}>Date</Text>
-            <Text style={styles.inputValue}>{selectedDate}</Text>
-          </TouchableOpacity>
-          // Passenger selection input
-<TouchableOpacity style={styles.datePassengerField} onPress={() => setIsPassengerPickerVisible(true)}>
-  <Text style={styles.inputLabel}>Passenger</Text>
-  <Text style={styles.inputValue}>{selectedPassengers}</Text>
-</TouchableOpacity>
-
-
+        <View style={styles.datePassengerField}>
+            <Text style={styles.label}>Expiration Date</Text>
+            <TouchableOpacity 
+                style={styles.dateInput}
+                onPress={showDatePicker}
+            >
+                <Text>{expirationDate || 'MM/YYYY'}</Text>
+                <Image 
+                    source={{ uri: 'https://cdn-icons-png.flaticon.com/512/747/747310.png' }}
+                    style={styles.calendarIcon}
+                />
+            </TouchableOpacity>
         </View>
+        <DateTimePickerModal
+                            isVisible={isDatePickerVisible}
+                            mode="date"
+                            onConfirm={handleConfirm}
+                            onCancel={hideDatePicker}
+                            date={date} 
+                            minimumDate={new Date()}
+                            
+                        />
+         {/* <View style={styles.dateTimePassengerContainer}>
 
-        {/* Book Now Button */}
+             <TouchableOpacity style={styles.dateTimePassengerContainer} onPress={openPassengerModal}>
+                <Text style={styles.inputLabel}>Passenger</Text>
+                <Text style={styles.inputValue}>{`${selectedPassengers} Passenger${selectedPassengers > 1 ? 's' : ''}`}</Text>
+            </TouchableOpacity>
+        </View> */}
+</View>
         <TouchableOpacity style={styles.bookNowButton} onPress={handleBookNow} disabled={isLoading || !selectedFrom || !selectedTo}>
           {isLoading ? (
             <Text style={styles.bookNowButtonText}>Loading...</Text>
@@ -217,45 +240,6 @@ export default function Search() {
               }}
             >
               <Text style={styles.modalCloseButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Date Picker */}
-      {isDatePickerVisible && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
-      )}
-
-      {/* Passenger Picker Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isPassengerPickerVisible}
-        onRequestClose={() => setIsPassengerPickerVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Select Number of Passengers</Text>
-            <Picker
-              selectedValue={selectedPassengers}
-              onValueChange={(itemValue) => setSelectedPassengers(itemValue)}
-            >
-              <Picker.Item label="1 Seat" value="1 Seat" />
-              <Picker.Item label="2 Seats" value="2 Seats" />
-              <Picker.Item label="3 Seats" value="3 Seats" />
-              <Picker.Item label="4 Seats" value="4 Seats" />
-            </Picker>
-            <TouchableOpacity
-              style={styles.modalCloseButton}
-              onPress={() => setIsPassengerPickerVisible(false)}
-            >
-              <Text style={styles.modalCloseButtonText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>

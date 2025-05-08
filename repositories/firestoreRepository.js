@@ -10,6 +10,21 @@ const getAllDocuments = async (collectionName) => {
     return { success: false, error }
   }
 }
+const getAllDocumentsTWO = async (collectionName) => {
+  try {
+    const querySnapshot = await getDocs(collection(db, collectionName));
+    const documents = querySnapshot.docs;
+    return { success: true, data: documents };
+  } catch (error) {
+    console.error(`Error fetching documents from collection ${collectionName}:`, error);
+    return { 
+      success: false, 
+      data: undefined, 
+      error: error.message || 'Unknown error occurred' 
+    };
+  }
+};
+
 
 const getDocumentById = async (collectionName, documentId) => {
   const docRef = doc(db, collectionName, documentId);
@@ -65,4 +80,4 @@ const deleteDocument = async (collectionName, documentId) => {
   }
 };
 
-export { getAllDocuments, addDocument, addDocumentWithId, updateDocument, deleteDocument, getDocumentById };
+export { getAllDocuments, addDocument, addDocumentWithId, updateDocument, deleteDocument, getDocumentById ,getAllDocumentsTWO};
