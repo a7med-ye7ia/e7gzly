@@ -3,8 +3,24 @@ import { SafeAreaView, Text, View, ImageBackground, TouchableOpacity, StatusBar 
 import styles from '../styles/stylePages';
 
 
-
 export default function Page() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    // Check if user is logged in when component mounts
+    const checkLoginStatus = async () => {
+      const loginStatus = await AsyncStorage.getItem("isLoggedIn")
+      setIsLoggedIn(loginStatus === "true")
+    }
+
+    checkLoginStatus()
+  }, [])
+
+  const handleGoPress = () => {
+    router.replace("./flight-destinations")
+  }
+
   return (
     <SafeAreaView style={styles.containerIndex}>
       <StatusBar barStyle="light-content" />
@@ -24,14 +40,12 @@ export default function Page() {
             <Link href="/login/SignUp" style={styles.secondaryButton}>
               <Text style={styles.secondaryButtonText}>Sign Up</Text>
             </Link>
-            <Link href="/ChatBot" style={styles.secondaryButton}>
+            <Link href="/main/CheckoutScreen" style={styles.secondaryButton}>
               <Text style={styles.secondaryButtonText}>test</Text>
             </Link>
           </View>
         </View>
       </ImageBackground>
     </SafeAreaView>
-  );
+  )
 }
-
-

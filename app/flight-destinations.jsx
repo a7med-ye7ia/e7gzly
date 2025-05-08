@@ -21,7 +21,8 @@ export default function FlightDestinations() {
   const [profileImage, setProfileImage] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [destinations, setDestinations] = useState([])
-
+  const [filteredDestinations, setFilteredDestinations] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -31,7 +32,6 @@ export default function FlightDestinations() {
       } else {
         // Fetch user data from AsyncStorage
         const storedUserName = await AsyncStorage.getItem("userName")
-        
         const storedUserEmail = await AsyncStorage.getItem("userEmail")
 
         if (storedUserName) {
