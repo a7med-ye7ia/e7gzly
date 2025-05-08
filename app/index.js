@@ -31,7 +31,6 @@ export default function Page() {
       <ImageBackground source={require("../assets/bg.png")} style={styles.backgroundImage} resizeMode="cover">
         <View style={styles.overlay}>
           <View style={styles.logoContainer}>
-            {/* <Image source={require("../assets/logo.png")} style={styles.logo} /> */}
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>Fly Like a Bird</Text>
