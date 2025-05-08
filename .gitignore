@@ -43,3 +43,4 @@ yarn-error.*
 upload-server/node_modules
 upload-server/uploads
 upload-server/configAccount.json
+node_modules

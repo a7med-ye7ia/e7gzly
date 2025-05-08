@@ -3,6 +3,7 @@ import { SafeAreaView, Text, View, ImageBackground, TouchableOpacity, StatusBar 
 import styles from '../styles/stylePages';
 
 
+
 export default function Page() {
   return (
     <SafeAreaView style={styles.containerIndex}>
