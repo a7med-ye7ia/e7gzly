@@ -63,6 +63,23 @@ export default function ButtomBar() {
         </Text>
       </TouchableOpacity>
 
+{/*  Wishlist */}
+      <TouchableOpacity style={buttonBarStyles.button} onPress={() => router.push("/Wishlist")}>
+        <Ionicons
+          name="heart-outline"
+          size={24}
+          color={currentPath === "/Wishlist" ? activeColor : inactiveColor}
+        />
+        <Text
+          style={[
+            buttonBarStyles.buttonText,
+            { color: currentPath === "/Wishlist" ? activeColor : inactiveColor }
+          ]}
+        >
+          Wishlist
+        </Text>
+      </TouchableOpacity>
+
       {/*Profile */}
       <TouchableOpacity style={buttonBarStyles.button} onPress={() => router.push("/profile/profile")}>
         <Ionicons

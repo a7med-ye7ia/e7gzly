@@ -168,8 +168,7 @@ export default function FlightDestinations() {
         price: destination.price,
       },
     })
-  }
-
+  }  
   const featuredDestinations = filteredDestinations.filter((dest) => dest.featured)
   const newDestinations = filteredDestinations.filter((dest) => dest.new)
 
@@ -197,7 +196,6 @@ export default function FlightDestinations() {
       {/* Featured Destinations */}
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Featured Destinations</Text>
-
         {isLoading ? (
           <Text>Loading featured destinations...</Text>
         ) : featuredDestinations.length > 0 ? (
@@ -241,7 +239,7 @@ export default function FlightDestinations() {
           <Text>Loading new destinations...</Text>
         ) : newDestinations.length > 0 ? (
           newDestinations.map((destination) => (
-            <TouchableOpacity
+        <TouchableOpacity
               key={destination.id}
               style={styles.newDestinationCard}
               onPress={() => navigateToProductInfo(destination)}
