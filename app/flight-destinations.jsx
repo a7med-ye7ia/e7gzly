@@ -22,12 +22,6 @@ export default function FlightDestinations() {
   const [profileImage, setProfileImage] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [destinations, setDestinations] = useState([])
-<<<<<<< HEAD
-  const [filteredDestinations, setFilteredDestinations] = useState(destinations)
-  const [isLoading, setIsLoading] = useState(false) 
-=======
-
-
   const [filteredDestinations, setFilteredDestinations] = useState(destinations)
   const [isLoading, setIsLoading] = useState(false)
 
