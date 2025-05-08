@@ -7,6 +7,7 @@ import styles from "../styles/stylePages"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useRouter } from "expo-router"
 
+
 export default function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const router = useRouter()
@@ -37,6 +38,7 @@ export default function Page() {
             <Text style={styles.subtitle}>Explore new world with us and let yourself get amazing experiences</Text>
           </View>
           <View style={styles.buttonContainer}>
+<<<<<<< HEAD
             {isLoggedIn ? (
               // Show Go button if user is logged in
               <TouchableOpacity style={styles.button} onPress={handleGoPress}>
@@ -54,6 +56,15 @@ export default function Page() {
               </>
             )}
             <Link href="/main/CheckoutScreen" style={styles.secondaryButton}>
+=======
+            <Link href="/login" style={styles.button}>
+              <Text style={styles.buttonText}>Login</Text>
+            </Link>
+            <Link href="/login/SignUp" style={styles.secondaryButton}>
+              <Text style={styles.secondaryButtonText}>Sign Up</Text>
+            </Link>
+            <Link href="/flight/FlightResult" style={styles.secondaryButton}>
+>>>>>>> 5ea4708ac317a5095bef10a95493f38bd8e8e4f4
               <Text style={styles.secondaryButtonText}>test</Text>
             </Link>
           </View>
