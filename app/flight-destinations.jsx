@@ -21,7 +21,8 @@ export default function FlightDestinations() {
   const [profileImage, setProfileImage] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [destinations, setDestinations] = useState([])
-  const [filteredDestinations, setFilteredDestinations] = useState([])
+
+  const [filteredDestinations, setFilteredDestinations] = useState(destinations)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
@@ -45,28 +46,32 @@ export default function FlightDestinations() {
     }
 
     checkLogin()
+  }, [])
 
-    const getData = async () => {
-      console.log("Fetching user data")
-      try {
-        const userEmail = auth.currentUser?.email
-        if (!userEmail) {
-          console.error("User is not logged in or email is missing")
-          return
+  useEffect(() => {
+    // Set up auth state listener
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        console.log("User is signed in:", user.email)
+        try {
+          // Store basic user info in AsyncStorage
+          await AsyncStorage.setItem("isLoggedIn", "true")
+          await AsyncStorage.setItem("userEmail", user.email || "")
+
+          // Fetch additional user data
+          getData()
+        } catch (error) {
+          console.error("Error saving auth state:", error)
         }
-
-        const data = await getUserById(userEmail)
-
-        if (data) {
-          setProfileImage(data.profilePictureURL ?? null)
-          setFirstName(data.firstName ?? "")
-        } else {
-          console.warn("User data not found")
+      } else {
+        console.log("User is signed out")
+        // Handle signed out state
+        try {
+          await AsyncStorage.removeItem("isLoggedIn")
+          router.replace("/")
+        } catch (error) {
+          console.error("Error clearing auth state:", error)
         }
-
-        console.log("fetched", userEmail)
-      } catch (error) {
-        console.error("Error fetching user data:", error)
       }
     }
 
