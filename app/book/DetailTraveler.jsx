@@ -1,8 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { useRouter } from "expo-router";
 
 const DetailTraveler = () => {
+    const router = useRouter();
+
     const [fullName, setFullName] = useState('');
     const [citizenship, setCitizenship] = useState('');
     const [passportNumber, setPassportNumber] = useState('');
@@ -115,7 +118,7 @@ const DetailTraveler = () => {
                     <View style={[styles.paginationDot, styles.activeDot]} />
                 </View>
                 
-                <TouchableOpacity style={styles.continueButton}>
+                <TouchableOpacity style={styles.continueButton} onPress={() => router.push("/book/planeSeats")}>
                     <Text style={styles.continueButtonText}>Continue to Seat</Text>
                 </TouchableOpacity>
             </View>

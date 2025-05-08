@@ -489,6 +489,7 @@ export default StyleSheet.create({
         flex: 1,
         padding: 24,
         backgroundColor: '#ffffff',
+        marginBottom: 40,
     },
     profileHeaderRow: {
         flexDirection: "row",

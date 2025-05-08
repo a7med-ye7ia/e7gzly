@@ -34,7 +34,7 @@ export default function ButtomBar() {
         <Ionicons
           name="book"
           size={24}
-          color={currentPath === "/Book" ? activeColor : inactiveColor}
+          color={currentPath === "/Book" || "/flight/DetailTraveler" ? activeColor : inactiveColor}
         />
         <Text
           style={[
