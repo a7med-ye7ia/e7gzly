@@ -15,7 +15,7 @@ export default function ProductInfo() {
   const router = useRouter()
   const params = useLocalSearchParams()
 
-  const interests = params.interests ? JSON.parse(params.interests) : []
+  // const interests = params.interests ? JSON.parse(params.interests) : []
 
   // data use cases
   const [name, setName] = useState(params.name)
@@ -26,13 +26,24 @@ export default function ProductInfo() {
   const [neww, setNeww] = useState(params.new)
   
   // image use cases
-  const [image, setImage] = useState(params.image)
+  const [image, setImage] = useState(params.photos[0] || null)
   const [imageFile, setImageFile] = useState(null)
   const [isImageUpdated, setIsImageUpdated] = useState(false)
 
   // loading use cases
   const [isUploading, setIsUploading] = useState(false)
 
+  // ! ///////////////////////////
+  const [cityFromCode, setCityFromCode] = useState(params.cityFromCode || "");
+  const [cityFromName, setCityFromName] = useState(params.cityFromName || "");
+  const [flightTime, setFlightTime] = useState(params.flightTime || "");
+  const [cityToCode, setCityToCode] = useState(params.cityToCode || "");
+  const [cityToName, setCityToName] = useState(params.cityToName || "");
+  const [arrivalTime, setArrivalTime] = useState(params.arrivalTime || "");
+  const [flightDuration, setFlightDuration] = useState(params.flightDuration || "");
+  const [airLine, setAirLine] = useState(params.airLine || "");
+  const [flightClass, setFlightClass] = useState(params.class || "");
+  const [about, setAbout] = useState(params.about || "");
 
   const handleSave = async () => {
     console.log("updates is uploading, please wait...");
@@ -116,93 +127,170 @@ export default function ProductInfo() {
   }
 
   return (
-
-      <ScrollView
-          style={stylesAuth.containerSigUp}
-          contentContainerStyle={{ paddingBottom: 80 }}
-      >
-
-      <Text style={stylesAuth.title}>{params.id ? "Edit flight" : "Add flight"}</Text>
-
+    <ScrollView style={[stylesAuth.containerSigUp, { paddingBottom: 100 }]}>
+      <Text style={stylesAuth.title}>
+        {params.id ? "Edit Flight" : "Add Flight"}
+      </Text>
+  
+      {/* FROM CITY */}
       <View style={stylesAuth.inputContainer}>
-        <Text style={stylesAuth.label}>Name</Text>
+        <Text style={stylesAuth.label}>From (City Name)</Text>
         <TextInput
           style={stylesAuth.input}
-          placeholder='Enter a name'
-          value={name}
-          onChangeText={setName}
+          placeholder='e.g. Sao Paulo'
+          value={cityFromName}
+          onChangeText={setCityFromName}
         />
       </View>
-
+  
       <View style={stylesAuth.inputContainer}>
-        <Text style={stylesAuth.label}>Location</Text>
+        <Text style={stylesAuth.label}>From (Airport Code)</Text>
         <TextInput
           style={stylesAuth.input}
-          placeholder='Enter the location'
-          value={location}
-          onChangeText={setLocation}
+          placeholder='e.g. GRU'
+          value={cityFromCode}
+          onChangeText={setCityFromCode}
         />
       </View>
-
+  
+      {/* TO CITY */}
       <View style={stylesAuth.inputContainer}>
-        <Text style={stylesAuth.label}>price</Text>
+        <Text style={stylesAuth.label}>To (City Name)</Text>
         <TextInput
           style={stylesAuth.input}
-          placeholder='Enter the price'
+          placeholder='e.g. Bangkok'
+          value={cityToName}
+          onChangeText={setCityToName}
+        />
+      </View>
+  
+      <View style={stylesAuth.inputContainer}>
+        <Text style={stylesAuth.label}>To (Airport Code)</Text>
+        <TextInput
+          style={stylesAuth.input}
+          placeholder='e.g. BKK'
+          value={cityToCode}
+          onChangeText={setCityToCode}
+        />
+      </View>
+  
+      {/* TIMES */}
+      <View style={stylesAuth.inputContainer}>
+        <Text style={stylesAuth.label}>Flight Time</Text>
+        <TextInput
+          style={stylesAuth.input}
+          placeholder='e.g. 10:00 PM'
+          value={flightTime}
+          onChangeText={setFlightTime}
+        />
+      </View>
+  
+      <View style={stylesAuth.inputContainer}>
+        <Text style={stylesAuth.label}>Arrival Time</Text>
+        <TextInput
+          style={stylesAuth.input}
+          placeholder='e.g. 01:00 PM'
+          value={arrivalTime}
+          onChangeText={setArrivalTime}
+        />
+      </View>
+  
+      <View style={stylesAuth.inputContainer}>
+        <Text style={stylesAuth.label}>Flight Duration</Text>
+        <TextInput
+          style={stylesAuth.input}
+          placeholder='e.g. 18h 00m'
+          value={flightDuration}
+          onChangeText={setFlightDuration}
+        />
+      </View>
+  
+      {/* Airline & Class */}
+      <View style={stylesAuth.inputContainer}>
+        <Text style={stylesAuth.label}>Airline</Text>
+        <TextInput
+          style={stylesAuth.input}
+          placeholder='e.g. Thai Airways'
+          value={airLine}
+          onChangeText={setAirLine}
+        />
+      </View>
+  
+      <View style={stylesAuth.inputContainer}>
+        <Text style={stylesAuth.label}>Class</Text>
+        <TextInput
+          style={stylesAuth.input}
+          placeholder='e.g. Economy Class'
+          value={flightClass}
+          onChangeText={setFlightClass}
+        />
+      </View>
+  
+      {/* Price */}
+      <View style={stylesAuth.inputContainer}>
+        <Text style={stylesAuth.label}>Price</Text>
+        <TextInput
+          style={stylesAuth.input}
+          placeholder='e.g. IDR 13.000.000'
           value={price}
           onChangeText={setPrice}
         />
       </View>
-
-      <View style={stylePages.switchContainer}>
-        <Text style={stylesAuth.label}>
-          Set as a featured flight:
-        </Text>
-        
-        <Switch
-        value={featured}
-        onValueChange={() => setFeatured(!featured)}
-        trackColor={{ false: '#9f9d9d', true: '#766bbd' }}
-        thumbColor={featured ? '#5D50C6' : '#4c4c4e'}
-      />
+  
+      {/* Description */}
+      <View style={stylesAuth.inputContainer}>
+        <Text style={stylesAuth.label}>About</Text>
+        <TextInput
+          style={[stylesAuth.input, { height: 100 }]}
+          placeholder='Flight description'
+          multiline
+          value={about}
+          onChangeText={setAbout}
+        />
       </View>
-
+  
+      {/* Switches */}
       <View style={stylePages.switchContainer}>
-        <Text style={stylesAuth.label}>
-          Set as a new flight:
-        </Text>
-        
+        <Text style={stylesAuth.label}>Set as Featured</Text>
         <Switch
-        value={neww}
-        onValueChange={() => setNeww(!neww)}
-        trackColor={{ false: '#9f9d9d', true: '#857cbf' }}
-        thumbColor={neww ? '#5D50C6' : '#4c4c4e'}
-      />
+          value={featured}
+          onValueChange={() => setFeatured(!featured)}
+          trackColor={{ false: '#767577', true: '#81b0ff' }}
+          thumbColor={featured ? 'green' : 'red'}
+        />
       </View>
-
-      <TouchableOpacity onPress={() => getImage()}> 
-        <View style={{flex:1, justifyContent: 'center', alignItems: 'center', marginVertical: 10, width: '100%', height: image ? 'auto' : 200, backgroundColor: '#eeeee4'}}>
-          {image ? <Image source={{ uri: image }} style={stylePages.mainImage} resizeMode="cover" />
-                 : isImageUpdated ? <Image source={{ uri: image }} style={stylePages.mainImage} resizeMode="cover" /> 
-                                 : <Ionicons name="add" size={40} color={'grey'} />}
-        </View>    
+  
+      <View style={stylePages.switchContainer}>
+        <Text style={stylesAuth.label}>Set as New</Text>
+        <Switch
+          value={neww}
+          onValueChange={() => setNeww(!neww)}
+          trackColor={{ false: '#767577', true: '#81b0ff' }}
+          thumbColor={neww ? 'green' : 'red'}
+        />
+      </View>
+  
+      {/* Photos */}
+      <TouchableOpacity onPress={getImage}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 10, width: '100%', height: image ? 'auto' : 200, backgroundColor: '#eeeee4' }}>
+          {image ? (
+            <Image source={{ uri: image }} style={stylePages.mainImage} resizeMode="cover" />
+          ) : (
+            <Ionicons name="add" size={40} color={'grey'} />
+          )}
+        </View>
       </TouchableOpacity>
-
-      {/* <View style={stylePages.section}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={stylePages.photosScroll}>
-          {photos.map((photo, index) => (
-            <Image key={index} source={{ uri: photo }} style={stylePages.thumbnail} resizeMode="cover" />
-          ))}
-        </ScrollView>
-      </View> */}
-      
-      <TouchableOpacity style={[stylePages.editButton]} onPress={handleSave}>
-        <Text style={stylePages.editButtonText}>{params.id ? 'update' : 'save'}</Text>
+  
+      {/* Save & Delete Buttons */}
+      <TouchableOpacity style={stylePages.editButton} onPress={handleSave}>
+        <Text style={stylePages.editButtonText}>{params.id ? 'Update' : 'Save'}</Text>
       </TouchableOpacity>
-
-      {params.id && (<TouchableOpacity style={[stylePages.editButton, { backgroundColor: "red", marginTop: '10' }]} onPress={handleDelete}>
-        <Text style={stylePages.editButtonText}>delete</Text>
-      </TouchableOpacity>)}
-      </ScrollView>
-  )
+  
+      {params.id && (
+        <TouchableOpacity style={[stylePages.editButton, { backgroundColor: "red", marginTop: 10 }]} onPress={handleDelete}>
+          <Text style={stylePages.editButtonText}>Delete</Text>
+        </TouchableOpacity>
+      )}
+    </ScrollView>
+  );  
 }
