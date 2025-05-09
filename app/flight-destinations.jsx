@@ -131,6 +131,7 @@ export default function FlightDestinations() {
               about: doc.data().about,
               photos: doc.data().photos,
               interests: doc.data().interests,
+              rating: doc.data().rating,
             })
           })
 
@@ -178,6 +179,7 @@ export default function FlightDestinations() {
         about: destination.about,
         photos: destination.photos,
         interests: destination.interests,
+        rating: destination.rating,
       },
     })
   }
