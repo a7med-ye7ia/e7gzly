@@ -14,18 +14,18 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.siefmo.E7gzly",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.siefmo.E7gzly"
+      "package": "com.e7gzly1.E7gzly",
+      "googleServicesFile": "./android/app/google-services.json",
+      "googleServicesFile2": "./android/app/google-services.json",
+      "googleServicesFile3": "./android/app/google-services.json",
+      "permissions": ["ACCESS_FINE_LOCATION"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,14 +33,15 @@
     "plugins": [
       "expo-router",
       "@react-native-firebase/app",
-      "@react-native-firebase/auth"
+      "@react-native-firebase/auth",
+      "expo-font"
     ],
     "extra": {
       "router": {
         "origin": false
       },
       "eas": {
-        "projectId": "059f2df3-6842-436b-8329-5a1298d744f1"
+        "projectId": "3593f410-aa09-497c-b4cb-e21befd52138"
       }
     }
   }

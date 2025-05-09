@@ -19,11 +19,20 @@ buildscript {
         classpath('com.facebook.react:react-native-gradle-plugin')
         classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
 
-        classpath 'com.google.gms:google-services:4.4.2'
+        classpath ('com.google.gms:google-services:4.4.2')
+        //   classpath("com.android.tools.build:gradle:8.0.2")
+        classpath("expo.modules:expo-module-gradle-plugin:1.6.0")
     }
-}
+
+    }
+
 
 apply plugin: "com.facebook.react.rootproject"
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "expo-module-gradle-plugin"
+id("com.google.gms.google-services") version "4.4.2" apply false
+
 
 allprojects {
     repositories {

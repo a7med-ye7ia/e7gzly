@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import stylesAuth from "./stylesAuth";
 
 // Standardized color palette
 const primaryColor = "#5C40CC"; // Using the color from the second file
@@ -14,6 +15,7 @@ export default StyleSheet.create({
     backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingTop: 40,
+    paddingBottom: 80
   },
 
   // === TYPOGRAPHY ===
