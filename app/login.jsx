@@ -40,20 +40,26 @@ export default function LoginScreen() {
 
       if (user) {
         try {
+          // Make sure we have the user email
+          const userEmail = user.email || email
+
           // Store all items in a single operation for better atomicity
           await Promise.all([
             AsyncStorage.setItem("isLoggedIn", "true"),
-            AsyncStorage.setItem("userName", user.displayName ?? ""),
-            AsyncStorage.setItem("userEmail", user.email ?? ""),
+            AsyncStorage.setItem("userName", user.displayName || ""),
+            AsyncStorage.setItem("userEmail", userEmail),
           ])
 
           console.log("Data saved successfully:", {
             isLoggedIn: "true",
-            userName: user.displayName ?? "",
-            userEmail: user.email ?? "",
+            userName: user.displayName || "",
+            userEmail: userEmail,
           })
 
-          router.replace("./flight-destinations")
+          // Small delay to ensure Firebase auth is fully initialized
+          setTimeout(() => {
+            router.replace("./flight-destinations")
+          }, 500)
         } catch (storageError) {
           console.error("AsyncStorage error:", storageError)
           Alert.alert("Storage Error", "Failed to save login information")
