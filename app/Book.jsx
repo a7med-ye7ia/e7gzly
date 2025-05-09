@@ -15,6 +15,9 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { getAllFlights } from "../services/flightService";
 import { useSearchParams } from "expo-router/build/hooks";
 
+// Validation regex for alphabetic characters
+const ALPHABETIC_REGEX = /^[A-Za-z\s]+$/;
+
 const primaryColor = "#5C40CC";
 
 export default function Book() {
@@ -22,6 +25,7 @@ export default function Book() {
   const initialFilteredData = params.filteredData ? JSON.parse(params.filteredData) : [];
 
   const router = useRouter();
+
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [searching, setSearching] = useState(false);
@@ -38,6 +42,10 @@ export default function Book() {
   const [filteredFlightData, setFilteredFlightData] = useState(initialFilteredData);
   const [isLoading, setIsLoading] = useState(false);
 
+  // For inline error display
+  const [isValidFrom, setIsValidFrom] = useState(true);
+  const [isValidTo, setIsValidTo] = useState(true);
+
   const seats = ["1 Seat", "2 Seats", "3 Seats", "4 Seats", "5 Seats"];
 
   // Fetch all flights on component mount, similar to FlightDestinations
@@ -48,8 +56,6 @@ export default function Book() {
         const { success, data, error } = await getAllFlights();
         if (success && data) {
           const getDestinations = [];
-
-          // Process data similar to FlightDestinations
           data.forEach((doc) => {
             getDestinations.push({
               id: doc.id,
@@ -87,6 +93,66 @@ export default function Book() {
     getFlights();
   }, []);
 
+  const validateLocationWithoutAlert = async (location) => {
+    if (!location || location.trim() === "") {
+        console.log(`Location "${location}" is empty or invalid.`);
+        return false;
+    }
+    try {
+        console.log(`Sending request to validate location: "${location}"`);
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+                location
+            )}&format=json&addressdetails=1&limit=5`,
+            {
+                headers: {
+                    'User-Agent': 'MyFlightBookingApp/1.0 (contact: your-email@example.com)',
+                    'Referer': 'http://localhost',
+                },
+            }
+        );
+        console.log(`Response status for "${location}": ${response.status}`);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.log(`Error response body for "${location}":`, errorText);
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log(`Validation results for "${location}":`, data);
+    
+        if (data.length > 0) {
+            data.forEach((result, index) => {
+                console.log(`Result ${index + 1} for "${location}": Type=${result.type}, Class=${result.class || 'N/A'}, Display_Name=${result.display_name || 'N/A'}`);
+            });
+    
+            const hasValidType = data.some(result => 
+                ["city", "town", "village", "country", "place", "boundary", "administrative"].includes(result.type)
+            );
+            if (hasValidType) {
+                console.log(`Location "${location}" is valid (found relevant type in ${data.length} results).`);
+                return true;
+            } else {
+                const hasHighImportance = data.some(result => result.importance > 0.5);
+                if (hasHighImportance) {
+                    console.log(`Location "${location}" is valid (high importance despite no matching type, ${data.length} results).`);
+                    return true;
+                } else {
+                    console.log(`Location "${location}" has results but no relevant type or high importance.`);
+                    return false;
+                }
+            }
+        } else {
+            console.log(`Location "${location}" not found (0 results).`);
+            return false;
+        }
+    } catch (error) {
+        console.error(`Error validating location "${location}":`, error.message);
+        return false;
+    }
+};
+
   const openDatePicker = () => {
     setFocusedField("date");
     setIsDatePickerVisible(true);
@@ -121,47 +187,73 @@ export default function Book() {
   };
 
   const calculatePrice = (seatsStr) => {
-    const numSeats = parseInt(seatsStr);
-    return numSeats * 100; // example price logic
+    const numSeats = parseInt(seatsStr, 10);
+    return numSeats * 100; 
   };
 
   const goToDetailTraveler = () => {
     setIsBookingModalVisible(false);
-    // Pass filtered flight data and booking details to FlightResult
     router.push({
       pathname: "./book/FlightResult",
       params: {
         filteredData: JSON.stringify(filteredFlightData),
         bookingDetails: JSON.stringify(bookingDetails),
+        seats: selectedSeats.toString(),
       },
     });
   };
 
-  const handleBookNow = () => {
-    if (!from.trim() || !to.trim()) {
-      Alert.alert("Missing fields", "Please enter both 'from' and 'to'");
+  const handleBookNow = async () => {
+    // Trim input values
+    const fromTrimmed = from.trim();
+    const toTrimmed = to.trim();
+
+    // Validation for From and To using the regex
+    if (!ALPHABETIC_REGEX.test(fromTrimmed) || !ALPHABETIC_REGEX.test(toTrimmed)) {
+      Alert.alert("Invalid Input", "Please ensure 'From' and 'To' only contain alphabetic characters.");
       return;
     }
 
-    setSearching(true); // Disable the button while processing
+    // Ensure From and To are different
+    if (fromTrimmed.toLowerCase() === toTrimmed.toLowerCase()) {
+      Alert.alert("Invalid Input", "'From' and 'To' must be different.");
+      return;
+    }
 
-    // Filter destinations based on 'from' and 'to' fields, similar to searchQuery logic in FlightDestinations
+    // Ensure both From and To are provided, and a Date is selected
+    if (!fromTrimmed || !toTrimmed || selectedDate === "DD/MM/YYYY") {
+      Alert.alert("Missing fields", "Please fill all fields.");
+      return;
+    }
+
+    // Validate "from" and "to" with live city/country check
+    const [fromValid, toValid] = await Promise.all([
+      validateLocationWithoutAlert(fromTrimmed),
+      validateLocationWithoutAlert(toTrimmed),
+    ]);
+    setIsValidFrom(fromValid);
+    setIsValidTo(toValid);
+
+    if (!fromValid || !toValid) {
+      Alert.alert("Invalid Location", "One or both locations are invalid or cannot be found.");
+      return;
+    }
+
+    setSearching(true);
     const filteredData = destinations.filter(
       (destination) =>
-        destination.cityFromName.toLowerCase().includes(from.trim().toLowerCase()) &&
-        destination.cityToName.toLowerCase().includes(to.trim().toLowerCase())
+        destination.cityFromName.toLowerCase().includes(fromTrimmed.toLowerCase()) &&
+        destination.cityToName.toLowerCase().includes(toTrimmed.toLowerCase())
     );
 
-    console.log("Filtered Data:", filteredData);
-    setFilteredFlightData(filteredData); // Store filtered data for passing to FlightResult
+    setFilteredFlightData(filteredData);
 
-    // Prepare booking summary
     const returnDate = new Date(date);
     returnDate.setDate(returnDate.getDate() + 7);
 
     setBookingDetails({
-      from,
-      to,
+      from: fromTrimmed,
+      to: toTrimmed,
       date: selectedDate,
       departureDate: selectedDate,
       returnDate: tripType === "oneWay" ? "N/A" : returnDate.toLocaleDateString(),
@@ -172,9 +264,26 @@ export default function Book() {
     });
 
     setIsBookingModalVisible(true);
-    setSearching(false); // Re-enable the button
-    console.log("Modal visibility set to true");
+    setSearching(false);
   };
+
+  const handleFromBlur = async () => {
+    if (from.trim().length > 0) {
+      const valid = await validateLocationWithoutAlert(from.trim());
+      setIsValidFrom(valid);
+    }
+  };
+
+  const handleToBlur = async () => {
+    if (to.trim().length > 0) {
+      const valid = await validateLocationWithoutAlert(to.trim());
+      setIsValidTo(valid);
+    }
+  };
+
+  const focusedStyle = (field) => ({
+    borderColor: focusedField === field ? primaryColor : "#ccc",
+  });
 
   return (
     <ScrollView style={styles.container}>
@@ -207,22 +316,32 @@ export default function Book() {
         {/* From Input */}
         <Text style={styles.inputLabel}>From</Text>
         <TextInput
-          style={styles.inputField}
+          style={[styles.inputField, focusedStyle('from')]}
           placeholder="Enter origin city (e.g. Toronto)"
           value={from}
           onChangeText={setFrom}
+          onBlur={handleFromBlur}
+          onFocus={() => setFocusedField('from')}
           autoCapitalize="words"
         />
+        {!isValidFrom && (
+          <Text style={{ color: "red", marginBottom: 8 }}>Please enter a valid city or country.</Text>
+        )}
 
         {/* To Input */}
         <Text style={styles.inputLabel}>To</Text>
         <TextInput
-          style={styles.inputField}
+          style={[styles.inputField, focusedStyle('to')]}
           placeholder="Enter destination city (e.g. New York)"
           value={to}
           onChangeText={setTo}
+          onBlur={handleToBlur}
+          onFocus={() => setFocusedField('to')}
           autoCapitalize="words"
         />
+        {!isValidTo && (
+          <Text style={{ color: "red", marginBottom: 8 }}>Please enter a valid city or country.</Text>
+        )}
 
         {/* Date Picker */}
         <Text style={styles.inputLabel}>Date</Text>
