@@ -8,7 +8,9 @@ import { useRouter } from "expo-router";
 const rows = [1, 2, 3, 4, 5 , 6 , 7 ];
 const columns = ['A', 'B', 'C', 'D'];
 const unavailableSeats = ['D1', 'D2', 'B4', 'C5' , 'A1']; // example unavailable seats
-const seatPrice = 6000000; 
+
+const seatPrice = 6000000; // IDR 6,000,000 per seat
+const numberOfSeats = 2;
 
 export default function SelectSeat() {
     
@@ -18,12 +20,16 @@ export default function SelectSeat() {
 
     const toggleSeat = (seatId) => {
         if (unavailableSeats.includes(seatId)) return;
-
-        setSelectedSeats(prev =>
-            prev.includes(seatId)
-                ? prev.filter(seat => seat !== seatId)
-                : [...prev, seatId]
-        );
+        setSelectedSeats((prev) => {
+            if (prev.includes(seatId)) {
+                return prev.filter(seat => seat !== seatId);
+            }
+            if (prev.length >= numberOfSeats) {
+                alert(`You can only select up to ${numberOfSeats} seats.`);
+                return prev;
+            }
+            return [...prev, seatId];
+        });
     };
 
     const handleBookingConfirmation = () => {
@@ -40,8 +46,11 @@ export default function SelectSeat() {
     const isUnavailable = (seatId) => unavailableSeats.includes(seatId);
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            {/* Step Indicator */}
+        <ScrollView
+
+            style={stylesAuth.containerSigUp}
+            contentContainerStyle={{ paddingBottom: 80 }}
+        >
             <View style={styles.stepsContainer}>
                 <View style={styles.stepsRow}>
                     <Text style={styles.stepNumber}>①</Text>
@@ -56,20 +65,17 @@ export default function SelectSeat() {
                 </View>
             </View>
 
-
-            {/* Legend */}
             <View style={styles.legend}>
                 <LegendItem label="Available" color="#E0D9FF" />
                 <LegendItem label="Selected" color="#5D50C6" />
                 <LegendItem label="Unavailable" color="#ccc" />
             </View>
 
-            {/* Column Labels */}
             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <Text style={{ width: 40 }}></Text>
                 {columns.map(col => (
-                    <Text key={col} style={{ width: 20, textAlign: 'center' , marginHorizontal: 30}}>{col}</Text>
+                    <Text key={col} style={{ width: 20, textAlign: 'center' , marginHorizontal: 28 }}>{col}</Text>
                 ))}
+
             </View>
 
             <View>
@@ -83,7 +89,6 @@ export default function SelectSeat() {
                             marginVertical: 5,
                         }}
                     >
-                        {/* Left side seats (e.g., A, B) */}
                         {columns.slice(0, 2).map((col) => {
                             const seatId = `${col}${row}`;
                             const selected = isSelected(seatId);
@@ -106,12 +111,10 @@ export default function SelectSeat() {
                             );
                         })}
 
-                        {/* Row number in the center */}
                         <Text style={{ width: 40, textAlign: 'center' }}>
                             {row}
                         </Text>
 
-                        {/* Right side seats (e.g., C, D) */}
                         {columns.slice(2).map((col) => {
                             const seatId = `${col}${row}`;
                             const selected = isSelected(seatId);
@@ -138,7 +141,6 @@ export default function SelectSeat() {
             </View>
 
 
-            {/* Selected Seat Summary */}
             <Text style={{ marginTop: 20, fontSize: 16 }}>
                 Your seat: {selectedSeats.join(', ') || ' '}
             </Text>

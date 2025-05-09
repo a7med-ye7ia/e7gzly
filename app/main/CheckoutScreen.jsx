@@ -7,7 +7,7 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  ScrollView
+  ScrollView 
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Path } from 'react-native-svg';

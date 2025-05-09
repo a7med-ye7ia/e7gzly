@@ -31,7 +31,7 @@ export default function FlightDestinations() {
     console.log("Fetching user data")
     try {
       // Check if auth is initialized and user is logged in
-      if (!auth || !auth.currentUser) {
+      if (!auth || !auth.currentUser || !auth.currentUser.email) {
         console.log("Auth not initialized or user not logged in yet")
         // Try to get user info from AsyncStorage instead
         const storedUserName = await AsyncStorage.getItem("userName")
@@ -46,20 +46,17 @@ export default function FlightDestinations() {
       }
 
       const userEmail = auth.currentUser.email
-      if (!userEmail) {
-        console.error("User is logged in but email is missing")
-        return
-      }
-
       const data = await getUserById(userEmail)
 
       if (data) {
         setProfileImage(data.profilePictureURL ?? null)
         setFirstName(data.firstName ?? "")
+        setUserEmail(userEmail) // Add this line to set the email
 
         // Store in AsyncStorage for future use
         await AsyncStorage.setItem("userProfilePic", data.profilePictureURL ?? "")
         await AsyncStorage.setItem("userName", data.firstName ?? "")
+        await AsyncStorage.setItem("userEmail", userEmail) // Add this line to store email
       } else {
         console.warn("User data not found")
       }
@@ -136,6 +133,7 @@ export default function FlightDestinations() {
               about: doc.data().about,
               photos: doc.data().photos,
               interests: doc.data().interests,
+              rating: doc.data().rating,
             })
           })
 
@@ -183,6 +181,7 @@ export default function FlightDestinations() {
         about: destination.about,
         photos: destination.photos,
         interests: destination.interests,
+        rating: destination.rating,
       },
     })
   }
