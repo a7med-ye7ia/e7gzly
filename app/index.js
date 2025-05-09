@@ -7,7 +7,6 @@ import styles from "../styles/stylePages"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useRouter } from "expo-router"
 
-
 export default function Page() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const router = useRouter()
@@ -32,6 +31,7 @@ export default function Page() {
       <ImageBackground source={require("../assets/bg.png")} style={styles.backgroundImage} resizeMode="cover">
         <View style={styles.overlay}>
           <View style={styles.logoContainer}>
+            {/* <Image source={require("../assets/logo.png")} style={styles.logo} /> */}
           </View>
           <View style={styles.contentContainer}>
             <Text style={styles.title}>Fly Like a Bird</Text>

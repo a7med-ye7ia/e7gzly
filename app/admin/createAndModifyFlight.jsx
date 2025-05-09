@@ -7,8 +7,9 @@ import stylesAuth from "../../styles/stylesAuth";
 import stylePages from "../../styles/stylePages";
 
 import { addFlight, deleteFlight, updateFlight, getFlightById } from "../../services/flightService";
-import { deleteImage, pickImage } from "../../hooks/imagePiker2";
-import { uploadImage } from "../../upload/uploads";
+import { uploadImage, deleteImage, pickImage } from "../../hooks/imagePiker2";
+
+
 
 
 export default function ProductInfo() {
@@ -17,20 +18,15 @@ export default function ProductInfo() {
 
   const interests = params.interests ? JSON.parse(params.interests) : []
 
-  // data use cases
   const [name, setName] = useState(params.name)
   const [location, setLocation] = useState(params.location)
+  const [image, setImage] = useState(params.image)
   const [featured, setFeatured] = useState(params.featured || false)
   const [rating, setRating] = useState(params.rating)
   const [price, setPrice] = useState(params.price)
   const [neww, setNeww] = useState(params.new)
-  
-  // image use cases
-  const [image, setImage] = useState(params.image)
   const [imageFile, setImageFile] = useState(null)
-  const [isImageUpdated, setIsImageUpdated] = useState(false)
-
-  // loading use cases
+  const [imageUpdated, setImageUpdated] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
 
 
@@ -38,23 +34,16 @@ export default function ProductInfo() {
     console.log("updates is uploading, please wait...");
    
     setIsUploading(true);
-    let uploadResult = {}
-    if (isImageUpdated) {
-      uploadResult = await uploadImage(imageFile);
-    }
-
-    if (uploadResult.success) {
-      console.log("Image uploaded successfully");
-      setImage(uploadResult.data.url);
-    } else { 
-      console.log("Image upload failed, error message: ", uploadResult.err.message);
+    let res = {}
+    if (imageUpdated) {
+      res = await uploadImage(imageFile);
     }
     
 
     const updates = {
       name: name,
       location: location,
-      image: image,
+      image: imageUpdated ? res.url : image,
       featured: featured,
       rating: rating || 0,
       price: price,
@@ -98,9 +87,10 @@ export default function ProductInfo() {
   }
 
   const getImage = async () => {
-    setIsImageUpdated(true);
+    setImageUpdated(true);
     const result = await pickImage();
     if (result.success) {
+      setImage(result.file.uri);
       setImageFile(result.file);
       console.log("Image selected successfully");
     } else {
@@ -116,7 +106,11 @@ export default function ProductInfo() {
   }
 
   return (
-    <ScrollView style={[stylesAuth.containerSigUp, {paddingBottom:100}]}>
+      <ScrollView
+          style={stylesAuth.containerSigUp}
+          contentContainerStyle={{ paddingBottom: 80 }}
+      >
+
       <Text style={stylesAuth.title}>{params.id ? "Edit flight" : "Add flight"}</Text>
 
       <View style={stylesAuth.inputContainer}>
@@ -157,9 +151,8 @@ export default function ProductInfo() {
         <Switch
         value={featured}
         onValueChange={() => setFeatured(!featured)}
-        trackColor={{ false: '#767577', true: '#81b0ff' }}
-        thumbColor={featured ? 'green' : 'red'}
-        ios_backgroundColor="#3e3e3e"
+        trackColor={{ false: '#9f9d9d', true: '#766bbd' }}
+        thumbColor={featured ? '#5D50C6' : '#4c4c4e'}
       />
       </View>
 
@@ -171,17 +164,15 @@ export default function ProductInfo() {
         <Switch
         value={neww}
         onValueChange={() => setNeww(!neww)}
-        trackColor={{ false: '#767577', true: '#81b0ff' }}
-        thumbColor={neww ? 'green' : 'red'}
-        ios_backgroundColor="#3e3e3e"
+        trackColor={{ false: '#9f9d9d', true: '#857cbf' }}
+        thumbColor={neww ? '#5D50C6' : '#4c4c4e'}
       />
       </View>
 
-      <TouchableOpacity onPress={() => getImage()}> 
+      <TouchableOpacity onPress={getImage}> 
         <View style={{flex:1, justifyContent: 'center', alignItems: 'center', marginVertical: 10, width: '100%', height: image ? 'auto' : 200, backgroundColor: '#eeeee4'}}>
           {image ? <Image source={{ uri: image }} style={stylePages.mainImage} resizeMode="cover" />
-                 : isImageUpdated ? <Image source={{ uri: image }} style={stylePages.mainImage} resizeMode="cover" /> 
-                                 : <Ionicons name="add" size={40} color={'grey'} />}
+                : <Ionicons name="add" size={40} color={'grey'} />}
         </View>    
       </TouchableOpacity>
 
@@ -193,7 +184,7 @@ export default function ProductInfo() {
         </ScrollView>
       </View> */}
       
-      <TouchableOpacity style={stylePages.editButton} onPress={handleSave}>
+      <TouchableOpacity style={[stylePages.editButton]} onPress={handleSave}>
         <Text style={stylePages.editButtonText}>{params.id ? 'update' : 'save'}</Text>
       </TouchableOpacity>
 
