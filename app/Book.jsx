@@ -1,71 +1,49 @@
-// Search.js
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Alert, Modal, TextInput } from "react-native";
+import { View,Text,ScrollView,TouchableOpacity,Alert,Modal,TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Country } from "country-state-city";
 import { useRouter } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from "../styles/styleBooking";
 
 const primaryColor = "#5C40CC";
-const FORM_KEY = 'bookingFormData';
 
 export default function Book() {
-  const router = useRouter();
-  
-  const [isBookingModalVisible, setIsBookingModalVisible] = useState(false);
-  const [bookingDetails, setBookingDetails] = useState(null);
-  
   const [countries, setCountries] = useState([]);
   const [countrySearch, setCountrySearch] = useState("");
 
-  // internal state
+  useEffect(() => {
+    const list = Country.getAllCountries();
+    setCountries(list);
+  }, []);
+
+  const filteredCountries = countries.filter((c) =>
+    c.name.toLowerCase().includes(countrySearch.toLowerCase())
+  );
+
+  const seats = ["1 Seat", "2 Seats", "3 Seats", "4 Seats", "5 Seats"];
+
   const [selectedFrom, setSelectedFrom] = useState(null);
   const [selectedTo, setSelectedTo] = useState(null);
-  const [focusedField, setFocusedField] = useState(null);
+
+  const [focusedField, setFocusedField] = useState(null); 
+
   const [isCountryModalVisible, setIsCountryModalVisible] = useState(false);
-  const [countryModalType, setCountryModalType] = useState(null);
+  const [countryModalType, setCountryModalType] = useState(null); 
+
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [date, setDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState("DD/MM/YYYY");
+
   const [isSeatsModalVisible, setIsSeatsModalVisible] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState("1 Seat");
+
   const [tripType, setTripType] = useState("oneWay");
 
-  // Save form function
-  const saveFormData = async (customState) => {
-    const formToSave = customState || {
-      selectedFrom, selectedTo, selectedDate, selectedSeats, tripType, date: date.toISOString()
-    };
-    try {
-      await AsyncStorage.setItem(FORM_KEY, JSON.stringify(formToSave));
-    } catch (e) {
-      console.log('Could not save form data', e);
-    }
-  };
-
-  // Load on mount
+  // Load countries on mount
   useEffect(() => {
-    (async () => {
-      const list = Country.getAllCountries();
-      setCountries(list);
-
-      try {
-        const stored = await AsyncStorage.getItem(FORM_KEY);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (parsed.selectedFrom) setSelectedFrom(parsed.selectedFrom);
-          if (parsed.selectedTo) setSelectedTo(parsed.selectedTo);
-          if (parsed.selectedDate) setSelectedDate(parsed.selectedDate);
-          if (parsed.selectedSeats) setSelectedSeats(parsed.selectedSeats);
-          if (parsed.tripType) setTripType(parsed.tripType);
-          if (parsed.date) setDate(new Date(parsed.date));
-        }
-      } catch (e) {
-        console.log("Failed to load form data:", e);
-      }
-    })();
+    const list = Country.getAllCountries();
+    setCountries(list);
   }, []);
 
   const filteredCountries = countries.filter((c) =>
@@ -89,14 +67,12 @@ export default function Book() {
     setCountryModalType(null);
     setFocusedField(null);
   };
-  // Save on pick
+  // Pickers just update local state now
   const pickCountry = (c) => {
     if (countryModalType === "from") {
       setSelectedFrom(c);
-      saveFormData({ selectedFrom: c, selectedTo, selectedDate, selectedSeats, tripType, date: date.toISOString() });
     } else {
       setSelectedTo(c);
-      saveFormData({ selectedFrom, selectedTo: c, selectedDate, selectedSeats, tripType, date: date.toISOString() });
     }
     closeCountryModal();
   };
@@ -106,7 +82,6 @@ export default function Book() {
     const tmpTo = selectedTo;
     setSelectedFrom(tmpTo);
     setSelectedTo(tmpFrom);
-    saveFormData({ selectedFrom: tmpTo, selectedTo: tmpFrom, selectedDate, selectedSeats, tripType, date: date.toISOString() });
   };
 
   const openDatePicker = () => {
@@ -114,13 +89,11 @@ export default function Book() {
     setIsDatePickerVisible(true);
   };
 
-  // Save on date change
   const onDateChange = (_, picked) => {
     setIsDatePickerVisible(false);
     if (picked) {
       setDate(picked);
       setSelectedDate(picked.toLocaleDateString());
-      saveFormData({ selectedFrom, selectedTo, selectedDate: picked.toLocaleDateString(), selectedSeats, tripType, date: picked.toISOString() });
     }
     setFocusedField(null);
   };
@@ -129,28 +102,23 @@ export default function Book() {
     setFocusedField("seats");
     setIsSeatsModalVisible(true);
   };
-
   const closeSeatsModal = () => {
     setIsSeatsModalVisible(false);
     setFocusedField(null);
   };
 
-  // Save on pick
   const pickSeats = (s) => {
     setSelectedSeats(s);
-    saveFormData({ selectedFrom, selectedTo, selectedDate, selectedSeats: s, tripType, date: date.toISOString() });
     closeSeatsModal();
   };
 
-  // Save on trip type selection
   const selectTripType = (type) => {
     setTripType(type);
-    saveFormData({ selectedFrom, selectedTo, selectedDate, selectedSeats, tripType: type, date: date.toISOString() });
   };
 
   const handleBookNow = () => {
-    if (!selectedFrom || !selectedTo || !selectedDate || !selectedSeats) {
-      Alert.alert("Selection Missing", "Please Enter Data Into fields.");
+    if (!selectedFrom || !selectedTo) {
+      Alert.alert("Selection Missing", "Please select both From and To.");
       return;
     }
 
@@ -173,12 +141,11 @@ export default function Book() {
     setIsBookingModalVisible(true);
   };
 
-  // On navigation, keep state
   const goToDetailTraveler = () => {
     setIsBookingModalVisible(false);
 
-    // Don't clear async storage
     router.push({
+      pathname: '/book/DetailTraveler',
       pathname: '/book/DetailTraveler',
       params: {  
         from: selectedFrom.name,
@@ -203,7 +170,7 @@ export default function Book() {
                 styles.tripTypeButton,
                 tripType === type && styles.tripTypeButtonActive,
               ]}
-              onPress={() => selectTripType(type)}
+              onPress={() => setTripType(type)}
             >
               <Text
                 style={[
@@ -285,6 +252,7 @@ export default function Book() {
       </View>
 
       {/* Country Modal */}
+      {/* Country Modal */}
       <Modal
         visible={isCountryModalVisible}
         transparent
@@ -297,7 +265,7 @@ export default function Book() {
               Select {countryModalType === "from" ? "Origin" : "Destination"}
             </Text>
 
-            {/* Search Input */}
+            {/* ← Updated Search Input Here */}
             <TextInput
               style={[
                 styles.modalSearchInput,
@@ -372,86 +340,6 @@ export default function Book() {
             >
               <Text style={styles.modalCloseButtonText}>Cancel</Text>
             </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      {/* CUSTOM BOOKING CONFIRMATION MODAL */}
-      <Modal
-        visible={isBookingModalVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setIsBookingModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.card}>
-            <View style={styles.header}>
-              <Text style={styles.headerText}>Booking Details</Text>
-            </View>
-
-            {bookingDetails && (
-              <View style={styles.content}>
-                <View style={styles.row}>
-                  <Ionicons name="airplane" size={20} color={primaryColor} style={styles.icon} />
-                  <Text style={styles.label}>Trip Type:</Text>
-                  <Text style={styles.value}>{bookingDetails.tripType}</Text>
-                </View>
-
-                <View style={styles.row}>
-                  <Ionicons name="location" size={20} color={primaryColor} style={styles.icon} />
-                  <Text style={styles.label}>From:</Text>
-                  <Text style={styles.value}>{bookingDetails.from}</Text>
-                </View>
-
-                <View style={styles.row}>
-                  <Ionicons name="location" size={20} color={primaryColor} style={styles.icon} />
-                  <Text style={styles.label}>To:</Text>
-                  <Text style={styles.value}>{bookingDetails.to}</Text>
-                </View>
-
-                <View style={styles.row}>
-                  <Ionicons name="calendar" size={20} color={primaryColor} style={styles.icon} />
-                  <Text style={styles.label}>Departure:</Text>
-                  <Text style={styles.value}>{bookingDetails.departureDate}</Text>
-                </View>
-
-                {bookingDetails.tripType === "Round Trip" && (
-                  <View style={styles.row}>
-                    <Ionicons name="calendar" size={20} color={primaryColor} style={styles.icon} />
-                    <Text style={styles.label}>Return:</Text>
-                    <Text style={styles.value}>{bookingDetails.returnDate}</Text>
-                  </View>
-                )}
-
-                <View style={styles.row}>
-                  <Ionicons name="people" size={20} color={primaryColor} style={styles.icon} />
-                  <Text style={styles.label}>Passengers:</Text>
-                  <Text style={styles.value}>{bookingDetails.passengers}</Text>
-                </View>
-
-                <View style={styles.row}>
-                  <Ionicons name="wallet" size={20} color={primaryColor} style={styles.icon} />
-                  <Text style={styles.label}>Total Price:</Text>
-                  <Text style={styles.value}>${bookingDetails.totalPrice}</Text>
-                </View>
-              </View>
-            )}
-
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={goToDetailTraveler}
-              >
-                <Text style={styles.buttonText}>Continue to Traveler Details</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.button, styles.secondaryButton]}
-                onPress={() => setIsBookingModalVisible(false)}
-              >
-                <Text style={[styles.buttonText, styles.secondaryButtonText]}>Back</Text>
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
       </Modal>

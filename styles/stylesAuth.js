@@ -49,6 +49,7 @@ export default StyleSheet.create({
         flex: 1,
         padding: 24,
         backgroundColor: '#ffffff',
+
     },
     inputContainer: {
         marginBottom: 7,
