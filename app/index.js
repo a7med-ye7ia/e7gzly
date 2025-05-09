@@ -47,6 +47,7 @@ export default function Page() {
             <Link href="/RequestPermissions" style={styles.secondaryButton}>
               <Text style={styles.secondaryButtonText}>test</Text>
             </Link>
+           
           </View>
         </View>
       </ImageBackground>

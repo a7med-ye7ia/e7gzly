@@ -14,6 +14,7 @@ import defaultImage from "../assets/default-avatar.jpg"
 const { width } = Dimensions.get("window")
 const cardWidth = (width - 60) / 2
 
+
 export default function FlightDestinations() {
   const router = useRouter()
   const [userFirstName, setFirstName] = useState("")
@@ -21,6 +22,7 @@ export default function FlightDestinations() {
   const [profileImage, setProfileImage] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [destinations, setDestinations] = useState([])
+
 
   const [filteredDestinations, setFilteredDestinations] = useState(destinations)
   const [isLoading, setIsLoading] = useState(false)
@@ -280,3 +282,4 @@ export default function FlightDestinations() {
     </ScrollView>
   )
 }
+
