@@ -8,19 +8,23 @@ export default function ProductInfo() {
   const router = useRouter()
   const params = useLocalSearchParams()
 
-  const interests = params.interests ? JSON.parse(params.interests) : []
+  // const interests = params.interests ? JSON.parse(params.interests) : [] // ! Ask tomorrow (expected any thing neither the string) !!!!
 
   const photos = [
-    params.image,
-    params.image.replace("w=800", "w=801"), 
-    params.image.replace("w=800", "w=802"),
+    params.photos[1],
+    params.photos[2].replace("w=800", "w=801"), 
+    params.photos[3].replace("w=800", "w=802"),
+    // params.image,
+    // params.image.replace("w=800", "w=801"), 
+    // params.image.replace("w=800", "w=802"),
   ]
 
   const handleBookNow = () => {
     router.push({
       pathname: "/main/booking-confirmation",
       params: {
-        name: params.name,
+        // name: params.name,
+        name: params.cityNameFrom, // ! Ask tomorrow !!!!!!
         price: params.price,
       },
     })
@@ -44,11 +48,11 @@ export default function ProductInfo() {
         </TouchableOpacity>
       </View>
 
-      <Image source={{ uri: params.image }} style={styles.mainImage} resizeMode="cover" />
+      <Image source={{ uri: params.photos[0] }} style={styles.mainImage} resizeMode="cover" />
 
       <View style={styles.infoContainer}>
         <View style={styles.titleRow}>
-          <Text style={styles.title}>{params.name}</Text>
+          <Text style={styles.title}>{params.cityNameTo}</Text>
           <View style={styles.ratingContainer}>
             <Ionicons name="star" size={16} color="#FFD700" />
             <Text style={styles.rating}>4.8</Text>
@@ -58,7 +62,7 @@ export default function ProductInfo() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>About</Text>
-          <Text style={styles.description}>{params.description}</Text>
+          <Text style={styles.description}>{params.about}</Text>
         </View>
 
         <View style={styles.section}>
@@ -73,12 +77,13 @@ export default function ProductInfo() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Interests</Text>
           <View style={styles.interestsContainer}>
-            {interests.map((interest, index) => (
+            {/* //! {interests.map((interest, index) => ( */} 
+            {/* {interests.map((interest, index) => (
               <View key={index} style={styles.interestItem}>
                 <Ionicons name="checkmark-circle" size={18} color="#6200EE" />
                 <Text style={styles.interestText}>{interest}</Text>
               </View>
-            ))}
+            ))} */}
           </View>
         </View>
 
@@ -95,5 +100,4 @@ export default function ProductInfo() {
     </ScrollView>
   )
 }
-
 
