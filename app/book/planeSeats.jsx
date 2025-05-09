@@ -48,7 +48,7 @@ export default function SelectSeat() {
     return (
         <ScrollView
 
-            style={stylesAuth.containerSigUp}
+            style={styles.containerSigUp}
             contentContainerStyle={{ paddingBottom: 80 }}
         >
             <View style={styles.stepsContainer}>
@@ -149,7 +149,7 @@ export default function SelectSeat() {
             </Text>
 
             {/* Continue Button */}
-            <TouchableOpacity style={styles.continueButton} onPress={handleBookingConfirmation}>
+            <TouchableOpacity style={styles.continueButton}>
                 <Text style={styles.continueButtonText}>Continue to Extras</Text>
             </TouchableOpacity>
         </ScrollView>
