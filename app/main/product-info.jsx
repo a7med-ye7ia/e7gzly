@@ -3,39 +3,26 @@ import { useLocalSearchParams, useRouter } from "expo-router"
 import { Ionicons } from "@expo/vector-icons"
 import styles from '../../styles/stylePages';
 
-
 export default function ProductInfo() {
   const router = useRouter()
   const params = useLocalSearchParams()
-
-  // const interests = params.interests ? JSON.parse(params.interests) : [] // ! Ask tomorrow (expected any thing neither the string) !!!!
 
   const photos = [
     params.photos[1],
     params.photos[2].replace("w=800", "w=801"), 
     params.photos[3].replace("w=800", "w=802"),
-    // params.image,
-    // params.image.replace("w=800", "w=801"), 
-    // params.image.replace("w=800", "w=802"),
   ]
-
-  const handleBookNow = () => {
-    router.push({
-      pathname: "/main/booking-confirmation",
-      params: {
-        // name: params.name,
-        name: params.cityNameFrom, // ! Ask tomorrow !!!!!!
-        price: params.price,
-      },
-    })
-  } 
 
   const handelDetailTraveler = () => {
     router.push({
-      pathname: "/book/DetailTraveler",
+      pathname: "/Book",
       params: {
-        name: params.name,
+        fromName: params.cityNameFrom || params.from,
+        fromCode: params.cityFromCode || "",
+        toName: params.cityNameTo || params.to,
+        toCode: params.cityToCode || "",
         price: params.price,
+        // date: getCurrentDate(),
       },
     })
   }
@@ -77,13 +64,7 @@ export default function ProductInfo() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Interests</Text>
           <View style={styles.interestsContainer}>
-            {/* //! {interests.map((interest, index) => ( */} 
-            {/* {interests.map((interest, index) => (
-              <View key={index} style={styles.interestItem}>
-                <Ionicons name="checkmark-circle" size={18} color="#6200EE" />
-                <Text style={styles.interestText}>{interest}</Text>
-              </View>
-            ))} */}
+            {/* Interest items will be added here when available */}
           </View>
         </View>
 
@@ -100,4 +81,3 @@ export default function ProductInfo() {
     </ScrollView>
   )
 }
-

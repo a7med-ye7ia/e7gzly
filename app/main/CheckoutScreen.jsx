@@ -10,7 +10,8 @@ import {
   ScrollView
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Svg, { Path, Circle } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
+import { useRouter } from 'expo-router';
 
 const ROUTE = {
   from: { code: 'CGK', city: 'Tangerang' },
@@ -39,41 +40,58 @@ const PAYMENT = {
   amount: 'IDR 80.400.000',
 };
 
-const FlightPath = () => (
-  <View style={styles.flightPathContainer}>
-    <View style={styles.routePointsContainer}>
-      <View style={styles.routePoint}>
-        <View style={styles.originDot} />
-        <Text style={styles.codeText}>{ROUTE.from.code}</Text>
-        <Text style={styles.cityText}>{ROUTE.from.city}</Text>
+const FlightPath = () => {
+  const router = useRouter();
+  
+  const handleBookingConfirmation = () => {
+    router.push({
+      pathname: "/main/booking-confirmation",
+    });
+  };
+
+  return (
+    <View style={styles.flightPathContainer}>
+      <View style={styles.routePointsContainer}>
+        <View style={styles.routePoint}>
+          <View style={styles.originDot} />
+          <Text style={styles.codeText}>{ROUTE.from.code}</Text>
+          <Text style={styles.cityText}>{ROUTE.from.city}</Text>
+        </View>
+        
+        <View style={styles.routePoint}>
+          <View style={styles.destinationDot} />
+          <Text style={styles.codeText}>{ROUTE.to.code}</Text>
+          <Text style={styles.cityText}>{ROUTE.to.city}</Text>
+        </View>
       </View>
       
-      <View style={styles.routePoint}>
-        <View style={styles.destinationDot} />
-        <Text style={styles.codeText}>{ROUTE.to.code}</Text>
-        <Text style={styles.cityText}>{ROUTE.to.city}</Text>
+      <View style={styles.arcContainer}>
+        <Svg height="80" width="100%" style={{position: 'absolute', top: 0}}>
+          <Path
+            d="M 40 50 Q 175 -20 310 50"
+            stroke="#E0E0E0"
+            strokeWidth="2"
+            strokeDasharray="5,5"
+            fill="transparent"
+          />
+        </Svg>
+        <View style={styles.planeIconContainer}>
+          <Ionicons name="airplane" size={16} color="#FFFFFF" />
+        </View>
       </View>
     </View>
-    
-    {/* This is the key part that needs fixing */}
-    <View style={styles.arcContainer}>
-      <Svg height="80" width="100%" style={{position: 'absolute', top: 0}}>
-        <Path
-          d="M 40 50 Q 175 -20 310 50"
-          stroke="#E0E0E0"
-          strokeWidth="2"
-          strokeDasharray="5,5"
-          fill="transparent"
-        />
-      </Svg>
-      <View style={styles.planeIconContainer}>
-        <Ionicons name="airplane" size={16} color="#FFFFFF" />
-      </View>
-    </View>
-  </View>
-);
+  );
+};
 
 export default function CheckoutScreen() {
+  const router = useRouter();
+  
+  const handlePayment = () => {
+    router.push({
+      pathname: "/main/booking-confirmation",
+    });
+  };
+  
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -126,7 +144,7 @@ export default function CheckoutScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.payButton}>
+        <TouchableOpacity style={styles.payButton} onPress={handlePayment}>
           <Text style={styles.payButtonText}>Pay Now</Text>
         </TouchableOpacity>
 
@@ -162,6 +180,9 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 2,
   },
+  routePoint: {
+    alignItems: 'center',
+  },
   arcContainer: {
     position: 'relative',
     height: 80,
@@ -169,8 +190,8 @@ const styles = StyleSheet.create({
   },
   planeIconContainer: {
     position: 'absolute',
-    top: 0, // Adjust based on where the highest point of your arc is
-    left: 175, // The x-coordinate of the control point
+    top: 8,
+    left: '50%',
     marginLeft: -12,
     width: 24,
     height: 24,

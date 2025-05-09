@@ -3,13 +3,14 @@ import { View, Text, ScrollView, TouchableOpacity, Alert, Modal, TextInput } fro
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Country } from "country-state-city";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import styles from "../styles/styleBooking";
 
 const primaryColor = "#5C40CC";
 
 export default function Book() {
   const router = useRouter();
+  const params = useLocalSearchParams();
   
   const [isBookingModalVisible, setIsBookingModalVisible] = useState(false);
   const [bookingDetails, setBookingDetails] = useState(null);
@@ -35,6 +36,41 @@ export default function Book() {
     const list = Country.getAllCountries();
     setCountries(list);
   }, []);
+  useEffect(() => {
+    console.log("Received params:", params);
+    
+    if (params.fromName) {
+      console.log("Setting from:", params.fromName);
+      
+      // Create country-like objects from the passed parameters
+      const fromCountry = {
+        name: params.fromName,
+        isoCode: params.fromCode || "",
+      };
+      
+      const toCountry = {
+        name: params.toName,
+        isoCode: params.toCode || "",
+      };
+      
+      setSelectedFrom(fromCountry);
+      setSelectedTo(toCountry);
+      
+      // Set the date if provided
+      if (params.date) {
+        setSelectedDate(params.date);
+        
+        // Also parse the date string to set the date object
+        const [day, month, year] = params.date.split('/');
+        if (day && month && year) {
+          const newDate = new Date(year, month - 1, day);
+          if (!isNaN(newDate.getTime())) {
+            setDate(newDate);
+          }
+        }
+      }
+    }
+  }, [params]);
 
   const filteredCountries = countries.filter((c) =>
     c.name.toLowerCase().includes(countrySearch.toLowerCase())

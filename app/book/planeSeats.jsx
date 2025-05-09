@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import styles from "../../styles/styleBooking";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 
 const rows = [1, 2, 3, 4, 5 , 6 , 7 ];
@@ -10,6 +11,9 @@ const unavailableSeats = ['D1', 'D2', 'B4', 'C5' , 'A1']; // example unavailable
 const seatPrice = 6000000; 
 
 export default function SelectSeat() {
+    
+    const router = useRouter();
+
     const [selectedSeats, setSelectedSeats] = useState([]);
 
     const toggleSeat = (seatId) => {
@@ -21,6 +25,16 @@ export default function SelectSeat() {
                 : [...prev, seatId]
         );
     };
+
+    const handleBookingConfirmation = () => {
+        router.push({
+            pathname: "/main/CheckoutScreen",
+            params: {
+                selectedSeats,
+                totalPrice: seatPrice * selectedSeats.length,
+            },
+        });
+    } 
 
     const isSelected = (seatId) => selectedSeats.includes(seatId);
     const isUnavailable = (seatId) => unavailableSeats.includes(seatId);
@@ -133,7 +147,7 @@ export default function SelectSeat() {
             </Text>
 
             {/* Continue Button */}
-            <TouchableOpacity style={styles.continueButton}>
+            <TouchableOpacity style={styles.continueButton} onPress={handleBookingConfirmation}>
                 <Text style={styles.continueButtonText}>Continue to Extras</Text>
             </TouchableOpacity>
         </ScrollView>
