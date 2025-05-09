@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions, TextInput } from "react-native"
 import { useRouter } from "expo-router"
@@ -116,17 +118,24 @@ export default function FlightDestinations() {
           const getDestinations = []
 
           data.forEach((doc) => {
-            console.log("fetching flights from fireStore:", doc.data().name)
             getDestinations.push({
               id: doc.id,
-              name: doc.data().name,
-              location: doc.data().location,
-              image: doc.data().image,
-              rating: doc.data().rating,
-              featured: doc.data().featured,
+              cityFromCode: doc.data().cityFromCode,
+              cityFromName: doc.data().cityFromName,
+              flightTime: doc.data().flightTime,
+              cityToCode: doc.data().cityToCode,
+              cityToName: doc.data().cityToName,
+              arrivalTime: doc.data().arrivalTime,
+              flightDuration: doc.data().flightDuration,
+              airLine: doc.data().airLine,
+              class: doc.data().class,
               price: doc.data().price,
               museumLink: doc.data().museumLink,
               new: doc.data().new,
+              featured: doc.data().featured,
+              about: doc.data().about,
+              photos: doc.data().photos,
+              interests: doc.data().interests,
             })
           })
 
@@ -148,8 +157,8 @@ export default function FlightDestinations() {
   useEffect(() => {
     const filteredData = destinations.filter(
       (destination) =>
-        destination.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        destination.location.toLowerCase().includes(searchQuery.toLowerCase()),
+        destination.cityFromName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        destination.cityToName.toLowerCase().includes(searchQuery.toLowerCase()),
     )
     setFilteredDestinations(filteredData)
   }, [searchQuery, destinations])
@@ -159,11 +168,21 @@ export default function FlightDestinations() {
       pathname: "/main/product-info",
       params: {
         id: destination.id,
-        name: destination.name,
-        location: destination.location,
-        image: destination.image,
-        rating: destination.rating,
+        cityFromCode: destination.cityFromCode,
+        cityFromName: destination.cityFromName,
+        flightTime: destination.flightTime,
+        cityToCode: destination.cityToCode,
+        cityToName: destination.cityToName,
+        arrivalTime: destination.arrivalTime,
+        flightDuration: destination.flightDuration,
+        airLine: destination.airLine,
+        class: destination.class,
         price: destination.price,
+        new: destination.new,
+        featured: destination.featured,
+        about: destination.about,
+        photos: destination.photos,
+        interests: destination.interests,
       },
     })
   }
@@ -244,11 +263,11 @@ export default function FlightDestinations() {
               style={styles.newDestinationCard}
               onPress={() => navigateToProductInfo(destination)}
             >
-              <Image source={{ uri: destination.image }} style={styles.newDestinationImage} />
+              <Image source={{ uri: destination.photos[0] }} style={styles.newDestinationImage} />
               <View style={styles.newDestinationInfo}>
                 <View>
-                  <Text style={styles.newDestinationName}>{destination.name}</Text>
-                  <Text style={styles.newDestinationLocation}>{destination.location}</Text>
+                  <Text style={styles.newDestinationName}>{destination.cityFromName}</Text>
+                  <Text style={styles.newDestinationLocation}>{destination.cityToName}</Text>
                 </View>
                 <View style={styles.newDestinationRating}>
                   <Ionicons name="star" size={14} color="#FFD700" />
@@ -264,3 +283,4 @@ export default function FlightDestinations() {
     </ScrollView>
   )
 }
+
