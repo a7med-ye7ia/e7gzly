@@ -26,8 +26,11 @@ export default function SelectSeat() {
     const isUnavailable = (seatId) => unavailableSeats.includes(seatId);
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            {/* Step Indicator */}
+        <ScrollView
+            style={styles.container}
+            contentContainerStyle={{ paddingBottom: 80 }}
+        >
+        {/* Step Indicator */}
             <View style={styles.stepsContainer}>
                 <View style={styles.stepsRow}>
                     <Text style={styles.stepNumber}>①</Text>
