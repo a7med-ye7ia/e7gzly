@@ -2,24 +2,30 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import styles from "../../styles/styleBooking";
 import { Ionicons } from "@expo/vector-icons";
-
+import { useRouter } from "expo-router"
 
 const rows = [1, 2, 3, 4, 5 , 6 , 7 ];
 const columns = ['A', 'B', 'C', 'D'];
 const unavailableSeats = ['D1', 'D2', 'B4', 'C5' , 'A1']; // example unavailable seats
-const seatPrice = 6000000; 
+const seatPrice = 6000000;
+const seatLimit = 2;
 
 export default function SelectSeat() {
+    const router = useRouter();
     const [selectedSeats, setSelectedSeats] = useState([]);
 
     const toggleSeat = (seatId) => {
-        if (unavailableSeats.includes(seatId)) return;
+        const isSelected = selectedSeats.includes(seatId);
 
-        setSelectedSeats(prev =>
-            prev.includes(seatId)
-                ? prev.filter(seat => seat !== seatId)
-                : [...prev, seatId]
-        );
+        if (isSelected) {
+            setSelectedSeats(selectedSeats.filter(id => id !== seatId));
+        } else {
+            if (selectedSeats.length < seatLimit) {
+                setSelectedSeats([...selectedSeats, seatId]);
+            } else {
+                alert(`You can only select ${seatLimit} seats .`);
+            }
+        }
     };
 
     const isSelected = (seatId) => selectedSeats.includes(seatId);
@@ -136,7 +142,7 @@ export default function SelectSeat() {
             </Text>
 
             {/* Continue Button */}
-            <TouchableOpacity style={styles.continueButton}>
+            <TouchableOpacity style={styles.continueButton} onPress={() => router.push("/book/extraServices") }>
                 <Text style={styles.continueButtonText}>Continue to Extras</Text>
             </TouchableOpacity>
         </ScrollView>

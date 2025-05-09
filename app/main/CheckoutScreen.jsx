@@ -11,7 +11,9 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Path, Circle } from 'react-native-svg';
+import {useRouter} from "expo-router";
 
+const router = useRouter();
 const ROUTE = {
   from: { code: 'CGK', city: 'Tangerang' },
   to:   { code: 'TLC', city: 'Ciliwung' },
@@ -116,7 +118,7 @@ export default function CheckoutScreen() {
         <Text style={[styles.sectionTitle, {marginTop: 24}]}>Payment Details</Text>
         
         <View style={styles.paymentContainer}>
-          <View style={styles.paymentIconContainer}>
+          <View style={styles.paymentIconContainer} onPress={() => router.push("/book/successBooking")}>
             <Ionicons name="airplane" size={20} color="white" />
             <Text style={styles.payText}>Pay</Text>
           </View>
@@ -126,7 +128,7 @@ export default function CheckoutScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.payButton}>
+        <TouchableOpacity style={styles.payButton} onPress={() => router.push("/book/successBooking")}>
           <Text style={styles.payButtonText}>Pay Now</Text>
         </TouchableOpacity>
 

@@ -188,6 +188,7 @@ export default StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
     marginVertical: 16,
+    alignItems:"center",
   },
   header: {
     backgroundColor: primaryColor,
@@ -496,5 +497,300 @@ export default StyleSheet.create({
   emptyCell: {
     width: 40,
   },
+  // extra services :
+  cardExtra: {
+    width: '85%',
+    backgroundColor: white,
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    marginVertical: 16,
+    alignItems:"center",
+    paddingVertical:20,
+    paddingHorizontal:20,
+    marginHorizontal:40 ,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#5D50C6',
+    marginBottom: 5,
+  },
+  cardSubtitle: {
+    color: '#888',
+    fontSize: 12,
+    marginBottom: 10,
+  },
+  baggageOptions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+
+  },
+  baggageButton: {
+    borderColor: '#5D50C6',
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    width: '30%',
+    alignItems: 'center',
+  },
+  baggageLabel: {
+    fontWeight: 'bold',
+    color: '#5D50C6',
+  },
+  baggagePrice: {
+    fontSize: 12,
+    color: '#5D50C6',
+  },
+  serviceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  radioCircle: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#5D50C6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioDot: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: '#5D50C6',
+  },
+  cardPrice: {
+    fontWeight: 'bold',
+    color: '#5D50C6',
+    marginTop: 10,
+  },
+  // flight result :
+
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    flex: 1,
+  },
+  routeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 30,
+    marginTop: 10,
+  },
+  routeEndpoint: {
+    alignItems: "center",
+  },
+  routeCode: {
+    fontSize: 24,
+    fontWeight: "600",
+    color: "#1F1D2B",
+    marginBottom: 4,
+  },
+  routeCity: {
+    fontSize: 14,
+    color: "#9698A9",
+  },
+  routeLine: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    height: 24,
+    paddingBottom: 16,
+  },
+  dottedLine: {
+    height: 1,
+    flex: 1,
+    borderStyle: "dashed",
+    borderWidth: 1,// margin: 20,
+    borderColor: "#8F9BB3",
+    borderRadius: 1,
+  },
+  planeIconContainer: {
+    position: "absolute",
+    backgroundColor: "#f5f4fa",
+    padding: 4,
+    paddingBottom: 20,
+    borderRadius: 12,
+  },
+  scheduleContainer: {
+    alignItems: "center",
+    marginTop: 30,
+    marginBottom: 20,
+  },
+  scheduleTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#1F1D2B",
+    marginBottom: 6,
+  },
+  scheduleDetails: {
+    fontSize: 14,
+    color: "#9698A9",
+  },
+  flightListContainer: {
+    paddingHorizontal: 20,
+  },
+  flightCard: {
+    backgroundColor: "white",
+    borderRadius: 18,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 2,
+  },
+  flightDetails: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  flightEndpoint: {
+    alignItems: "center",
+    width: 80,
+  },
+  locationIcon: {
+    marginBottom: 4,
+  },
+  flightCode: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#1F1D2B",
+    marginBottom: 2,
+  },
+
+  durationContainer: {
+    alignItems: "center",
+    flex: 1,
+  },
+  durationLine: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    height: 24,
+    marginBottom: 6,
+  },
+  durationDottedLine: {
+    height: 1,
+    flex: 1,
+    borderStyle: "dashed",
+    borderWidth: 1,
+    borderColor: "#8F9BB3",
+    borderRadius: 1,
+  },
+  durationPlaneIconContainer: {
+    position: "absolute",
+    backgroundColor: "white",
+    padding: 4,
+    borderRadius: 12,
+  },
+  durationLabel: {
+    fontSize: 12,
+    color: "#9698A9",
+    marginBottom: 2,
+  },
+  durationTime: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#1F1D2B",
+  },
+  divider: {
+    height: 1,
+    borderStyle: "dashed",
+    borderWidth: 2,
+    borderColor: "#DBDFE7",
+    marginVertical: 16,
+  },
+  airlineContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  airlineInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  airlineLogo: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#f2f2f2",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  airlineDetails: {
+    justifyContent: "center",
+  },
+  airlineName: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#1F1D2B",
+    marginBottom: 2,
+  },
+  airlineClass: {
+    fontSize: 12,
+    color: "#5C40CC",
+  },
+  flightPrice: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FF5B5B",
+  },
+  leftCutout: {
+    position: 'absolute',
+    left: -15, // Half of width/height
+    top: '54%',
+    width: 30,
+    height: 30,
+    backgroundColor: '#f5f4fa', // Or the background color of the screen
+    borderRadius: 15,
+  },
+  rightCutout: {
+    position: 'absolute',
+    right: -15,
+    top: '54%',
+    width: 30,
+    height: 30,
+    backgroundColor: '#f5f4fa',
+    borderRadius: 15,
+  },
+
+
+
+
+  cardSelected: {
+    borderColor: '#5D50C6',
+    borderWidth: 1.5,
+  },
+
+  baggageSelected: {
+    backgroundColor: '#5D50C611',
+  },
+
+
+  totalContainer: {
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  totalText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+
 
 });
