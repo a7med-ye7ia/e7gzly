@@ -22,7 +22,10 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.e7gzly1.E7gzly",
-      "googleServicesFile": "./android/app/google-services (2).json"
+      "googleServicesFile": "./android/app/google-services.json",
+      "googleServicesFile2": "./android/app/google-services.json",
+      "googleServicesFile3": "./android/app/google-services.json",
+      "permissions": ["ACCESS_FINE_LOCATION"]
     },
     "web": {
       "favicon": "./assets/favicon.png"

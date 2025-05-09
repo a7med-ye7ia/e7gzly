@@ -31,6 +31,8 @@ apply plugin: "com.facebook.react.rootproject"
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "expo-module-gradle-plugin"
+id("com.google.gms.google-services") version "4.4.2" apply false
+
 
 allprojects {
     repositories {
