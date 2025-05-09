@@ -11,7 +11,7 @@ export default StyleSheet.create({
   // === GENERAL CONTAINER STYLES ===
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingTop: 40,
   },

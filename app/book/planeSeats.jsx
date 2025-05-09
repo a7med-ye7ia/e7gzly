@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 const rows = [1, 2, 3, 4, 5 , 6 , 7 ];
 const columns = ['A', 'B', 'C', 'D'];
 const unavailableSeats = ['D1', 'D2', 'B4', 'C5' , 'A1']; // example unavailable seats
-const seatPrice = 6000000; // IDR 6,000,000 per seat
+const seatPrice = 6000000; 
 
 export default function SelectSeat() {
     const [selectedSeats, setSelectedSeats] = useState([]);

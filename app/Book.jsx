@@ -1,15 +1,12 @@
-// Search.js
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Alert, Modal, TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Country } from "country-state-city";
 import { useRouter } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from "../styles/styleBooking";
 
 const primaryColor = "#5C40CC";
-const FORM_KEY = 'bookingFormData';
 
 export default function Book() {
   const router = useRouter();
@@ -33,39 +30,10 @@ export default function Book() {
   const [selectedSeats, setSelectedSeats] = useState("1 Seat");
   const [tripType, setTripType] = useState("oneWay");
 
-  // Save form function
-  const saveFormData = async (customState) => {
-    const formToSave = customState || {
-      selectedFrom, selectedTo, selectedDate, selectedSeats, tripType, date: date.toISOString()
-    };
-    try {
-      await AsyncStorage.setItem(FORM_KEY, JSON.stringify(formToSave));
-    } catch (e) {
-      console.log('Could not save form data', e);
-    }
-  };
-
-  // Load on mount
+  // Load countries on mount
   useEffect(() => {
-    (async () => {
-      const list = Country.getAllCountries();
-      setCountries(list);
-
-      try {
-        const stored = await AsyncStorage.getItem(FORM_KEY);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (parsed.selectedFrom) setSelectedFrom(parsed.selectedFrom);
-          if (parsed.selectedTo) setSelectedTo(parsed.selectedTo);
-          if (parsed.selectedDate) setSelectedDate(parsed.selectedDate);
-          if (parsed.selectedSeats) setSelectedSeats(parsed.selectedSeats);
-          if (parsed.tripType) setTripType(parsed.tripType);
-          if (parsed.date) setDate(new Date(parsed.date));
-        }
-      } catch (e) {
-        console.log("Failed to load form data:", e);
-      }
-    })();
+    const list = Country.getAllCountries();
+    setCountries(list);
   }, []);
 
   const filteredCountries = countries.filter((c) =>
@@ -89,14 +57,12 @@ export default function Book() {
     setCountryModalType(null);
     setFocusedField(null);
   };
-  // Save on pick
+  // Pickers just update local state now
   const pickCountry = (c) => {
     if (countryModalType === "from") {
       setSelectedFrom(c);
-      saveFormData({ selectedFrom: c, selectedTo, selectedDate, selectedSeats, tripType, date: date.toISOString() });
     } else {
       setSelectedTo(c);
-      saveFormData({ selectedFrom, selectedTo: c, selectedDate, selectedSeats, tripType, date: date.toISOString() });
     }
     closeCountryModal();
   };
@@ -106,7 +72,6 @@ export default function Book() {
     const tmpTo = selectedTo;
     setSelectedFrom(tmpTo);
     setSelectedTo(tmpFrom);
-    saveFormData({ selectedFrom: tmpTo, selectedTo: tmpFrom, selectedDate, selectedSeats, tripType, date: date.toISOString() });
   };
 
   const openDatePicker = () => {
@@ -114,13 +79,11 @@ export default function Book() {
     setIsDatePickerVisible(true);
   };
 
-  // Save on date change
   const onDateChange = (_, picked) => {
     setIsDatePickerVisible(false);
     if (picked) {
       setDate(picked);
       setSelectedDate(picked.toLocaleDateString());
-      saveFormData({ selectedFrom, selectedTo, selectedDate: picked.toLocaleDateString(), selectedSeats, tripType, date: picked.toISOString() });
     }
     setFocusedField(null);
   };
@@ -135,17 +98,13 @@ export default function Book() {
     setFocusedField(null);
   };
 
-  // Save on pick
   const pickSeats = (s) => {
     setSelectedSeats(s);
-    saveFormData({ selectedFrom, selectedTo, selectedDate, selectedSeats: s, tripType, date: date.toISOString() });
     closeSeatsModal();
   };
 
-  // Save on trip type selection
   const selectTripType = (type) => {
     setTripType(type);
-    saveFormData({ selectedFrom, selectedTo, selectedDate, selectedSeats, tripType: type, date: date.toISOString() });
   };
 
   const handleBookNow = () => {
@@ -173,11 +132,9 @@ export default function Book() {
     setIsBookingModalVisible(true);
   };
 
-  // On navigation, keep state
   const goToDetailTraveler = () => {
     setIsBookingModalVisible(false);
 
-    // Don't clear async storage
     router.push({
       pathname: '/book/DetailTraveler',
       params: {  
