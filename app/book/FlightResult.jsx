@@ -1,186 +1,129 @@
-"use client"
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, StatusBar, Dimensions } from "react-native"
-import Icon from "react-native-vector-icons/Ionicons"
-import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+"use client";
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, StatusBar } from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router"
+import { useRouter, useLocalSearchParams } from "expo-router";
 
-const { width } = Dimensions.get("window")
-
-
-// Static data for flight results
-const flightData = [
-  {
-    id: 1,
-    origin: {
-      code: "CGK",
-      city: "Tangerang",
-      time: "08:10 AM",
-    },
-    destination: {
-      code: "TLC",
-      city: "Ciliwung",
-      time: "11:55 AM",
-    },
-    duration: "3h 45m",
-    airline: "Garuda Indonesia",
-    class: "Business Class",
-    price: "IDR 6.000.000",
-  },
-  {
-    id: 2,
-    origin: {
-      code: "CGK",
-      city: "Tangerang",
-      time: "1:10 AM",
-    },
-    destination: {
-      code: "TLC",
-      city: "Ciliwung",
-      time: "03:50 PM",
-    },
-    duration: "3h 45m",
-    airline: "Etihad Airways",
-    class: "Business Class",
-    price: "IDR 24.000.000",
-  },
-  {
-    id: 3,
-    origin: {
-      code: "CGK",
-      city: "Tangerang",
-      time: "10:30 AM",
-    },
-    destination: {
-      code: "TLC",
-      city: "Ciliwung",
-      time: "2:15 PM",
-    },
-    duration: "3h 45m",
-    airline: "Garuda Indonesia",
-    class: "Business Class",
-    price: "IDR 6.000.000",
-  },
-]
-
-// Custom airline logo component that uses an icon instead of an image
 const AirlineLogo = ({ airline }) => {
-  // Use different icons based on airline name
   const getAirlineIcon = () => {
-    if (airline.includes("Garuda")) {
-      return <Icon name="airplane" size={24} color="#5C40CC" />
-    } else if (airline.includes("Etihad")) {
-      return <Icon name="airplane-outline" size={24} color="#5C40CC" />
+    if (airline && airline.includes("Garuda")) {
+      return <Icon name="airplane" size={24} color="#5C40CC" />;
+    } else if (airline && airline.includes("Etihad")) {
+      return <Icon name="airplane-outline" size={24} color="#5C40CC" />;
     } else {
-      return <Icon name="airplane" size={24} color="#5C40CC" />
+      return <Icon name="airplane" size={24} color="#5C40CC" />;
     }
-  }
+  };
+  return <View style={styles.airlineLogo}>{getAirlineIcon()}</View>;
+};
 
-  return <View style={styles.airlineLogo}>{getAirlineIcon()}</View>
-}
+
 
 const FlightResultScreen = () => {
+  const params = useLocalSearchParams();
   const router = useRouter();
+
+  const goToDeatails = () => {
+    router.push({
+      pathname: "./DetailTraveler",
+      // params: { flight: JSON.stringify(flight) },
+    });
+  }
+  // Get results from params
+  const flights = params.filteredData ? JSON.parse(params.filteredData) : [];
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#f5f4fa" />
-
-      {/* Header */}
-
       <View style={styles.header}>
-
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-
         <Text style={styles.headerTitle}>Flight Result</Text>
       </View>
 
-      {/* Flight Route */}
+      {/* Route info */}
       <View style={styles.routeContainer}>
         <View style={styles.routeEndpoint}>
-          <Text style={styles.routeCode}>CGK</Text>
-          <Text style={styles.routeCity}>Jakarta</Text>
+          <Text style={styles.routeCode}>{flights[0]?.cityFromCode || "???"}</Text>
         </View>
-
         <View style={styles.routeLine}>
           <View style={styles.dottedLine} />
           <View style={styles.planeIconContainer}>
             <Icon name="airplane" size={35} color="#5C40CC" />
           </View>
         </View>
-
         <View style={styles.routeEndpoint}>
-          <Text style={styles.routeCode}>TLC</Text>
-          <Text style={styles.routeCity}>Ciliwung</Text>
+          <Text style={styles.routeCode}>{flights[0]?.cityToCode || "???"}</Text>
         </View>
       </View>
 
-      {/* Flight Schedule */}
       <View style={styles.scheduleContainer}>
         <Text style={styles.scheduleTitle}>Flight Schedule</Text>
-        <Text style={styles.scheduleDetails}>Sunday, 25 June 2023 | 2 Seat</Text>
       </View>
 
-      {/* Flight List */}
-      <ScrollView style={styles.flightListContainer} showsVerticalScrollIndicator={false}>
-        {flightData.map((flight) => (
-          <View key={flight.id} style={styles.flightCard}>
-            {/* Flight Details */}
-            <View style={styles.flightDetails}>
-              {/* Origin */}
-              <View style={styles.flightEndpoint}>
-                <MaterialIcons name="location-on" size={16} color="#5C40CC" style={styles.locationIcon} />
-                <Text style={styles.flightCode}>{flight.origin.code}</Text>
-                <Text style={styles.flightCity}>{flight.origin.city}</Text>
-                <Text style={styles.flightTime}>{flight.origin.time}</Text>
+      <ScrollView style={styles.flightListContainer}>
+        {flights.length === 0 ? (
+          <Text style={{ color: "#666", textAlign: "center", marginTop: 24 }}>No flights found.</Text>
+        ) : (
+          flights.map((flight) => (
+            <TouchableOpacity
+              key={flight.id}
+              style={styles.flightCard}
+              onPress={goToDeatails}
+            >
+              <View style={styles.flightDetails}>
+                {/* Origin */}
+                <View style={styles.flightEndpoint}>
+                  <MaterialIcons name="location-on" size={16} color="#5C40CC" style={styles.locationIcon} />
+                  <Text style={styles.flightCode}>{flight.cityFromCode || "--"}</Text>
+                  <Text style={styles.flightCity}>{flight.cityFromName || "City"}</Text>
+                  <Text style={styles.flightTime}>{flight.flightTime || "--:--"}</Text>
+                </View>
+                {/* Duration */}
+                <View style={styles.durationContainer}>
+                  <View style={styles.durationLine}>
+                    <View style={styles.durationDottedLine} />
+                    <View style={styles.durationPlaneIconContainer}>
+                      <Icon name="airplane" size={16} color="#5C40CC" />
+                    </View>
+                  </View>
+                  <Text style={styles.durationLabel}>Flight Duration</Text>
+                  <Text style={styles.durationTime}>{flight.flightDuration || "--"}</Text>
+                </View>
+                {/* Destination */}
+                <View style={styles.flightEndpoint}>
+                  <MaterialIcons name="location-on" size={16} color="#0EC3AE" style={styles.locationIcon} />
+                  <Text style={styles.flightCode}>{flight.cityToCode || "--"}</Text>
+                  <Text style={styles.flightCity}>{flight.cityToName || "City"}</Text>
+                  <Text style={styles.flightTime}>{flight.arrivalTime || "--:--"}</Text>
+                </View>
               </View>
-
-              {/* Flight Duration */}
-              <View style={styles.durationContainer}>
-                <View style={styles.durationLine}>
-                  <View style={styles.durationDottedLine} />
-                  <View style={styles.durationPlaneIconContainer}>
-                    <Icon name="airplane" size={16} color="#5C40CC" />
+              {/* Divider */}
+              <View style={styles.divider} />
+              {/* Airline Info */}
+              <View style={styles.airlineContainer}>
+                <View style={styles.airlineInfo}>
+                  <AirlineLogo airline={flight.airline} />
+                  <View style={styles.airlineDetails}>
+                    <Text style={styles.airlineName}>{flight.airline || "Airline"}</Text>
+                    <Text style={styles.airlineClass}>{flight.class || "Economy"}</Text>
                   </View>
                 </View>
-                <Text style={styles.durationLabel}>Flight Duration</Text>
-                <Text style={styles.durationTime}>{flight.duration}</Text>
+                <Text style={styles.flightPrice}>
+                  {flight.price ? flight.price : "N/A"}
+                </Text>
               </View>
-
-              {/* Destination */}
-              <View style={styles.flightEndpoint}>
-                <MaterialIcons name="location-on" size={16} color="#0EC3AE" style={styles.locationIcon} />
-                <Text style={styles.flightCode}>{flight.destination.code}</Text>
-                <Text style={styles.flightCity}>{flight.destination.city}</Text>
-                <Text style={styles.flightTime}>{flight.destination.time}</Text>
-              </View>
-            </View>
-
-            {/* Divider */}
-            <View style={styles.divider} />
-
-            {/* Airline Info */}
-            <View style={styles.airlineContainer}>
-              <View style={styles.airlineInfo}>
-                <TouchableOpacity>
-                  <AirlineLogo airline={flight.airline} />
-                </TouchableOpacity>
-                <View style={styles.airlineDetails}>
-                  <Text style={styles.airlineName}>{flight.airline}</Text>
-                  <Text style={styles.airlineClass}>{flight.class}</Text>
-                </View>
-              </View>
-              <Text style={styles.flightPrice}>{flight.price}</Text>
-            </View>
-            <View style={styles.leftCutout} />
-            <View style={styles.rightCutout} />
-          </View>
-        ))}
+              <View style={styles.leftCutout} />
+              <View style={styles.rightCutout} />
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -233,7 +176,7 @@ const styles = StyleSheet.create({
     height: 1,
     flex: 1,
     borderStyle: "dashed",
-    borderWidth: 1,// margin: 20,
+    borderWidth: 1,
     borderColor: "#8F9BB3",
     borderRadius: 1,
   },
@@ -397,6 +340,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f4fa',
     borderRadius: 15,
   },
-})
-
-export default FlightResultScreen
+});
+export default FlightResultScreen;

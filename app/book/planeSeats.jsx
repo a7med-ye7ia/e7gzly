@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import styles from "../../styles/styleBooking";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router"
+import { useRouter } from "expo-router";
+
 
 const rows = [1, 2, 3, 4, 5 , 6 , 7 ];
 const columns = ['A', 'B', 'C', 'D'];
@@ -11,22 +12,30 @@ const seatPrice = 6000000;
 const seatLimit = 2;
 
 export default function SelectSeat() {
+    
     const router = useRouter();
+
     const [selectedSeats, setSelectedSeats] = useState([]);
 
     const toggleSeat = (seatId) => {
-        const isSelected = selectedSeats.includes(seatId);
+        if (unavailableSeats.includes(seatId)) return;
 
-        if (isSelected) {
-            setSelectedSeats(selectedSeats.filter(id => id !== seatId));
-        } else {
-            if (selectedSeats.length < seatLimit) {
-                setSelectedSeats([...selectedSeats, seatId]);
-            } else {
-                alert(`You can only select ${seatLimit} seats .`);
-            }
-        }
+        setSelectedSeats(prev =>
+            prev.includes(seatId)
+                ? prev.filter(seat => seat !== seatId)
+                : [...prev, seatId]
+        );
     };
+
+    const handleBookingConfirmation = () => {
+        router.push({
+            pathname: "/main/CheckoutScreen",
+            params: {
+                selectedSeats,
+                totalPrice: seatPrice * selectedSeats.length,
+            },
+        });
+    } 
 
     const isSelected = (seatId) => selectedSeats.includes(seatId);
     const isUnavailable = (seatId) => unavailableSeats.includes(seatId);
@@ -142,7 +151,7 @@ export default function SelectSeat() {
             </Text>
 
             {/* Continue Button */}
-            <TouchableOpacity style={styles.continueButton} onPress={() => router.push("/book/extraServices") }>
+            <TouchableOpacity style={styles.continueButton} onPress={handleBookingConfirmation}>
                 <Text style={styles.continueButtonText}>Continue to Extras</Text>
             </TouchableOpacity>
         </ScrollView>
