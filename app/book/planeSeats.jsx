@@ -8,9 +8,8 @@ import { useRouter } from "expo-router";
 const rows = [1, 2, 3, 4, 5 , 6 , 7 ];
 const columns = ['A', 'B', 'C', 'D'];
 const unavailableSeats = ['D1', 'D2', 'B4', 'C5' , 'A1']; // example unavailable seats
-
-const seatPrice = 6000000; // IDR 6,000,000 per seat
-const numberOfSeats = 2;
+const seatPrice = 6000000;
+const seatLimit = 2;
 
 export default function SelectSeat() {
     
@@ -20,16 +19,12 @@ export default function SelectSeat() {
 
     const toggleSeat = (seatId) => {
         if (unavailableSeats.includes(seatId)) return;
-        setSelectedSeats((prev) => {
-            if (prev.includes(seatId)) {
-                return prev.filter(seat => seat !== seatId);
-            }
-            if (prev.length >= numberOfSeats) {
-                alert(`You can only select up to ${numberOfSeats} seats.`);
-                return prev;
-            }
-            return [...prev, seatId];
-        });
+
+        setSelectedSeats(prev =>
+            prev.includes(seatId)
+                ? prev.filter(seat => seat !== seatId)
+                : [...prev, seatId]
+        );
     };
 
     const handleBookingConfirmation = () => {
@@ -149,7 +144,7 @@ export default function SelectSeat() {
             </Text>
 
             {/* Continue Button */}
-            <TouchableOpacity style={styles.continueButton}>
+            <TouchableOpacity style={styles.continueButton} onPress={handleBookingConfirmation}>
                 <Text style={styles.continueButtonText}>Continue to Extras</Text>
             </TouchableOpacity>
         </ScrollView>
