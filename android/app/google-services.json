@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1004466571237",
-    "project_id": "e7gzly-d6da2",
-    "storage_bucket": "e7gzly-d6da2.firebasestorage.app"
+    "project_number": "1040130259562",
+    "project_id": "e7gzly-cs303",
+    "storage_bucket": "e7gzly-cs303.firebasestorage.app"
   },
   "client": [
-    { 
+    {
       "client_info": {
-        "mobilesdk_app_id": "1:1004466571237:android:24935c37d6ca9121a9110c",
+        "mobilesdk_app_id": "1:1040130259562:android:4d6f864de1d1270b64a813",
         "android_client_info": {
           "package_name": "com.siefmo.E7gzly"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC_XbVOkq9y544rYp_SSO8IpnwBI5atApU"
+          "current_key": "AIzaSyAVawo5sbqBUkVuST6QrMAO2kZuN7X2Cl4"
         }
       ],
       "services": {

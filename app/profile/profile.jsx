@@ -107,7 +107,7 @@ const Profile = () => {
             </View>
 
             <View style={styles.profileOptions}>
-                <Option icon="location-outline" label="Location" />
+                <Option icon="location-outline" label="Location" onPress={() => router.push("/RequestPermissions")} />
                 <Option icon="card-outline" label="Subscription" />
                 <Option icon="airplane-outline" label="Booked Trips" onPress={() => router.push("/profile/bookedTravels")} />
                 <Option icon="time-outline" label="Trips History" onPress={() => router.push("/profile/TravelsLog")} />
