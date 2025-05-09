@@ -14,8 +14,6 @@ import defaultImage from "../assets/default-avatar.jpg"
 const { width } = Dimensions.get("window")
 const cardWidth = (width - 60) / 2
 
-
-
 export default function FlightDestinations() {
   const router = useRouter()
   const [userFirstName, setFirstName] = useState("")
@@ -24,9 +22,6 @@ export default function FlightDestinations() {
   const [searchQuery, setSearchQuery] = useState("")
   const [destinations, setDestinations] = useState([])
 
-
-
-
   const [filteredDestinations, setFilteredDestinations] = useState(destinations)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -34,7 +29,7 @@ export default function FlightDestinations() {
     console.log("Fetching user data")
     try {
       // Check if auth is initialized and user is logged in
-      if (!auth || !auth.currentUser) {
+      if (!auth || !auth.currentUser || !auth.currentUser.email) {
         console.log("Auth not initialized or user not logged in yet")
         // Try to get user info from AsyncStorage instead
         const storedUserName = await AsyncStorage.getItem("userName")
@@ -49,20 +44,17 @@ export default function FlightDestinations() {
       }
 
       const userEmail = auth.currentUser.email
-      if (!userEmail) {
-        console.error("User is logged in but email is missing")
-        return
-      }
-
       const data = await getUserById(userEmail)
 
       if (data) {
         setProfileImage(data.profilePictureURL ?? null)
         setFirstName(data.firstName ?? "")
+        setUserEmail(userEmail) // Add this line to set the email
 
         // Store in AsyncStorage for future use
         await AsyncStorage.setItem("userProfilePic", data.profilePictureURL ?? "")
         await AsyncStorage.setItem("userName", data.firstName ?? "")
+        await AsyncStorage.setItem("userEmail", userEmail) // Add this line to store email
       } else {
         console.warn("User data not found")
       }
@@ -141,20 +133,7 @@ export default function FlightDestinations() {
               about: doc.data().about,
               photos: doc.data().photos,
               interests: doc.data().interests,
-            })
-          })
-          data.forEach((doc) => {
-            console.log("fetching flights from fireStore:", doc.data().name)
-            getDestinations.push({
-              id: doc.id,
-              name: doc.data().name,
-              location: doc.data().location,
-              image: doc.data().image,
               rating: doc.data().rating,
-              featured: doc.data().featured,
-              price: doc.data().price,
-              museumLink: doc.data().museumLink,
-              new: doc.data().new,
             })
           })
 
@@ -202,6 +181,7 @@ export default function FlightDestinations() {
         about: destination.about,
         photos: destination.photos,
         interests: destination.interests,
+        rating: destination.rating,
       },
     })
   }
@@ -302,4 +282,3 @@ export default function FlightDestinations() {
     </ScrollView>
   )
 }
-

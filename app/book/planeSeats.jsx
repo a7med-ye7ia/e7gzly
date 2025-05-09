@@ -33,9 +33,10 @@ export default function SelectSeat() {
 
     return (
         <ScrollView
-            style={stylesAuth.containerSigUp}
+            style={styles.container}
             contentContainerStyle={{ paddingBottom: 80 }}
         >
+        {/* Step Indicator */}
             <View style={styles.stepsContainer}>
                 <View style={styles.stepsRow}>
                     <Text style={styles.stepNumber}>①</Text>

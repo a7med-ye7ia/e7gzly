@@ -26,26 +26,40 @@ export default function LoginScreen() {
       Alert.alert('Error', 'Please fill out both fields');
       return;
     }
-  
-    setLoading(true);
-  
-    const { user, error } = await loginUser(email, password);
-  
-    if (user) {
-      Alert.alert('Success', 'Login successful');
-      await AsyncStorage.setItem('isLoggedIn', 'true');
-      await AsyncStorage.setItem('userName', user.displayName ?? '');
-      await AsyncStorage.setItem('userEmail', user.email ?? '');
-      
-      router.replace('./flight-destinations');
-    } else {
-      setLoading(false);
-      if (error.code === 'auth/invalid-email') {
-        Alert.alert('Invalid Email', 'The email address is not valid');
-      } else if (error.code === 'auth/user-not-found') {
-        Alert.alert('User Not Found', 'No account found with this email');
-      } else if (error.code === 'auth/wrong-password') {
-        Alert.alert('Wrong Password', 'The password is incorrect');
+
+    setLoading(true)
+    setLoginError(null)
+
+    try {
+      console.log("Attempting login with email:", email)
+      const { user, error } = await loginUser(email, password)
+
+      if (user) {
+        try {
+          // Make sure we have the user email
+          const userEmail = user.email || email
+
+          // Store all items in a single operation for better atomicity
+          await Promise.all([
+            AsyncStorage.setItem("isLoggedIn", "true"),
+            AsyncStorage.setItem("userName", user.displayName || ""),
+            AsyncStorage.setItem("userEmail", userEmail),
+          ])
+
+          console.log("Data saved successfully:", {
+            isLoggedIn: "true",
+            userName: user.displayName || "",
+            userEmail: userEmail,
+          })
+
+          // Small delay to ensure Firebase auth is fully initialized
+          setTimeout(() => {
+            router.replace("./flight-destinations")
+          }, 500)
+        } catch (storageError) {
+          console.error("AsyncStorage error:", storageError)
+          Alert.alert("Storage Error", "Failed to save login information")
+        }
       } else {
         Alert.alert('Login Failed', error.message);
       }
