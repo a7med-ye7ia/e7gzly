@@ -1,13 +1,22 @@
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { useRouter, usePathname } from 'expo-router'; 
+import { useRouter, usePathname } from 'expo-router';
 import { Ionicons } from "@expo/vector-icons";
 
 export default function ButtomBar() {
   const router = useRouter();
-  const currentPath = usePathname(); 
+  const currentPath = usePathname();
 
   const activeColor = "#5A41D7";
-  const inactiveColor = "#666"; 
+  const inactiveColor = "#666";
+
+  const bookingActivePaths = [
+    "/Book",
+    "/book/DetailTraveler", 
+    "/book/planeSeats",
+    "/book/FlightResult",      
+  ];
+
+  const isBookingPathActive = bookingActivePaths.includes(currentPath);
 
   return (
     <View style={buttonBarStyles.buttonBar}>
@@ -29,17 +38,17 @@ export default function ButtomBar() {
         </Text>
       </TouchableOpacity>
 
-      {/*  Search */}
+      {/*  Booking  */}
       <TouchableOpacity style={buttonBarStyles.button} onPress={() => router.push("/Book")}>
         <Ionicons
           name="book"
           size={24}
-          color={currentPath === "/Book" ? activeColor : inactiveColor}
+          color={isBookingPathActive ? activeColor : inactiveColor}
         />
         <Text
           style={[
             buttonBarStyles.buttonText,
-            { color: currentPath === "/Book" ? activeColor : inactiveColor }
+            { color: isBookingPathActive ? activeColor : inactiveColor }
           ]}
         >
           Booking
@@ -68,12 +77,12 @@ export default function ButtomBar() {
         <Ionicons
           name="person"
           size={24}
-          color={currentPath === "/profile/profile" ? activeColor : inactiveColor}
+          color={currentPath === "/profile" ? activeColor : inactiveColor}
         />
         <Text
           style={[
             buttonBarStyles.buttonText,
-            { color: currentPath === "/profile/profile" ? activeColor : inactiveColor }
+            { color: currentPath === "/profile" ? activeColor : inactiveColor }
           ]}
         >
           Profile
@@ -89,7 +98,7 @@ const buttonBarStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#f8f8f8',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
     borderTopWidth: 1,
     borderTopColor: '#eee',
     paddingVertical: 10,

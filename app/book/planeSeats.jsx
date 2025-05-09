@@ -1,0 +1,149 @@
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import styles from "../../styles/styleBooking";
+import { Ionicons } from "@expo/vector-icons";
+
+
+const rows = [1, 2, 3, 4, 5 , 6 , 7 ];
+const columns = ['A', 'B', 'C', 'D'];
+const unavailableSeats = ['D1', 'D2', 'B4', 'C5' , 'A1']; // example unavailable seats
+const seatPrice = 6000000; 
+
+export default function SelectSeat() {
+    const [selectedSeats, setSelectedSeats] = useState([]);
+
+    const toggleSeat = (seatId) => {
+        if (unavailableSeats.includes(seatId)) return;
+
+        setSelectedSeats(prev =>
+            prev.includes(seatId)
+                ? prev.filter(seat => seat !== seatId)
+                : [...prev, seatId]
+        );
+    };
+
+    const isSelected = (seatId) => selectedSeats.includes(seatId);
+    const isUnavailable = (seatId) => unavailableSeats.includes(seatId);
+
+    return (
+        <ScrollView contentContainerStyle={styles.container}>
+            {/* Step Indicator */}
+            <View style={styles.stepsContainer}>
+                <View style={styles.stepsRow}>
+                    <Text style={styles.stepNumber}>①</Text>
+                    <Ionicons name="airplane" size={18} color="#5D50C6" />
+                    <Text style={styles.stepNumberActive}>②</Text>
+                    <Text style={styles.stepNumber}>③</Text>
+                </View>
+                <View style={styles.stepsRow}>
+                    <Text style={styles.stepLabel}>Detail Traveler</Text>
+                    <Text style={styles.stepLabelActive}>Select Seat</Text>
+                    <Text style={styles.stepLabel}>Extra Services</Text>
+                </View>
+            </View>
+
+
+            {/* Legend */}
+            <View style={styles.legend}>
+                <LegendItem label="Available" color="#E0D9FF" />
+                <LegendItem label="Selected" color="#5D50C6" />
+                <LegendItem label="Unavailable" color="#ccc" />
+            </View>
+
+            {/* Column Labels */}
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                <Text style={{ width: 40 }}></Text>
+                {columns.map(col => (
+                    <Text key={col} style={{ width: 20, textAlign: 'center' , marginHorizontal: 30}}>{col}</Text>
+                ))}
+            </View>
+
+            <View>
+                {rows.map((row) => (
+                    <View
+                        key={row}
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginVertical: 5,
+                        }}
+                    >
+                        {/* Left side seats (e.g., A, B) */}
+                        {columns.slice(0, 2).map((col) => {
+                            const seatId = `${col}${row}`;
+                            const selected = isSelected(seatId);
+                            const unavailable = isUnavailable(seatId);
+
+                            return (
+                                <TouchableOpacity
+                                    key={seatId}
+                                    onPress={() => toggleSeat(seatId)}
+                                    style={[
+                                        styles.seat,
+                                        selected && styles.seatSelected,
+                                        unavailable && styles.seatUnavailable,
+                                    ]}
+                                >
+                                    <Text style={{ color: selected ? '#fff' : '#000' }}>
+                                        {selected ? 'YOU' : ''}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+
+                        {/* Row number in the center */}
+                        <Text style={{ width: 40, textAlign: 'center' }}>
+                            {row}
+                        </Text>
+
+                        {/* Right side seats (e.g., C, D) */}
+                        {columns.slice(2).map((col) => {
+                            const seatId = `${col}${row}`;
+                            const selected = isSelected(seatId);
+                            const unavailable = isUnavailable(seatId);
+
+                            return (
+                                <TouchableOpacity
+                                    key={seatId}
+                                    onPress={() => toggleSeat(seatId)}
+                                    style={[
+                                        styles.seat,
+                                        selected && styles.seatSelected,
+                                        unavailable && styles.seatUnavailable,
+                                    ]}
+                                >
+                                    <Text style={{ color: selected ? '#fff' : '#000' }}>
+                                        {selected ? 'YOU' : ''}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                ))}
+            </View>
+
+
+            {/* Selected Seat Summary */}
+            <Text style={{ marginTop: 20, fontSize: 16 }}>
+                Your seat: {selectedSeats.join(', ') || ' '}
+            </Text>
+            <Text style={{ fontSize: 16, marginBottom: 20 }}>
+                Total: IDR{(seatPrice * selectedSeats.length).toLocaleString()}
+            </Text>
+
+            {/* Continue Button */}
+            <TouchableOpacity style={styles.continueButton}>
+                <Text style={styles.continueButtonText}>Continue to Extras</Text>
+            </TouchableOpacity>
+        </ScrollView>
+    );
+}
+
+const LegendItem = ({ label, color }) => (
+    <View style={styles.legendItem}>
+        <View style={[styles.legendColor, { backgroundColor: color }]} />
+        <Text>{label}</Text>
+    </View>
+);
+

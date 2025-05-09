@@ -28,7 +28,7 @@ export default function ProductInfo() {
 
   const handelDetailTraveler = () => {
     router.push({
-      pathname: "/flight/DetailTraveler",
+      pathname: "/book/DetailTraveler",
       params: {
         name: params.name,
         price: params.price,

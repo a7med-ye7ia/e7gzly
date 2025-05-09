@@ -7,9 +7,8 @@ import stylesAuth from "../../styles/stylesAuth";
 import stylePages from "../../styles/stylePages";
 
 import { addFlight, deleteFlight, updateFlight, getFlightById } from "../../services/flightService";
-import { uploadImage, deleteImage, pickImage } from "../../hooks/imagePiker2";
-
-
+import { deleteImage, pickImage } from "../../hooks/imagePiker2";
+import { uploadImage } from "../../upload/uploads";
 
 
 export default function ProductInfo() {
@@ -18,15 +17,20 @@ export default function ProductInfo() {
 
   const interests = params.interests ? JSON.parse(params.interests) : []
 
+  // data use cases
   const [name, setName] = useState(params.name)
   const [location, setLocation] = useState(params.location)
-  const [image, setImage] = useState(params.image)
   const [featured, setFeatured] = useState(params.featured || false)
   const [rating, setRating] = useState(params.rating)
   const [price, setPrice] = useState(params.price)
   const [neww, setNeww] = useState(params.new)
+  
+  // image use cases
+  const [image, setImage] = useState(params.image)
   const [imageFile, setImageFile] = useState(null)
-  const [imageUpdated, setImageUpdated] = useState(false)
+  const [isImageUpdated, setIsImageUpdated] = useState(false)
+
+  // loading use cases
   const [isUploading, setIsUploading] = useState(false)
 
 
@@ -34,16 +38,23 @@ export default function ProductInfo() {
     console.log("updates is uploading, please wait...");
    
     setIsUploading(true);
-    let res = {}
-    if (imageUpdated) {
-      res = await uploadImage(imageFile);
+    let uploadResult = {}
+    if (isImageUpdated) {
+      uploadResult = await uploadImage(imageFile);
+    }
+
+    if (uploadResult.success) {
+      console.log("Image uploaded successfully");
+      setImage(uploadResult.data.url);
+    } else { 
+      console.log("Image upload failed, error message: ", uploadResult.err.message);
     }
     
 
     const updates = {
       name: name,
       location: location,
-      image: imageUpdated ? res.url : image,
+      image: image,
       featured: featured,
       rating: rating || 0,
       price: price,
@@ -87,10 +98,9 @@ export default function ProductInfo() {
   }
 
   const getImage = async () => {
-    setImageUpdated(true);
+    setIsImageUpdated(true);
     const result = await pickImage();
     if (result.success) {
-      setImage(result.file.uri);
       setImageFile(result.file);
       console.log("Image selected successfully");
     } else {
@@ -106,7 +116,7 @@ export default function ProductInfo() {
   }
 
   return (
-    <ScrollView style={stylesAuth.containerSigUp}>
+    <ScrollView style={[stylesAuth.containerSigUp, {paddingBottom:100}]}>
       <Text style={stylesAuth.title}>{params.id ? "Edit flight" : "Add flight"}</Text>
 
       <View style={stylesAuth.inputContainer}>
@@ -167,10 +177,11 @@ export default function ProductInfo() {
       />
       </View>
 
-      <TouchableOpacity onPress={getImage}> 
+      <TouchableOpacity onPress={() => getImage()}> 
         <View style={{flex:1, justifyContent: 'center', alignItems: 'center', marginVertical: 10, width: '100%', height: image ? 'auto' : 200, backgroundColor: '#eeeee4'}}>
           {image ? <Image source={{ uri: image }} style={stylePages.mainImage} resizeMode="cover" />
-                : <Ionicons name="add" size={40} color={'grey'} />}
+                 : isImageUpdated ? <Image source={{ uri: image }} style={stylePages.mainImage} resizeMode="cover" /> 
+                                 : <Ionicons name="add" size={40} color={'grey'} />}
         </View>    
       </TouchableOpacity>
 
