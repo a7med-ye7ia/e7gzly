@@ -78,7 +78,8 @@ const Profile = () => {
             .signOut()
             .then(() => {
                 console.log("User signed out!");
-                router.replace("/login");
+                router.replace("/flight-destinations");
+                AsyncStorage.removeItem("isLoggedIn");
             })
             .catch((error) => alert(error.message));
     };

@@ -26,7 +26,7 @@ export default function ProductInfo() {
   const [neww, setNeww] = useState(params.new)
   
   // image use cases
-  const [image, setImage] = useState(params.photos[0] || null)
+  const [image, setImage] = useState(params.photos ? params.photos[0] : null)
   const [imageFile, setImageFile] = useState(null)
   const [isImageUpdated, setIsImageUpdated] = useState(false)
 

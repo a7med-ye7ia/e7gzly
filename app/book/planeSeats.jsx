@@ -8,12 +8,9 @@ import stylesAuth from "../../styles/stylesAuth";
 const rows = [1, 2, 3, 4, 5 , 6 , 7 ];
 const columns = ['A', 'B', 'C', 'D'];
 const unavailableSeats = ['D1', 'D2', 'B4', 'C5' , 'A1']; // example unavailable seats
-<<<<<<< HEAD
-const seatPrice = 6000000; 
-=======
+
 const seatPrice = 6000000; // IDR 6,000,000 per seat
 const numberOfSeats = 2;
->>>>>>> 0f9df74 (add plane seats page and extra services page)
 
 export default function SelectSeat() {
     const router = useRouter();
@@ -38,16 +35,10 @@ export default function SelectSeat() {
 
     return (
         <ScrollView
-<<<<<<< HEAD
-            style={styles.container}
-            contentContainerStyle={{ paddingBottom: 80 }}
-        >
-        {/* Step Indicator */}
-=======
+
             style={stylesAuth.containerSigUp}
             contentContainerStyle={{ paddingBottom: 80 }}
         >
->>>>>>> 0f9df74 (add plane seats page and extra services page)
             <View style={styles.stepsContainer}>
                 <View style={styles.stepsRow}>
                     <Text style={styles.stepNumber}>①</Text>
