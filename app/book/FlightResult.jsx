@@ -27,7 +27,9 @@ const FlightResultScreen = () => {
   const goToDeatails = () => {
     router.push({
       pathname: "./DetailTraveler",
-      // params: { flight: JSON.stringify(flight) },
+      params: { 
+        seats: params.seats,
+      },
     });
   }
   // Get results from params

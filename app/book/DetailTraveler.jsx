@@ -4,7 +4,8 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useRouter, useLocalSearchParams } from "expo-router";
 import Icon from "react-native-vector-icons/Ionicons";
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
+const primaryColor = '#5D3FD3';
 
 const DetailTraveler = () => {
     const router = useRouter();
@@ -12,13 +13,15 @@ const DetailTraveler = () => {
     const scrollViewRef = useRef(null);
 
     const { seats, from, to, tripType, date } = params;
-    
+
     const numSeats = parseInt(seats, 10) || 1; 
     const [passengerForms, setPassengerForms] = useState([]);
+    const [errors, setErrors] = useState([]);
     const [currentPassengerIndex, setCurrentPassengerIndex] = useState(0);
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [passPortDate, setPassPortDate] = useState(new Date());
-    
+    const [focusedField, setFocusedField] = useState(null);
+
     useEffect(() => {
         const initialForms = Array(numSeats).fill().map((_, index) => ({
             id: index + 1,
@@ -28,16 +31,21 @@ const DetailTraveler = () => {
             expirationDate: ''
         }));
         setPassengerForms(initialForms);
+        setErrors(Array(numSeats).fill({
+            fullName: '',
+            citizenship: '',
+            passportNumber: '',
+            expirationDate: ''
+        }));
     }, [numSeats]);
-    
+
     const showDatePicker = useCallback(() => {
         setDatePickerVisibility(true);
     }, []);
     const hideDatePicker = useCallback(() => {
         setDatePickerVisibility(false);
     }, []);
-    
-    // Handle date confirmation
+
     const handleConfirm = (selectedDate) => {
         if (selectedDate) {
             setPassPortDate(selectedDate);
@@ -49,8 +57,7 @@ const DetailTraveler = () => {
         }
         hideDatePicker();
     };
-    
-    // Update a field for a specific passenger
+
     const updatePassengerField = (field, value, index = currentPassengerIndex) => {
         const updatedForms = [...passengerForms];
         updatedForms[index] = {
@@ -58,35 +65,100 @@ const DetailTraveler = () => {
             [field]: value
         };
         setPassengerForms(updatedForms);
+        validateField(field, value, index);
     };
-    
-    // Validate passenger data
+
+    const validateField = (field, value, index) => {
+        const nameRegex = /^[A-Za-z\s]+$/;
+        const passportNumRegex = /^[0-9]+$/;
+        
+        let errorMessage = '';
+        
+        if (!value) {
+            errorMessage = `${field} is required.`;
+        } else if (field === 'fullName' && !nameRegex.test(value)) {
+            errorMessage = 'Full name must be alphabetic.';
+        } else if (field === 'passportNumber' && !passportNumRegex.test(value)) {
+            errorMessage = 'Passport number must be numeric.';
+        }
+        
+        const updatedErrors = [...errors];
+        updatedErrors[index] = {
+            ...updatedErrors[index],
+            [field]: errorMessage
+        };
+        setErrors(updatedErrors);
+    };
+
     const validatePassengerData = () => {
+        const tempErrors = passengerForms.map(() => ({
+            fullName: '',
+            citizenship: '',
+            passportNumber: '',
+            expirationDate: ''
+        }));
+
+        let valid = true;
+
+        // Validate each passenger's fields
         for (let i = 0; i < passengerForms.length; i++) {
             const passenger = passengerForms[i];
-            if (!passenger.fullName || 
-                !passenger.citizenship || 
-                !passenger.passportNumber || 
-                !passenger.expirationDate) {
-    
-                    Alert.alert(
-                    "Incomplete Information",
-                    `Please complete fields for Passenger ${i + 1}.`,
-                    [
-                        { 
-                            text: "Go to passenger", 
-                            onPress: () => scrollToPassenger(i)
-                        },
-                        { text: "OK" }
-                    ]
-                );
-                return false;
+            const nameRegex = /^[A-Za-z\s]+$/;
+            const passportNumRegex = /^[0-9]+$/;
+
+            for (const field of Object.keys(passenger)) {
+                const value = passenger[field];
+                let errorMessage = '';
+
+                if (!value) {
+                    errorMessage = `${field} is required.`;
+                } else if (field === 'fullName' && !nameRegex.test(value)) {
+                    errorMessage = 'Full name must be alphabetic.';
+                } else if (field === 'passportNumber' && !passportNumRegex.test(value)) {
+                    errorMessage = 'Passport number must be numeric.';
+                }
+
+                tempErrors[i][field] = errorMessage;
+
+                if (errorMessage) {
+                    valid = false;
+                }
             }
         }
-        return true;
+
+        // Check for duplicate passport numbers
+        const passportNumbers = passengerForms.map(p => p.passportNumber);
+        const duplicates = passportNumbers.filter((item, idx) => passportNumbers.indexOf(item) !== idx && item !== '');
+
+        duplicates.forEach(duplicateValue => {
+            passengerForms.forEach((p, idx) => {
+                if (p.passportNumber === duplicateValue) {
+                    tempErrors[idx].passportNumber = 'Passport number must be unique.';
+                    valid = false;
+                }
+            });
+        });
+
+        setErrors(tempErrors);
+
+        if (!valid) {
+            // find index of first passenger with any error
+            const firstErrorIndex = tempErrors.findIndex(errObj => 
+                Object.values(errObj).some(msg => msg !== '')
+            );
+
+            if (firstErrorIndex !== -1) {
+                Alert.alert(
+                    `Passenger ${firstErrorIndex + 1} data issue`,
+                    `Passenger ${firstErrorIndex + 1}'s data is incomplete or incorrect. Please review.`,
+                    [{ text: 'OK', onPress: () => scrollToPassenger(firstErrorIndex) }]
+                );
+            }
+        }
+
+        return valid;
     };
-    
-    // Handle continue button
+
     const handleContinue = () => {
         if (!validatePassengerData()) {
             return;
@@ -98,15 +170,13 @@ const DetailTraveler = () => {
             }
         });
     };
-    
-    // Handle scroll to update active index
+
     const handleScroll = (event) => {
         const offsetX = event.nativeEvent.contentOffset.x;
         const page = Math.round(offsetX / width);
         setCurrentPassengerIndex(page);
     };
-    
-    // Scroll to specific passenger form
+
     const scrollToPassenger = (index) => {
         if (scrollViewRef.current) {
             scrollViewRef.current.scrollTo({ x: index * width, animated: true });
@@ -114,10 +184,17 @@ const DetailTraveler = () => {
         setCurrentPassengerIndex(index);
     };
 
+    const handleFocus = (field) => {
+        setFocusedField(field);
+    };
+
+    const handleBlur = () => {
+        setFocusedField(null);
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.progressContainer}>
-                {/* Step 1 */}
                 <View style={styles.stepContainer}>
                     <View style={[styles.stepCircle, styles.activeStep]}>
                         <Text style={styles.stepNumber}>1</Text>
@@ -125,15 +202,12 @@ const DetailTraveler = () => {
                     <Text style={styles.activeStepText}>Detail Traveler</Text>
                 </View>
 
-                {/* Dashed line 1 */}
                 <View style={styles.dottedLine} />
 
-                {/* Airplane Icon */}
                 <View style={styles.planeIconContainer}>
                     <Icon name="airplane" size={20} color="#5C40CC" />
                 </View>
 
-                {/* step 2 */}
                 <View style={styles.dottedLine} />
                 <View style={styles.stepContainer}>
                     <View style={styles.stepCircle}>
@@ -142,7 +216,6 @@ const DetailTraveler = () => {
                     <Text style={styles.stepText}>Select Seat</Text>
                 </View>
 
-                {/* step 3 */}
                 <View style={styles.dottedLine} />
                 <View style={styles.stepContainer}>
                     <View style={styles.stepCircle}>
@@ -153,7 +226,6 @@ const DetailTraveler = () => {
             </View>
 
             <View style={styles.contentContainer}>
-                {/* Horizontal ScrollView for passenger forms */}
                 <ScrollView
                     ref={scrollViewRef}
                     horizontal
@@ -161,52 +233,87 @@ const DetailTraveler = () => {
                     showsHorizontalScrollIndicator={false}
                     onMomentumScrollEnd={handleScroll}
                     style={styles.scrollContainer}
+                    keyboardShouldPersistTaps='handled'
                 >
                     {passengerForms.map((passenger, index) => (
-                        <View key={index} style={styles.formPage}>
+                        <ScrollView
+                            key={index}
+                            style={styles.formPage}
+                            contentContainerStyle={{ paddingBottom: 40 }}
+                            showsVerticalScrollIndicator={true}
+                            keyboardShouldPersistTaps="handled"
+                        >
                             <Text style={styles.passengerTitle}>
                                 Passenger {index + 1}
                             </Text>
-                            
+
                             <View style={styles.inputGroup}>
                                 <Text style={styles.label}>Full Name</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={[
+                                        styles.input,
+                                        focusedField === `fullName-${index}` && styles.focusedInput
+                                    ]}
                                     value={passenger.fullName || ''}
                                     onChangeText={(text) => updatePassengerField('fullName', text, index)}
+                                    onFocus={() => handleFocus(`fullName-${index}`)}
+                                    onBlur={handleBlur}
                                     placeholder="Enter full name"
                                 />
+                                {errors[index]?.fullName ? (
+                                    <Text style={styles.errorText}>{errors[index].fullName}</Text>
+                                ) : null}
                             </View>
-                            
+
                             <View style={styles.inputGroup}>
                                 <Text style={styles.label}>Citizenship</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={[
+                                        styles.input,
+                                        focusedField === `citizenship-${index}` && styles.focusedInput
+                                    ]}
                                     value={passenger.citizenship || ''}
                                     onChangeText={(text) => updatePassengerField('citizenship', text, index)}
+                                    onFocus={() => handleFocus(`citizenship-${index}`)}
+                                    onBlur={handleBlur}
                                     placeholder="Enter Your Citizenship"
                                 />
+                                {errors[index]?.citizenship ? (
+                                    <Text style={styles.errorText}>{errors[index].citizenship}</Text>
+                                ) : null}
                             </View>
-                            
+
                             <View style={styles.inputGroup}>
                                 <Text style={styles.label}>Passport Number</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={[
+                                        styles.input,
+                                        focusedField === `passportNumber-${index}` && styles.focusedInput
+                                    ]}
                                     value={passenger.passportNumber || ''}
                                     onChangeText={(text) => updatePassengerField('passportNumber', text, index)}
+                                    onFocus={() => handleFocus(`passportNumber-${index}`)}
+                                    onBlur={handleBlur}
                                     placeholder="Enter passport number"
                                     keyboardType="default"
                                 />
+                                {errors[index]?.passportNumber ? (
+                                    <Text style={styles.errorText}>{errors[index].passportNumber}</Text>
+                                ) : null}
                             </View>
-                            
+
                             <View style={styles.inputGroup}>
                                 <Text style={styles.label}>Expiration Date</Text>
                                 <TouchableOpacity 
-                                    style={styles.dateInput}
+                                    style={[
+                                        styles.dateInput,
+                                        focusedField === `expirationDate-${index}` && styles.focusedInput
+                                    ]}
                                     onPress={() => {
                                         setCurrentPassengerIndex(index);
                                         showDatePicker();
                                     }}
+                                    onFocus={() => handleFocus(`expirationDate-${index}`)}
                                 >
                                     <Text style={styles.dateInputText}>
                                         {passenger.expirationDate || 'MM/YYYY'}
@@ -216,8 +323,11 @@ const DetailTraveler = () => {
                                         style={styles.calendarIcon}
                                     />
                                 </TouchableOpacity>
+                                {errors[index]?.expirationDate ? (
+                                    <Text style={styles.errorText}>{errors[index].expirationDate}</Text>
+                                ) : null}
                             </View>
-                        </View>
+                        </ScrollView>
                     ))}
                 </ScrollView>
                 {numSeats >= 1 && (
@@ -287,7 +397,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     activeStep: {
-        backgroundColor: '#5D3FD3',
+        backgroundColor: primaryColor,
     },
     stepNumber: {
         color: 'white',
@@ -299,7 +409,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     activeStepText: {
-        color: '#5D3FD3',
+        color: primaryColor,
         fontWeight: 'bold',
         fontSize: 12,
         textAlign: 'center',
@@ -324,6 +434,7 @@ const styles = StyleSheet.create({
     },
     formPage: {
         width: width,
+        flexGrow: 1,
         paddingHorizontal: 20,
     },
     passengerTitle: {
@@ -349,6 +460,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         backgroundColor: '#F8F8F8',
     },
+    focusedInput: {
+        borderColor: primaryColor,
+    },
     dateInput: {
         borderWidth: 1,
         borderColor: '#ccc',
@@ -367,7 +481,12 @@ const styles = StyleSheet.create({
     calendarIcon: {
         width: 20,
         height: 20,
-        tintColor: '#5D3FD3',
+        tintColor: primaryColor,
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 12,
+        marginTop: 5,
     },
     paginationContainer: {
         flexDirection: 'row',
@@ -385,13 +504,13 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
     },
     activePaginationDot: {
-        backgroundColor: '#5D3FD3',
+        backgroundColor: primaryColor,
         width: 10,
         height: 10,
         borderRadius: 5,
     },
     continueButton: {
-        backgroundColor: '#5D3FD3',
+        backgroundColor: primaryColor,
         borderRadius: 25,
         paddingVertical: 15,
         paddingHorizontal: 18,
