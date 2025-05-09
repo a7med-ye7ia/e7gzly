@@ -20,7 +20,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.e7gzly1.E7gzly",
+      "googleServicesFile": "./android/app/google-services (2).json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -29,6 +31,14 @@
       "expo-router",
       "@react-native-firebase/app",
       "@react-native-firebase/auth"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "3593f410-aa09-497c-b4cb-e21befd52138"
+      }
+    }
   }
 }
