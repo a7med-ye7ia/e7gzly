@@ -92,13 +92,9 @@ const DetailTraveler = () => {
             return;
         }
         router.push({
-            pathname: "/book/planeSeats",
+            pathname: "./planeSeats",
             params: {
-                passengers: JSON.stringify(passengerForms),
-                from,
-                to,
-                tripType,
-                date
+                seats: numSeats,
             }
         });
     };
