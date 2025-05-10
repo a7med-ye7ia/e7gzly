@@ -11,43 +11,25 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Path } from 'react-native-svg';
-import { useRouter } from 'expo-router';
+import {useLocalSearchParams , useRouter } from 'expo-router';
 
-const router = useRouter();
-const ROUTE = {
-  from: { code: 'CGK', city: 'Tangerang' },
-  to:   { code: 'TLC', city: 'Ciliwung' },
-};
 
-const BOOKING = {
-  imageUri: '/assets/img.png',
-  location: 'Ciliwung',
-  region:   'Tangerang',
-  rating:   4.8,
-  details: [
-    { label: 'Traveler',   value: '2 person' },
-    { label: 'Seat',       value: 'A3, B3' },
-    { label: 'Insurance',  value: 'IDR 1.950.000' },
-    { label: 'Lounge Access', value: 'IDR 2.400.000' },
-    { label: 'Refundable', value: 'NO' },
-    { label: 'VAT',        value: '45%' },
-    { label: 'Price',      value: 'IDR 12.000.000' },
-    { label: 'Grand Total',value: 'IDR 72.000.000' },
-  ],
-};
 
-const PAYMENT = {
-  label: 'Current Balance',
-  amount: 'IDR 80.400.000',
-};
+
 
 const FlightPath = () => {
   const router = useRouter();
-  
+  const params = useLocalSearchParams();
+
   const handleBookingConfirmation = () => {
     router.push({
       pathname: "/main/booking-confirmation",
     });
+  };
+
+  const ROUTE = {
+    from: { code: params.cityFromCode, city: params.cityFromName },
+    to:   { code: params.cityToCode, city: params.cityToName },
   };
 
   return (
@@ -86,12 +68,33 @@ const FlightPath = () => {
 
 export default function CheckoutScreen() {
   const router = useRouter();
-  
-  const handlePayment = () => {
-    router.push({
-      pathname: "/main/booking-confirmation",
-    });
+
+  const params = useLocalSearchParams();
+
+
+
+  const BOOKING = {
+    imageUri: '/assets/img.png',
+    location: params.cityFromName,
+    region:   params.cityToName,
+    rating:   4.8,
+    details: [
+      { label: 'Traveler',   value: `${params.seats} passengers` },
+      { label: 'Seat',       value: params.selectedSeats },
+      { label: 'Insurance',  value: `IDR ${params.totalPrice}`},
+      { label: 'Extra Services', value: `IDR ${params.extraServicesPrice}` },
+      { label: 'Refundable', value: 'NO' },
+      { label: 'VAT',        value: '45%' },
+      { label: 'Price',      value: `IDR ${params.totalPrice + params.extraServicesPrice} ` },
+      { label: 'Grand Total',value: `IDR ${(params.totalPrice + params.extraServicesPrice)*.55}` },
+    ],
   };
+
+  const PAYMENT = {
+    label: 'Current Balance',
+    amount: 'IDR 80.400.000',
+  };
+
   
   return (
     <SafeAreaView style={styles.safe}>
@@ -145,7 +148,7 @@ export default function CheckoutScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.payButton} onPress={handlePayment}>
+        <TouchableOpacity style={styles.payButton} onPress={() => router.push("/book/successBooking")}>
           <Text style={styles.payButtonText}>Pay Now</Text>
         </TouchableOpacity>
 

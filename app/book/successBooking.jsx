@@ -7,6 +7,7 @@ import {
     StyleSheet,
     Dimensions,
 } from 'react-native';
+import {router} from "expo-router";
 
 const BookingSuccessScreen = ({ navigation }) => {
     return (
@@ -22,14 +23,14 @@ const BookingSuccessScreen = ({ navigation }) => {
             </Text>
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.navigate('/profile/bookedTravels')}
+                onPress={() => router.push('/profile/bookedTravels')}
             >
                 <Text style={styles.buttonText}>My Bookings</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.navigate('/flight-destinations')}
+                onPress={() => router.push('/flight-destinations')}
             >
                 <Text style={styles.buttonText}>Home</Text>
             </TouchableOpacity>

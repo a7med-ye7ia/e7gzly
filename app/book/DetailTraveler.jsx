@@ -166,6 +166,10 @@ const DetailTraveler = () => {
         router.push({
             pathname: "./planeSeats",
             params: {
+                cityFromCode: params.cityFromCode,
+                cityFromName: params.cityFromName,
+                cityToCode: params.cityToCode,
+                cityToName: params.cityToName,
                 seats: numSeats,
             }
         });

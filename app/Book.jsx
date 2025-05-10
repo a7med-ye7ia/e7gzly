@@ -13,7 +13,7 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { getAllFlights } from "../services/flightService";
-import { useSearchParams } from "expo-router/build/hooks";
+import { useLocalSearchParams } from "expo-router";
 
 // Validation regex for alphabetic characters
 const ALPHABETIC_REGEX = /^[A-Za-z\s]+$/;
@@ -21,13 +21,13 @@ const ALPHABETIC_REGEX = /^[A-Za-z\s]+$/;
 const primaryColor = "#5C40CC";
 
 export default function Book() {
-  const params = useSearchParams();
+  const params = useLocalSearchParams();
   const initialFilteredData = params.filteredData ? JSON.parse(params.filteredData) : [];
 
   const router = useRouter();
-
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  console.log("params:", params); // for testing
+  const [from, setFrom] = useState(params.cityFromName || "");
+  const [to, setTo] = useState(params.cityToName || "");
   const [searching, setSearching] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -196,6 +196,10 @@ export default function Book() {
     router.push({
       pathname: "./book/FlightResult",
       params: {
+        cityFromCode: params.cityFromCode,
+        cityFromName: params.cityFromName,
+        cityToCode: params.cityToCode,
+        cityToName: params.cityToName,
         filteredData: JSON.stringify(filteredFlightData),
         bookingDetails: JSON.stringify(bookingDetails),
         seats: selectedSeats.toString(),

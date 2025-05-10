@@ -2,40 +2,50 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import styles from "../../styles/styleBooking";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-
+import { useRouter , useLocalSearchParams } from "expo-router";
 
 const rows = [1, 2, 3, 4, 5 , 6 , 7 ];
 const columns = ['A', 'B', 'C', 'D'];
 const unavailableSeats = ['D1', 'D2', 'B4', 'C5' , 'A1']; // example unavailable seats
 const seatPrice = 6000000;
-const seatLimit = 2;
 
 export default function SelectSeat() {
-    
-    const router = useRouter();
+    const params = useLocalSearchParams();
 
+    const router = useRouter();
+    const seatsLimit = params.seats ;
     const [selectedSeats, setSelectedSeats] = useState([]);
 
     const toggleSeat = (seatId) => {
-        if (unavailableSeats.includes(seatId)) return;
+        const isSelected = selectedSeats.includes(seatId);
 
-        setSelectedSeats(prev =>
-            prev.includes(seatId)
-                ? prev.filter(seat => seat !== seatId)
-                : [...prev, seatId]
-        );
+        if (isSelected) {
+            setSelectedSeats(selectedSeats.filter(id => id !== seatId));
+        } else {
+            if (selectedSeats.length < seatsLimit) {
+                setSelectedSeats([...selectedSeats, seatId]);
+            } else {
+                alert(`You can only select ${seatsLimit} seats.`);
+            }
+        }
     };
+
 
     const handleBookingConfirmation = () => {
         router.push({
-            pathname: "/main/CheckoutScreen",
+            pathname: "/book/extraServices",
             params: {
+                cityFromCode: params.cityFromCode,
+                cityFromName: params.cityFromName,
+                cityToCode: params.cityToCode,
+                cityToName: params.cityToName,
                 selectedSeats,
                 totalPrice: seatPrice * selectedSeats.length,
+                seats: params.seats,
+
             },
         });
-    } 
+    }
 
     const isSelected = (seatId) => selectedSeats.includes(seatId);
     const isUnavailable = (seatId) => unavailableSeats.includes(seatId);
@@ -43,7 +53,7 @@ export default function SelectSeat() {
     return (
         <ScrollView
 
-            style={styles.containerSigUp}
+            style={styles.container}
             contentContainerStyle={{ paddingBottom: 80 }}
         >
             <View style={styles.stepsContainer}>
