@@ -227,10 +227,10 @@ export default function FlightDestinations() {
             {featuredDestinations.map((destination) => (
               <TouchableOpacity
                 key={destination.id}
-                style={[styles.featuredCard, { marginRight: 15, width: cardWidth }]}
+                style={[styles.featuredCard, { marginRight: 15, width: cardWidth, marginBottom: 15 }]}
                 onPress={() => navigateToProductInfo(destination)}
               >
-                <Image source={{ uri: destination.image }} style={styles.featuredImage} />
+                <Image source={{ uri: destination.photos[0] }} style={styles.featuredImage} />
                 {destination.rating && (
                   <View style={styles.ratingBadge}>
                     <Ionicons name="star" size={12} color="#FFD700" />
@@ -238,8 +238,8 @@ export default function FlightDestinations() {
                   </View>
                 )}
                 <View style={styles.featuredInfo}>
-                  <Text style={styles.destinationName}>{destination.name}</Text>
-                  <Text style={styles.destinationLocation}>{destination.location}</Text>
+                  <Text style={styles.destinationName}>{destination.cityFromName}</Text>
+                  <Text style={styles.destinationLocation}>{destination.cityToName}</Text>
                 </View>
               </TouchableOpacity>
             ))}
