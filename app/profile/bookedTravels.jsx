@@ -1,51 +1,99 @@
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/Ionicons";
 
-const bookedTrips = [
-  {
-    id: 1,
-    origin: {
-      code: "CAI",
-      city: "Cairo",
-      time: "09:00 AM",
-    },
-    destination: {
-      code: "ROM",
-      city: "Rome",
-      time: "12:30 PM",
-    },
-    duration: "3h 30m",
-    airline: "EgyptAir",
-    class: "Economy",
-    price: "EGP 7,500",
-    departureDate: "20 June 2025",
-    returnDate: "30 June 2025",
-  },
-  {
-    id: 2,
-    origin: {
-      code: "CAI",
-      city: "Cairo",
-      time: "10:00 AM",
-    },
-    destination: {
-      code: "DPS",
-      city: "Bali",
-      time: "08:00 PM",
-    },
-    duration: "10h 00m",
-    airline: "Qatar Airways",
-    class: "Business",
-    price: "EGP 25,000",
-    departureDate: "10 July 2025",
-    returnDate: "20 July 2025",
-  },
-];
+import { getUserById } from "../../services/userService";
+import { getFlightById } from "../../services/flightService";
+
+// const bookedTrips = [
+//   {
+//     id: 1,
+//     origin: {
+//       code: "CAI",
+//       city: "Cairo",
+//       time: "09:00 AM",
+//     },
+//     destination: {
+//       code: "ROM",
+//       city: "Rome",
+//       time: "12:30 PM",
+//     },
+//     duration: "3h 30m",
+//     airline: "EgyptAir",
+//     class: "Economy",
+//     price: "EGP 7,500",
+//     departureDate: "20 June 2025",
+//     returnDate: "30 June 2025",
+//   },
+//   {
+//     id: 2,
+//     origin: {
+//       code: "CAI",
+//       city: "Cairo",
+//       time: "10:00 AM",
+//     },
+//     destination: {
+//       code: "DPS",
+//       city: "Bali",
+//       time: "08:00 PM",
+//     },
+//     duration: "10h 00m",
+//     airline: "Qatar Airways",
+//     class: "Business",
+//     price: "EGP 25,000",
+//     departureDate: "10 July 2025",
+//     returnDate: "20 July 2025",
+//   },
+// ];
+
+
+const AirlineLogo = ({ airline }) => {
+  const getAirlineIcon = () => {
+    if (airline && airline.includes("Garuda")) {
+      return <Icon name="airplane" size={24} color="#5C40CC" />;
+    } else if (airline && airline.includes("Etihad")) {
+      return <Icon name="airplane-outline" size={24} color="#5C40CC" />;
+    } else {
+      return <Icon name="airplane" size={24} color="#5C40CC" />;
+    }
+  };
+  return <View style={styles.airlineLogo}>{getAirlineIcon()}</View>;
+};
 
 export default function BookedTravels() {
   const router = useRouter();
+  const [bookedTrips, setBookedTrips] = useState([]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const storedUserName = await AsyncStorage.getItem("userName");
+      const storedUserEmail = await AsyncStorage.getItem("userEmail");
+
+      const user = await getUserById(storedUserEmail);
+      if (user) {
+        const bookedTripsIDs = user.bookedTrips || [];
+        const bookedTripsTemp = [];
+        bookedTripsIDs.forEach(async (tripID) => {
+          const flight = await getFlightById(tripID);
+          bookedTrips.push({data: flight, id: tripID});
+          console.log("Booked Trips:", `${flight.cityFromName} to ${flight.cityToName}`);
+        })
+        setBookedTrips(bookedTrips);
+      } else {
+        console.warn("User data not found");
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const goToDeatails = () => {
+    Alert.alert("Flight Details", "Flight details will be shown here.");
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -58,66 +106,139 @@ export default function BookedTravels() {
       </View>
 
       {bookedTrips.map((trip) => (
-        <View key={trip.id} style={styles.flightCard}>
-          {/* Flight Details */}
+        <TouchableOpacity
+          key={trip.id} // the trip is the id it self
+          style={styles.flightCard}
+          onPress={goToDeatails}
+        >
           <View style={styles.flightDetails}>
             {/* Origin */}
             <View style={styles.flightEndpoint}>
-              <Ionicons name="airplane" size={18} color="#5C40CC" style={styles.locationIcon} />
-              <Text style={styles.flightCode}>{trip.origin.code}</Text>
-              <Text style={styles.flightCity}>{trip.origin.city}</Text>
-              <Text style={styles.flightTime}>{trip.origin.time}</Text>
+              <MaterialIcons name="location-on" size={16} color="#5C40CC" style={styles.locationIcon} />
+              <Text style={styles.flightCode}>{trip.data.cityFromCode || "--"}</Text>
+              <Text style={styles.flightCity}>{trip.data.cityFromName || "City"}</Text>
+              <Text style={styles.flightTime}>{trip.data.flightTime || "--:--"}</Text>
             </View>
-
             {/* Duration */}
             <View style={styles.durationContainer}>
-              <Text style={styles.durationLabel}>Duration</Text>
-              <Text style={styles.durationTime}>{trip.duration}</Text>
-              <Text style={styles.flightTime}>Depart: {trip.departureDate}</Text>
-              <Text style={styles.flightTime}>Return: {trip.returnDate}</Text>
+              <View style={styles.durationLine}>
+                <View style={styles.durationDottedLine} />
+                <View style={styles.durationPlaneIconContainer}>
+                  <Icon name="airplane" size={16} color="#5C40CC" />
+                </View>
+              </View>
+              <Text style={styles.durationLabel}>Flight Duration</Text>
+              <Text style={styles.durationTime}>{trip.data.flightDuration || "--"}</Text>
             </View>
-
             {/* Destination */}
             <View style={styles.flightEndpoint}>
-              <Ionicons name="airplane" size={18} color="#0EC3AE" style={styles.locationIcon} />
-              <Text style={styles.flightCode}>{trip.destination.code}</Text>
-              <Text style={styles.flightCity}>{trip.destination.city}</Text>
-              <Text style={styles.flightTime}>{trip.destination.time}</Text>
+              <MaterialIcons name="location-on" size={16} color="#0EC3AE" style={styles.locationIcon} />
+              <Text style={styles.flightCode}>{trip.data.cityToCode || "--"}</Text>
+              <Text style={styles.flightCity}>{trip.data.cityToName || "City"}</Text>
+              <Text style={styles.flightTime}>{trip.data.arrivalTime || "--:--"}</Text>
             </View>
           </View>
-
+          {/* Divider */}
           <View style={styles.divider} />
-
           {/* Airline Info */}
           <View style={styles.airlineContainer}>
-            <View>
-              <Text style={styles.airlineName}>{trip.airline}</Text>
-              <Text style={styles.airlineClass}>{trip.class}</Text>
+            <View style={styles.airlineInfo}>
+              <AirlineLogo airline={trip.data.airline} />
+              <View style={styles.airlineDetails}>
+                <Text style={styles.airlineName}>{trip.data.airline || "Airline"}</Text>
+                <Text style={styles.airlineClass}>{trip.data.class || "Economy"}</Text>
+              </View>
             </View>
-            <Text style={styles.flightPrice}>{trip.price}</Text>
+            <Text style={styles.flightPrice}>
+              {trip.data.price ? trip.data.price : "N/A"}
+            </Text>
           </View>
-        </View>
+          <View style={styles.leftCutout} />
+          <View style={styles.rightCutout} />
+        </TouchableOpacity>
       ))}
     </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     paddingTop: 25,
     flex: 1,
     backgroundColor: "#f5f4fa",
-    paddingHorizontal: 16,
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    justifyContent: "space-between",
+    padding: 25,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
+    textAlign: "center",
+    flex: 1,
+  },
+  routeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 30,
+    marginTop: 10,
+  },
+  routeEndpoint: {
+    alignItems: "center",
+  },
+  routeCode: {
+    fontSize: 24,
+    fontWeight: "600",
+    color: "#1F1D2B",
+    marginBottom: 4,
+  },
+  routeCity: {
+    fontSize: 14,
+    color: "#9698A9",
+  },
+  routeLine: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    height: 24,
+    paddingBottom: 16,
+  },
+  dottedLine: {
+    height: 1,
+    flex: 1,
+    borderStyle: "dashed",
+    borderWidth: 1,
+    borderColor: "#8F9BB3",
+    borderRadius: 1,
+  },
+  planeIconContainer: {
+    position: "absolute",
+    backgroundColor: "#f5f4fa",
+    padding: 4,
+    paddingBottom: 20,
+    borderRadius: 12,
+  },
+  scheduleContainer: {
+    alignItems: "center",
+    marginTop: 30,
+    marginBottom: 20,
+  },
+  scheduleTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#1F1D2B",
+    marginBottom: 6,
+  },
+  scheduleDetails: {
+    fontSize: 14,
+    color: "#9698A9",
+  },
+  flightListContainer: {
+    paddingHorizontal: 20,
   },
   flightCard: {
     backgroundColor: "white",
@@ -138,25 +259,50 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: 80,
   },
+  locationIcon: {
+    marginBottom: 4,
+  },
   flightCode: {
     fontSize: 16,
     fontWeight: "600",
     color: "#1F1D2B",
+    marginBottom: 2,
   },
   flightCity: {
     fontSize: 12,
     color: "#9698A9",
+    marginBottom: 6,
   },
   flightTime: {
     fontSize: 12,
     color: "#9698A9",
   },
-  locationIcon: {
-    marginBottom: 4,
-  },
   durationContainer: {
     alignItems: "center",
+    flex: 1,
+  },
+  durationLine: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "center",
+    position: "relative",
+    height: 24,
+    marginBottom: 6,
+  },
+  durationDottedLine: {
+    height: 1,
+    flex: 1,
+    borderStyle: "dashed",
+    borderWidth: 1,
+    borderColor: "#8F9BB3",
+    borderRadius: 1,
+  },
+  durationPlaneIconContainer: {
+    position: "absolute",
+    backgroundColor: "white",
+    padding: 4,
+    borderRadius: 12,
   },
   durationLabel: {
     fontSize: 12,
@@ -167,24 +313,40 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     color: "#1F1D2B",
-    marginBottom: 4,
   },
   divider: {
     height: 1,
     borderStyle: "dashed",
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "#DBDFE7",
-    marginVertical: 12,
+    marginVertical: 16,
   },
   airlineContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "space-between",
+  },
+  airlineInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  airlineLogo: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#f2f2f2",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  airlineDetails: {
+    justifyContent: "center",
   },
   airlineName: {
     fontSize: 14,
     fontWeight: "500",
     color: "#1F1D2B",
+    marginBottom: 2,
   },
   airlineClass: {
     fontSize: 12,
@@ -194,5 +356,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#FF5B5B",
+  },
+  leftCutout: {
+    position: 'absolute',
+    left: -15, // Half of width/height
+    top: '54%',
+    width: 30,
+    height: 30,
+    backgroundColor: '#f5f4fa', // Or the background color of the screen
+    borderRadius: 15,
+  },
+  rightCutout: {
+    position: 'absolute',
+    right: -15,
+    top: '54%',
+    width: 30,
+    height: 30,
+    backgroundColor: '#f5f4fa',
+    borderRadius: 15,
   },
 });

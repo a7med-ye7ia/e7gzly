@@ -18,13 +18,10 @@ const getUserById = async (documentId) => {
 };
 
 const addUser = async (doc) => {
-  // Business logic can be added here
-  // For example: validate user data, check for duplicates, etc.
   return await addDocument(collectionName, doc);
 }
 
 const addUserWithId = async (documentId, doc) => {
-  // Business logic can be added here
   return await addDocumentWithId(collectionName, documentId, doc);
 }
 
@@ -36,4 +33,24 @@ const deleteUser = async (documentId) => {
   return await deleteDocument(collectionName, documentId);
 }
 
-export { getAllUsers, getUserById, addUser, addUserWithId, updateUser, deleteUser };
+const addFlightToUser = async (userId, flightId) => {
+  const user = await getUserById(userId);
+  if (!user) {
+    // throw new Error('User not found');
+    return {success: false, error: 'User not found to update bookedTrips'};
+  }
+
+  const flights = user.bookTrips || [];
+  flights.push(flightId);
+
+  const {success, id, error } = await updateUser(userId, { bookedTrips: flights });
+
+  if (success) {
+    return {success, id};
+  } else {
+    return {success, error: 'Error updating bookedTrips'};
+  }
+  
+};
+
+export { getAllUsers, getUserById, addUser, addUserWithId, updateUser, deleteUser, addFlightToUser };
