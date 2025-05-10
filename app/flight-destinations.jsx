@@ -238,8 +238,8 @@ export default function FlightDestinations() {
                   </View>
                 )}
                 <View style={styles.featuredInfo}>
-                  <Text style={styles.destinationName}>{destination.cityFromName}</Text>
-                  <Text style={styles.destinationLocation}>{destination.cityToName}</Text>
+                  <Text style={styles.destinationName}>{destination.cityToName}</Text>
+                  <Text style={styles.destinationLocation}>{destination.cityFromName}</Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -265,8 +265,8 @@ export default function FlightDestinations() {
               <Image source={{ uri: destination.photos[0] }} style={styles.newDestinationImage} />
               <View style={styles.newDestinationInfo}>
                 <View>
-                  <Text style={styles.newDestinationName}>{destination.cityFromName}</Text>
-                  <Text style={styles.newDestinationLocation}>{destination.cityToName}</Text>
+                  <Text style={styles.newDestinationName}>{destination.cityToName}</Text>
+                  <Text style={styles.newDestinationLocation}>{destination.cityFromName}</Text>
                 </View>
                 <View style={styles.newDestinationRating}>
                   <Ionicons name="star" size={14} color="#FFD700" />

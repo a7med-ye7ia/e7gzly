@@ -18,22 +18,6 @@ export default function ProductInfo() {
   // const interests = params.interests ? JSON.parse(params.interests) : []
 
   // data use cases
-  const [name, setName] = useState(params.name)
-  const [location, setLocation] = useState(params.location)
-  const [featured, setFeatured] = useState(params.featured || false)
-  const [rating, setRating] = useState(params.rating)
-  const [price, setPrice] = useState(params.price)
-  const [neww, setNeww] = useState(params.new)
-  
-  // image use cases
-  const [image, setImage] = useState(params.photos ? params.photos[0] : null)
-  const [imageFile, setImageFile] = useState(null)
-  const [isImageUpdated, setIsImageUpdated] = useState(false)
-
-  // loading use cases
-  const [isUploading, setIsUploading] = useState(false)
-
-  // ! ///////////////////////////
   const [cityFromCode, setCityFromCode] = useState(params.cityFromCode || "");
   const [cityFromName, setCityFromName] = useState(params.cityFromName || "");
   const [flightTime, setFlightTime] = useState(params.flightTime || "");
@@ -43,33 +27,94 @@ export default function ProductInfo() {
   const [flightDuration, setFlightDuration] = useState(params.flightDuration || "");
   const [airLine, setAirLine] = useState(params.airLine || "");
   const [flightClass, setFlightClass] = useState(params.class || "");
+  const [price, setPrice] = useState(params.price)
+  const [neww, setNeww] = useState(params.new)
+  const [featured, setFeatured] = useState(params.featured || false)
   const [about, setAbout] = useState(params.about || "");
+  const [photos, setPhotos] = useState(params.photos || []);
+  const [interests, setInterests] = useState(params.interests || []);
+  const [rating, setRating] = useState(params.rating || 0)
+
+  // image useCases
+  const [images, setImages] = useState(params.photos ? params.photos : []) // we will use this to show the updated data till upload finish
+  const [imageFiles, setImageFiles] = useState([]) // we will use this to save the files need to upload
+  const [isImageUpdated, setIsImageUpdated] = useState([false, false, false, false]) // to know if images updated
+
+  // for animation
+  const [isUploading, setIsUploading] = useState(false)
 
   const handleSave = async () => {
     console.log("updates is uploading, please wait...");
    
     setIsUploading(true);
-    let uploadResult = {}
-    if (isImageUpdated) {
-      uploadResult = await uploadImage(imageFile);
+    let uploadResult = []
+    
+    if (isImageUpdated[0]) {
+      console.log("Image[0] is updated");
+      const temp = await uploadImage(imageFiles[0]);
+      if(temp.success) {
+        uploadResult[0] = temp.url;
+        console.log("Image[0] uploaded successfully");
+      } else {
+        console.log("Image[0] upload failed, error message: ", uploadResult[0].error);
+        uploadResult[0] = photos.url;
+      }
     }
-
-    if (uploadResult.success) {
-      console.log("Image uploaded successfully");
-      setImage(uploadResult.data.url);
-    } else { 
-      console.log("Image upload failed, error message: ", uploadResult.err.message);
+    if (isImageUpdated[1]) {
+      console.log("Image[0] is updated");
+      const temp = await uploadImage(imageFiles[1]);
+      if(temp.success) {
+        uploadResult[1] = temp.url;
+        console.log("Image[0] uploaded successfully");
+      } else {
+        console.log("Image[1] upload failed, error message: ", uploadResult[0].error);
+        uploadResult[1] = photos.url;
+      }
+    }
+    if (isImageUpdated[2]) {
+      console.log("Image[0] is updated");
+      const temp = await uploadImage(imageFiles[2]);
+      if(temp.success) {
+        uploadResult[2] = temp.url;
+        console.log("Image[0] uploaded successfully");
+      } else {
+        console.log("Image[2] upload failed, error message: ", uploadResult[0].error);
+        uploadResult[2] = photos.url;
+      }
+    }
+    if (isImageUpdated[3]) {
+      console.log("Image[0] is updated");
+      const temp = await uploadImage(imageFiles[3]);
+      if(temp.success) {
+        uploadResult[3] = temp.url;
+        console.log("Image[0] uploaded successfully");
+      } else {
+        console.log("Image[3] upload failed, error message: ", uploadResult[0].error);
+        uploadResult[3] = photos.url;
+      }
     }
     
 
+    setPhotos(uploadResult);
+    
     const updates = {
-      name: name,
-      location: location,
-      image: image,
-      featured: featured,
-      rating: rating || 0,
-      price: price,
-      new: neww || true, // ! update this when the search page is done
+      cityFromCode,
+      cityFromName,
+      flightTime,
+      cityToCode,
+      cityToName,
+      arrivalTime,
+      flightDuration,
+      airLine,
+      flightClass,
+      price,
+      neww,
+      featured,
+      about,
+      photos,
+      interests,
+      rating,
+      new: neww,
     }
 
     if (params.id) {
@@ -94,6 +139,7 @@ export default function ProductInfo() {
     setIsUploading(false);
     router.back();
   }
+
   const handleDelete =  async () => {
     const data = await getFlightById(params.id);
     const imageUrl = data.image;
@@ -108,23 +154,33 @@ export default function ProductInfo() {
     router.back();
   }
 
-  const getImage = async () => {
+  const getImage = async (index) => {
     setIsImageUpdated(true);
     const result = await pickImage();
     if (result.success) {
-      setImageFile(result.file);
+      const temp = [...imageFiles];
+      temp[index] = result.file;
+      setImageFiles(temp);
+
+      const temp2 = [...isImageUpdated];
+      temp2[index] = true;
+      setIsImageUpdated(temp2);
+      
+      const temp3 = [...images];
+      temp3[index] = result.file.uri;
+      setImages(temp3);
       console.log("Image selected successfully");
     } else {
       console.log("Image selection failed", error);
     }
   }
 
-  const handleUpload = async () => {
-    setIsUploading(true);
-    const imageUrl = await uploadImage();
-    setIsUploading(false);
-    setImage(imageUrl);
-  }
+  // const handleUpload = async () => {
+  //   setIsUploading(true);
+  //   const imageUrl = await uploadImage();
+  //   setIsUploading(false);
+  //   setImage(imageUrl);
+  // }
 
   return (
     <ScrollView style={[stylesAuth.containerSigUp, { paddingBottom: 100 }]}>
@@ -271,10 +327,40 @@ export default function ProductInfo() {
       </View>
   
       {/* Photos */}
-      <TouchableOpacity onPress={getImage}>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 10, width: '100%', height: image ? 'auto' : 200, backgroundColor: '#eeeee4' }}>
-          {image ? (
-            <Image source={{ uri: image }} style={stylePages.mainImage} resizeMode="cover" />
+      <TouchableOpacity onPress={() => getImage(0)}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 10, width: '100%', height: images[0] ? 'auto' : 200, backgroundColor: '#eeeee4' }}>
+          {images[0] ? (
+            <Image source={{ uri: images[0] }} style={stylePages.mainImage} resizeMode="cover" />
+          ) : (
+            <Ionicons name="add" size={40} color={'grey'} />
+          )}
+        </View>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => getImage(1)}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 10, width: '100%', height: images[1] ? 'auto' : 200, backgroundColor: '#eeeee4' }}>
+          {images[1] ? (
+            <Image source={{ uri: images[1] }} style={stylePages.mainImage} resizeMode="cover" />
+          ) : (
+            <Ionicons name="add" size={40} color={'grey'} />
+          )}
+        </View>
+      </TouchableOpacity>
+      
+      <TouchableOpacity onPress={() => getImage(2)}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 10, width: '100%', height: images[2] ? 'auto' : 200, backgroundColor: '#eeeee4' }}>
+          {images[2] ? (
+            <Image source={{ uri: images[2] }} style={stylePages.mainImage} resizeMode="cover" />
+          ) : (
+            <Ionicons name="add" size={40} color={'grey'} />
+          )}
+        </View>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => getImage(3)}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 10, width: '100%', height: images[3] ? 'auto' : 200, backgroundColor: '#eeeee4' }}>
+          {images[3] ? (
+            <Image source={{ uri: images[3] }} style={stylePages.mainImage} resizeMode="cover" />
           ) : (
             <Ionicons name="add" size={40} color={'grey'} />
           )}
