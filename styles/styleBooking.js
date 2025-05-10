@@ -530,7 +530,10 @@ export default StyleSheet.create({
   baggageOptions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-
+    width: "70%",
+    marginLeft:20,
+    marginRight:20,
+    paddingRight:20,
   },
   baggageButton: {
     borderColor: '#5D50C6',

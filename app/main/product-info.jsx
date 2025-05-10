@@ -6,7 +6,7 @@ import styles from '../../styles/stylePages';
 export default function ProductInfo() {
   const router = useRouter()
   const params = useLocalSearchParams()
-
+  const [cityFrom, cityTo] = [params.cityFromName, params.cityToName];
   const photos = [
     params.photos[1],
     params.photos[2].replace("w=800", "w=801"), 
@@ -17,12 +17,11 @@ export default function ProductInfo() {
     router.push({
       pathname: "/Book",
       params: {
-        fromName: params.cityNameFrom || params.from,
-        fromCode: params.cityFromCode || "",
-        toName: params.cityNameTo || params.to,
-        toCode: params.cityToCode || "",
+        cityFromCode: params.cityFromCode,
+        cityFromName: params.cityFromName,
+        cityToCode: params.cityToCode,
+        cityToName: params.cityToName,
         price: params.price,
-        // date: getCurrentDate(),
       },
     })
   }
@@ -39,7 +38,7 @@ export default function ProductInfo() {
 
       <View style={styles.infoContainer}>
         <View style={styles.titleRow}>
-          <Text style={styles.title}>{params.cityNameTo}</Text>
+          <Text style={styles.title}>{params.cityToName}</Text>
           <View style={styles.ratingContainer}>
             <Ionicons name="star" size={16} color="#FFD700" />
             <Text style={styles.rating}>4.8</Text>

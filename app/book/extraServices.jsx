@@ -7,7 +7,7 @@ import {
     StyleSheet,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useRouter } from "expo-router"
+import { useLocalSearchParams, useRouter } from "expo-router";
 import styles from "../../styles/styleBooking";
 
 const baggageOptions = [
@@ -19,17 +19,36 @@ const baggageOptions = [
 ];
 
 const ExtraServicesScreen = ({ navigation }) => {
+    const params = useLocalSearchParams();
+
     const router = useRouter();
     const [selectedBaggage, setSelectedBaggage] = useState(null);
     const [selectedService, setSelectedService] = useState(null);
-
     const getTotalPrice = () => {
         let total = 0;
         if (selectedBaggage) total += selectedBaggage.price;
         if (selectedService === 'lounge') total += 2400000;
         if (selectedService === 'insurance') total += 1950000;
         return total;
+
     };
+
+    const handleCheckoutScreen = () => {
+        router.push({
+            pathname: "/main/CheckoutScreen",
+            params: {
+                cityFromCode: params.cityFromCode,
+                cityFromName: params.cityFromName,
+                cityToCode: params.cityToCode,
+                cityToName: params.cityToName,
+                selectedSeats: params.selectedSeats ,
+                totalPrice: params.totalPrice,
+                extraServicesPrice: getTotalPrice(),
+                seats: params.seats,
+
+            },
+        });
+    }
 
     return (
         <ScrollView style={styles.flightListContainer} showsVerticalScrollIndicator={false}>
@@ -112,7 +131,7 @@ const ExtraServicesScreen = ({ navigation }) => {
                 <Text style={styles.totalText}>Total Price: IDR {getTotalPrice().toLocaleString()}</Text>
                 <TouchableOpacity
                     style={styles.continueButton}
-                    onPress={() => router.push("/main/CheckoutScreen")}
+                    onPress={() => handleCheckoutScreen()}
                 >
                     <Text style={styles.continueButtonText}>Continue to Payment</Text>
                 </TouchableOpacity>
