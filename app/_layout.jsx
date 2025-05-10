@@ -6,7 +6,7 @@ import { usePathname } from 'expo-router';
 export default function RootLayout() {
   const currentPath = usePathname();  
 
-  const hidePrefixes = ['/', '/login', '/login/ForgetPassword', '/login/SignUp'];
+  const hidePrefixes = ['/', '/login', '/login/ForgetPassword', '/login/SignUp' ,'/ChatBot'];
 const shouldShowBottomBar = !hidePrefixes.some(prefix =>
     prefix === '/' ? currentPath === '/' : currentPath.startsWith(prefix)
   );

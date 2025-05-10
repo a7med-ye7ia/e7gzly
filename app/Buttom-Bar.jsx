@@ -71,6 +71,22 @@ export default function ButtomBar() {
           Booked
         </Text>
       </TouchableOpacity>
+      {/* Chat */}
+      <TouchableOpacity style={buttonBarStyles.button} onPress={() => router.push("/ChatBot")}>
+        <Ionicons
+          name="chatbubbles"
+          size={24}
+          color={currentPath === "/ChatBot" ? activeColor : inactiveColor}
+        />
+        <Text
+          style={[
+            buttonBarStyles.buttonText,
+            { color: currentPath === "/chatBot" ? activeColor : inactiveColor }
+          ]}
+        >
+          Chat
+        </Text>
+      </TouchableOpacity>
 
       {/*Profile */}
       <TouchableOpacity style={buttonBarStyles.button} onPress={() => router.push("/profile/profile")}>

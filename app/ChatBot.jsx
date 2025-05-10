@@ -17,6 +17,8 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { useRouter } from "expo-router";
+
 
 
 const genAI = new GoogleGenerativeAI("AIzaSyBvncl5FLhVQLnHS4wkXeremyRRLL2G6XE");
@@ -39,6 +41,8 @@ export default function ChatBot() {
     const [isLoading ,setIsLoading] = useState(false);
     const scrollViewRef = useRef(null);
     const fadeAnim = useRef(new Animated.Value(1)).current;
+
+    const router = useRouter();
 
     useEffect(() => {
         const keyboardWillShow = Keyboard.addListener(
@@ -158,8 +162,10 @@ export default function ChatBot() {
                     />
                     <Text style={styles.appTitle}>Chat Bot</Text>
                 </View>
-                <TouchableOpacity style={styles.settingButton}>
-                    <Ionicons name="arrow-redo-circle-outline" size={24} color="#8E8E93"/>
+                <TouchableOpacity  onPress={() => router.back()} 
+                style={styles.settingButton}
+               >
+                    <Ionicons name="arrow-redo-outline" size={24} color="#8E8E93"/>
                 </TouchableOpacity>
             </View> 
         </Animated.View>     
@@ -224,7 +230,7 @@ export default function ChatBot() {
                         <Ionicons
                             name = "send"
                             size={24}
-                            color={inputText.trim() && !isLoading ? "#0A84FF" : "#666"}
+                            color={inputText.trim() && !isLoading ? "#5A41D7" : "#666"}
                         />
                     </TouchableOpacity>
                 </View>
@@ -236,7 +242,7 @@ export default function ChatBot() {
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        backgroundColor: "#000",
+        backgroundColor: "#FFFFFF", // ← أبيض
     },
     topBar:{
         flexDirection :"row",
@@ -245,7 +251,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop:50,
         paddingBottom:20,
-        backgroundColor:"#3C3C3E",
+        backgroundColor:"#5C40CC", // ← بنفسجي بدل الرمادي
     },
     topBarContent: {
         flexDirection :"row",
@@ -281,12 +287,12 @@ const styles = StyleSheet.create({
         textAlign:"center",
         marginBottom: 8,
         fontSize: 24,
-        color: "#FFFFFF",
+        color: "#333333", // ← لون غامق ليتناسب مع الأبيض
     },
     subGreeting: {
         textAlign:"center",
         fontSize: 18,
-        color: "#8E8E93",
+        color: "#666666", // ← رمادي أفتح
     },
     actionContainer: {
         alignItems:"center",
@@ -301,17 +307,16 @@ const styles = StyleSheet.create({
     ActionButton: {
         flexDirection: "row",
         alignItems:"center",
-        backgroundColor:"#2C2C2E",
+        backgroundColor:"#E5E5EA",
         paddingVertical: 12 ,
         paddingHorizontal: 16,
         borderRadius: 8,
         marginHorizontal: 5,
         minWidth: width * 0.4,
         justifyContent: "center",
-
     },
     actionButtonText: {
-        color: "#FFFFFF",
+        color: "#333333",
         marginLeft: 8,
         fontSize: 16,
     },
@@ -325,7 +330,7 @@ const styles = StyleSheet.create({
         marginBottom:10,
     },
     userMessage: {
-        backgroundColor: "#064E3B",
+        backgroundColor: "#5C40CC", 
         alignSelf: "flex-end",
         borderBottomLeftRadius: 5,
     },
@@ -334,7 +339,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     aiMessage: {
-        backgroundColor: "#E5C07B",
+        backgroundColor: "#F2F2F7",  
         alignSelf: "flex-start",
         borderBottomLeftRadius:5,
     },
@@ -343,16 +348,16 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
     },
     inputAreaContainer: {
-        backgroundColor: "#2C2C2E",
+        backgroundColor: "#F2F2F7",
         borderTopWidth: 1,
-        borderBottomColor: "#3C3C3E",
+        borderBottomColor: "#E5E5EA",
         paddingVertical: 8,
         paddingHorizontal: 16,
     },
     inputArea: {
         flexDirection : "row",
         alignItems: "center",
-        backgroundColor: "#1C1C1E",
+        backgroundColor: "#FFFFFF",
         borderRadius: 25,
         paddingHorizontal: 15,
         paddingVertical: 8,
@@ -361,13 +366,13 @@ const styles = StyleSheet.create({
             width: 0,
             height: 2,
         },
-        shadowOpacity:0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        shadowOpacity:0.1,
+        shadowRadius: 2,
+        elevation: 3,
     },
     input:{
         flex: 1,
-        color: "#FFFFFF",
+        color: "#000000",
         fontSize: 16,
         marginHorizontal:10,
         maxHeight: 100,
@@ -384,6 +389,6 @@ const styles = StyleSheet.create({
     },
     mainContainer: {
         flex : 1,
-        backgroundColor : "#1C1C1E",
+        backgroundColor : "#FFFFFF", // ← أبيض
     },
 });
