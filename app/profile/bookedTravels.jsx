@@ -57,27 +57,27 @@ export default function BookedTravels() {
     fetchUserData();
   }, []);
 
-  const goToDeatails = (id) => {
+  const goToDeatails = (ID) => {
     router.push({
       pathname: "/main/product-info",
       params: {
-        id: trip.id,
-        cityFromCode: trip.cityFromCode,
-        cityFromName: trip.cityFromName,
-        cityToCode: trip.cityToCode,
-        cityToName: trip.cityToName,
-        flightTime: trip.flightTime,
-        arrivalTime: trip.arrivalTime,
-        flightDuration: trip.flightDuration,
-        airLine: trip.airLine,
-        class: trip.class,
-        price: trip.price,
-        new: trip.new,
-        featured: trip.featured,
-        about: trip.about,
-        photos: trip.photos,
-        interests: trip.interests,
-        rating: trip.rating,
+        id: ID,
+        cityFromCode: bookedTrips.find((trip) => trip.id === ID).data.cityFromCode,
+        cityFromName: bookedTrips.find((trip) => trip.id === ID).data.cityFromName,
+        cityToCode: bookedTrips.find((trip) => trip.id === ID).data.cityToCode,
+        cityToName: bookedTrips.find((trip) => trip.id === ID).data.cityToName,
+        flightTime: bookedTrips.find((trip) => trip.id === ID).data.flightTime,
+        arrivalTime: bookedTrips.find((trip) => trip.id === ID).data.arrivalTime,
+        flightDuration: bookedTrips.find((trip) => trip.id === ID).data.flightDuration,
+        airLine: bookedTrips.find((trip) => trip.id === ID).data.airLine,
+        class: bookedTrips.find((trip) => trip.id === ID).data.class,
+        price: bookedTrips.find((trip) => trip.id === ID).data.price,
+        new: bookedTrips.find((trip) => trip.id === ID).data.new,
+        featured: bookedTrips.find((trip) => trip.id === ID).data.featured,
+        about: bookedTrips.find((trip) => trip.id === ID).data.about,
+        photos: bookedTrips.find((trip) => trip.id === ID).data.photos,
+        interests: bookedTrips.find((trip) => trip.id === ID).data.interests,
+        rating: bookedTrips.find((trip) => trip.id === ID).data.rating,
         showOnly: true,
       }
     })
@@ -95,9 +95,9 @@ export default function BookedTravels() {
 
       {bookedTrips.map((trip) => (
         <TouchableOpacity
-          key={trip.id} // the trip is the id it self
+          key={trip.id} 
           style={styles.flightCard}
-          onPress={() => goToDeatails(trip)}
+          onPress={() => goToDeatails(trip.id)}
         >
           <View style={styles.flightDetails}>
             {/* Origin */}

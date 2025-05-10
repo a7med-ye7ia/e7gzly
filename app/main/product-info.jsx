@@ -1,20 +1,24 @@
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { Ionicons } from "@expo/vector-icons"
-import styles from '../../styles/stylePages';
+import styles from '../../styles/stylePages'
 
 export default function ProductInfo() {
   const router = useRouter()
   const params = useLocalSearchParams()
-  const [cityFrom, cityTo] = [params.cityFromName, params.cityToName];
-  const photoArray = params.photos.split(',')
+
+  const [cityFrom, cityTo] = [params.cityFromName, params.cityToName]
+  const photoArray = (params.photos || '').split(',')
+
   const photos = [
-    photoArray[1],
-    photoArray[2].replace("w=800", "w=801"),
-    photoArray[3].replace("w=800", "w=802"),
+    photoArray[1] || '',
+    (photoArray[2] || '').replace("w=800", "w=801"),
+    (photoArray[3] || '').replace("w=800", "w=802"),
   ]
 
-  const handelDetailTraveler = () => {
+  const showOnly = params.showOnly === 'true'
+
+  const handleDetailTraveler = () => {
     router.push({
       pathname: "/Book",
       params: {
@@ -36,11 +40,13 @@ export default function ProductInfo() {
         </TouchableOpacity>
       </View>
 
-      <Image source={{ uri: photoArray[0] }} style={styles.mainImage} resizeMode="cover" />
+      {photoArray[0] ? (
+        <Image source={{ uri: photoArray[0] }} style={styles.mainImage} resizeMode="cover" />
+      ) : null}
 
       <View style={styles.infoContainer}>
         <View style={styles.titleRow}>
-          <Text style={styles.title}>{params.cityToName}</Text>
+          <Text style={styles.title}>{params.cityToName || 'Unknown Destination'}</Text>
           <View style={styles.ratingContainer}>
             <Ionicons name="star" size={16} color="#FFD700" />
             <Text style={styles.rating}>4.8</Text>
@@ -50,14 +56,21 @@ export default function ProductInfo() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>About</Text>
-          <Text style={styles.description}>{params.about}</Text>
+          <Text style={styles.description}>{params.about || 'No description available.'}</Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Photos</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photosScroll}>
             {photos.map((photo, index) => (
-              <Image key={index} source={{ uri: photo }} style={styles.thumbnail} resizeMode="cover" />
+              photo ? (
+                <Image
+                  key={index}
+                  source={{ uri: photo }}
+                  style={styles.thumbnail}
+                  resizeMode="cover"
+                />
+              ) : null
             ))}
           </ScrollView>
         </View>
@@ -69,15 +82,17 @@ export default function ProductInfo() {
           </View>
         </View>
 
-        {!params.showOnly && <View style={styles.bookingContainer}>
-          <View>
-            <Text style={styles.priceLabel}>start from</Text>
-            <Text style={styles.price}>IDR {params.price}</Text>
+        {!showOnly && (
+          <View style={styles.bookingContainer}>
+            <View>
+              <Text style={styles.priceLabel}>start from</Text>
+              <Text style={styles.price}>IDR {params.price}</Text>
+            </View>
+            <TouchableOpacity style={styles.bookButton} onPress={handleDetailTraveler}>
+              <Text style={styles.bookButtonText}>Book Now</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.bookButton} onPress={handelDetailTraveler}>
-            <Text style={styles.bookButtonText}>Book Now</Text>
-          </TouchableOpacity>
-        </View>}
+        )}
       </View>
     </ScrollView>
   )

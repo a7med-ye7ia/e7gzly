@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { View, Text, Image, ScrollView, TouchableOpacity, Dimensions, TextInput } from "react-native"
 import { useRouter } from "expo-router"
@@ -14,7 +12,6 @@ import defaultImage from "../assets/default-avatar.jpg"
 const { width } = Dimensions.get("window")
 const cardWidth = (width - 60) / 2
 
-
 export default function FlightDestinations() {
   const router = useRouter()
   const [userFirstName, setFirstName] = useState("")
@@ -22,18 +19,12 @@ export default function FlightDestinations() {
   const [profileImage, setProfileImage] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [destinations, setDestinations] = useState([])
-
-
   const [filteredDestinations, setFilteredDestinations] = useState(destinations)
   const [isLoading, setIsLoading] = useState(false)
 
   const getData = async () => {
-    console.log("Fetching user data")
     try {
-      // Check if auth is initialized and user is logged in
       if (!auth || !auth.currentUser || !auth.currentUser.email) {
-        console.log("Auth not initialized or user not logged in yet")
-        // Try to get user info from AsyncStorage instead
         const storedUserName = await AsyncStorage.getItem("userName")
         const storedUserEmail = await AsyncStorage.getItem("userEmail")
         const storedProfilePic = await AsyncStorage.getItem("userProfilePic")
@@ -41,7 +32,6 @@ export default function FlightDestinations() {
         if (storedUserName) setFirstName(storedUserName)
         if (storedUserEmail) setUserEmail(storedUserEmail)
         if (storedProfilePic) setProfileImage(storedProfilePic)
-
         return
       }
 
@@ -51,17 +41,12 @@ export default function FlightDestinations() {
       if (data) {
         setProfileImage(data.profilePictureURL ?? null)
         setFirstName(data.firstName ?? "")
-        setUserEmail(userEmail) // Add this line to set the email
+        setUserEmail(userEmail)
 
-        // Store in AsyncStorage for future use
         await AsyncStorage.setItem("userProfilePic", data.profilePictureURL ?? "")
         await AsyncStorage.setItem("userName", data.firstName ?? "")
-        await AsyncStorage.setItem("userEmail", userEmail) // Add this line to store email
-      } else {
-        console.warn("User data not found")
+        await AsyncStorage.setItem("userEmail", userEmail)
       }
-
-      console.log("fetched", userEmail)
     } catch (error) {
       console.error("Error fetching user data:", error)
     }
@@ -73,17 +58,11 @@ export default function FlightDestinations() {
       if (!isLoggedIn) {
         router.replace("/")
       } else {
-        // Fetch user data from AsyncStorage
         const storedUserName = await AsyncStorage.getItem("userName")
         const storedUserEmail = await AsyncStorage.getItem("userEmail")
 
-        if (storedUserName) {
-          setFirstName(storedUserName) // Fixed: using the correct setter
-        }
-
-        if (storedUserEmail) {
-          setUserEmail(storedUserEmail)
-        }
+        if (storedUserName) setFirstName(storedUserName)
+        if (storedUserEmail) setUserEmail(storedUserEmail)
       }
     }
 
@@ -91,18 +70,12 @@ export default function FlightDestinations() {
   }, [])
 
   useEffect(() => {
-    // Set up auth state listener
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        console.log("User is signed in:", user.email)
-        getData() // Fetch user data when auth state changes to signed in
-      } else {
-        console.log("User is signed out")
-        // Handle signed out state
+        getData()
       }
     })
 
-    // Clean up subscription
     return () => unsubscribe()
   }, [])
 
@@ -138,7 +111,7 @@ export default function FlightDestinations() {
           })
 
           setDestinations(getDestinations)
-          setFilteredDestinations(getDestinations) // Initialize filtered destinations
+          setFilteredDestinations(getDestinations)
         } else if (error) {
           console.error("Error fetching flights:", error)
         }
@@ -156,7 +129,7 @@ export default function FlightDestinations() {
     const filteredData = destinations.filter(
       (destination) =>
         destination.cityFromName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        destination.cityToName.toLowerCase().includes(searchQuery.toLowerCase()),
+        destination.cityToName.toLowerCase().includes(searchQuery.toLowerCase())
     )
     setFilteredDestinations(filteredData)
   }, [searchQuery, destinations])
@@ -203,7 +176,6 @@ export default function FlightDestinations() {
         </TouchableOpacity>
       </View>
 
-      {/* Search Bar */}
       <TextInput
         style={styles.searchBar}
         placeholder="Search destinations..."
@@ -211,7 +183,6 @@ export default function FlightDestinations() {
         value={searchQuery}
       />
 
-      {/* Featured Destinations */}
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>Featured Destinations</Text>
 
@@ -222,8 +193,8 @@ export default function FlightDestinations() {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 10 }}
-            snapToInterval={cardWidth + 15} // Add this for snapping effect
-            decelerationRate="fast" // Add this for better scrolling
+            snapToInterval={cardWidth + 15}
+            decelerationRate="fast"
           >
             {featuredDestinations.map((destination) => (
               <TouchableOpacity
@@ -250,7 +221,6 @@ export default function FlightDestinations() {
         )}
       </View>
 
-      {/* New This Year Section */}
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>New This Year</Text>
 
@@ -283,4 +253,3 @@ export default function FlightDestinations() {
     </ScrollView>
   )
 }
-
