@@ -35,6 +35,7 @@ export default function SelectSeat() {
         router.push({
             pathname: "/book/extraServices",
             params: {
+                id: params.id,
                 cityFromCode: params.cityFromCode,
                 cityFromName: params.cityFromName,
                 cityToCode: params.cityToCode,

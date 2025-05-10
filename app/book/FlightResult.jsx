@@ -28,6 +28,7 @@ const FlightResultScreen = () => {
     router.push({
       pathname: "./DetailTraveler",
       params: {
+        id: params.id,
         cityFromCode: params.cityFromCode,
         cityFromName: params.cityFromName,
         cityToCode: params.cityToCode,

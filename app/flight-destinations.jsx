@@ -182,6 +182,7 @@ export default function FlightDestinations() {
         photos: destination.photos,
         interests: destination.interests,
         rating: destination.rating,
+        showOnly: false,
       },
     })
   }

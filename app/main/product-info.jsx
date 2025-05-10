@@ -7,16 +7,18 @@ export default function ProductInfo() {
   const router = useRouter()
   const params = useLocalSearchParams()
   const [cityFrom, cityTo] = [params.cityFromName, params.cityToName];
+  const photoArray = params.photos.split(',')
   const photos = [
-    params.photos[1],
-    params.photos[2].replace("w=800", "w=801"), 
-    params.photos[3].replace("w=800", "w=802"),
+    photoArray[1],
+    photoArray[2].replace("w=800", "w=801"),
+    photoArray[3].replace("w=800", "w=802"),
   ]
 
   const handelDetailTraveler = () => {
     router.push({
       pathname: "/Book",
       params: {
+        id: params.id,
         cityFromCode: params.cityFromCode,
         cityFromName: params.cityFromName,
         cityToCode: params.cityToCode,
@@ -34,7 +36,7 @@ export default function ProductInfo() {
         </TouchableOpacity>
       </View>
 
-      <Image source={{ uri: params.photos[0] }} style={styles.mainImage} resizeMode="cover" />
+      <Image source={{ uri: photoArray[0] }} style={styles.mainImage} resizeMode="cover" />
 
       <View style={styles.infoContainer}>
         <View style={styles.titleRow}>
@@ -67,7 +69,7 @@ export default function ProductInfo() {
           </View>
         </View>
 
-        <View style={styles.bookingContainer}>
+        {!params.showOnly && <View style={styles.bookingContainer}>
           <View>
             <Text style={styles.priceLabel}>start from</Text>
             <Text style={styles.price}>IDR {params.price}</Text>
@@ -75,7 +77,7 @@ export default function ProductInfo() {
           <TouchableOpacity style={styles.bookButton} onPress={handelDetailTraveler}>
             <Text style={styles.bookButtonText}>Book Now</Text>
           </TouchableOpacity>
-        </View>
+        </View>}
       </View>
     </ScrollView>
   )

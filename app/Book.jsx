@@ -196,6 +196,7 @@ export default function Book() {
     router.push({
       pathname: "./book/FlightResult",
       params: {
+        id: params.id,
         cityFromCode: params.cityFromCode,
         cityFromName: params.cityFromName,
         cityToCode: params.cityToCode,
@@ -400,73 +401,76 @@ export default function Book() {
         </Modal>
 
         {/* Booking Modal */}
+
+        {/* Booking Modal */}
         <Modal
-          visible={isBookingModalVisible}
-          transparent
-          animationType="fade"
-          onRequestClose={() => setIsBookingModalVisible(false)}
+            visible={isBookingModalVisible}
+            transparent
+            animationType="fade"
+            onRequestClose={() => setIsBookingModalVisible(false)}
         >
           <View style={styles.modalOverlay}>
             <View style={styles.card}>
               <View style={styles.header}>
-                <Text style={styles.headerText}>Booking Details</Text>
+                {/*<Text style={styles.headerText}>Booking Details</Text>*/}
+                <Text style={styles.headerText}>Confirm</Text>
               </View>
 
-              {bookingDetails && (
-                <View style={styles.content}>
-                  <View style={styles.row}>
-                    <Ionicons name="airplane" size={20} color={primaryColor} style={styles.icon} />
-                    <Text style={styles.label}>Trip Type:</Text>
-                    <Text style={styles.value}>{bookingDetails.tripType}</Text>
-                  </View>
+              {/*{bookingDetails && (*/}
+              {/*    <View style={styles.content}>*/}
+              {/*      /!*<View style={styles.row}>*!/*/}
+              {/*      /!*  <Ionicons name="airplane" size={20} color={primaryColor} style={styles.icon} />*!/*/}
+              {/*      /!*  <Text style={styles.label}>Trip Type:</Text>*!/*/}
+              {/*      /!*  <Text style={styles.value}>{bookingDetails.tripType}</Text>*!/*/}
+              {/*      /!*</View>*!/*/}
 
-                  <View style={styles.row}>
-                    <Ionicons name="location" size={20} color={primaryColor} style={styles.icon} />
-                    <Text style={styles.label}>From:</Text>
-                    <Text style={styles.value}>{bookingDetails.from}</Text>
-                  </View>
+              {/*      <View style={styles.row}>*/}
+              {/*        <Ionicons name="location" size={20} color={primaryColor} style={styles.icon} />*/}
+              {/*        <Text style={styles.label}>From:</Text>*/}
+              {/*        <Text style={styles.value}>{bookingDetails.from}</Text>*/}
+              {/*      </View>*/}
 
-                  <View style={styles.row}>
-                    <Ionicons name="location" size={20} color={primaryColor} style={styles.icon} />
-                    <Text style={styles.label}>To:</Text>
-                    <Text style={styles.value}>{bookingDetails.to}</Text>
-                  </View>
+              {/*      <View style={styles.row}>*/}
+              {/*        <Ionicons name="location" size={20} color={primaryColor} style={styles.icon} />*/}
+              {/*        <Text style={styles.label}>To:</Text>*/}
+              {/*        <Text style={styles.value}>{bookingDetails.to}</Text>*/}
+              {/*      </View>*/}
 
-                  <View style={styles.row}>
-                    <Ionicons name="calendar" size={20} color={primaryColor} style={styles.icon} />
-                    <Text style={styles.label}>Departure:</Text>
-                    <Text style={styles.value}>{bookingDetails.departureDate}</Text>
-                  </View>
+              {/*      <View style={styles.row}>*/}
+              {/*        <Ionicons name="calendar" size={20} color={primaryColor} style={styles.icon} />*/}
+              {/*        <Text style={styles.label}>Departure:</Text>*/}
+              {/*        <Text style={styles.value}>{bookingDetails.departureDate}</Text>*/}
+              {/*      </View>*/}
 
-                  {bookingDetails.tripType === "Round Trip" && (
-                    <View style={styles.row}>
-                      <Ionicons name="calendar" size={20} color={primaryColor} style={styles.icon} />
-                      <Text style={styles.label}>Return:</Text>
-                      <Text style={styles.value}>{bookingDetails.returnDate}</Text>
-                    </View>
-                  )}
+              {/*      {bookingDetails.tripType === "Round Trip" && (*/}
+              {/*          <View style={styles.row}>*/}
+              {/*            <Ionicons name="calendar" size={20} color={primaryColor} style={styles.icon} />*/}
+              {/*            <Text style={styles.label}>Return:</Text>*/}
+              {/*            <Text style={styles.value}>{bookingDetails.returnDate}</Text>*/}
+              {/*          </View>*/}
+              {/*      )}*/}
 
-                  <View style={styles.row}>
-                    <Ionicons name="people" size={20} color={primaryColor} style={styles.icon} />
-                    <Text style={styles.label}>Passengers:</Text>
-                    <Text style={styles.value}>{bookingDetails.passengers}</Text>
-                  </View>
+              {/*      <View style={styles.row}>*/}
+              {/*        <Ionicons name="people" size={20} color={primaryColor} style={styles.icon} />*/}
+              {/*        <Text style={styles.label}>Passengers:</Text>*/}
+              {/*        <Text style={styles.value}>{bookingDetails.passengers}</Text>*/}
+              {/*      </View>*/}
 
-                  <View style={styles.row}>
-                    <Ionicons name="wallet" size={20} color={primaryColor} style={styles.icon} />
-                    <Text style={styles.label}>Total Price:</Text>
-                    <Text style={styles.value}>${bookingDetails.totalPrice}</Text>
-                  </View>
-                </View>
-              )}
+              {/*      <View style={styles.row}>*/}
+              {/*        <Ionicons name="wallet" size={20} color={primaryColor} style={styles.icon} />*/}
+              {/*        <Text style={styles.label}>Total Price:</Text>*/}
+              {/*        <Text style={styles.value}>${bookingDetails.totalPrice}</Text>*/}
+              {/*      </View>*/}
+              {/*    </View>*/}
+              {/*)}*/}
 
               <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button} onPress={goToDetailTraveler}>
                   <Text style={styles.buttonText}>Continue to Traveler Details</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[styles.button, styles.secondaryButton]}
-                  onPress={() => setIsBookingModalVisible(false)}
+                    style={[styles.button, styles.secondaryButton]}
+                    onPress={() => setIsBookingModalVisible(false)}
                 >
                   <Text style={[styles.buttonText, styles.secondaryButtonText]}>Back</Text>
                 </TouchableOpacity>
@@ -474,6 +478,8 @@ export default function Book() {
             </View>
           </View>
         </Modal>
+
+
 
         {/* Book Now Button */}
         <TouchableOpacity

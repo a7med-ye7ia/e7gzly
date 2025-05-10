@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Switch, Image } from "react-native"
+import {View, Text, ScrollView, TextInput, TouchableOpacity, Switch, Image, Alert} from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
@@ -141,11 +141,16 @@ export default function ProductInfo() {
   }
 
   const handleDelete =  async () => {
+    console.log("deleting is uploading, please wait...");
+    console.log("==================")
+    console.log(params.id)
     const data = await getFlightById(params.id);
-    const imageUrl = data.image;
+    console.log("==================")
+    // const imageUrl = data.image;
     const { success, error } = await deleteFlight(params.id);
 
     if (success) {
+      // Alert.alert()
       console.log("Document deleted successfully");
     }
     else {
@@ -183,11 +188,23 @@ export default function ProductInfo() {
   // }
 
   return (
-    <ScrollView style={[stylesAuth.containerSigUp, { paddingBottom: 100 }]}>
+
+    <ScrollView style={[stylesAuth.containerSigUp, { paddingBottom: 100 }]}   contentContainerStyle={{ flexGrow: 1 }}>
       <Text style={stylesAuth.title}>
         {params.id ? "Edit Flight" : "Add Flight"}
       </Text>
-  
+
+      {/* Save & Delete Buttons */}
+      <TouchableOpacity style={stylePages.editButton} onPress={handleSave}>
+        <Text style={stylePages.editButtonText}>{params.id ? 'Update' : 'Save'}</Text>
+      </TouchableOpacity>
+
+      {params.cityToCode && (
+          <TouchableOpacity style={[stylePages.editButton, { backgroundColor: "red", marginTop: 10 }]} onPress={handleDelete}>
+            <Text style={stylePages.editButtonText}>Delete</Text>
+          </TouchableOpacity>
+      )}
+
       {/* FROM CITY */}
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>From (City Name)</Text>
@@ -367,16 +384,16 @@ export default function ProductInfo() {
         </View>
       </TouchableOpacity>
   
-      {/* Save & Delete Buttons */}
-      <TouchableOpacity style={stylePages.editButton} onPress={handleSave}>
-        <Text style={stylePages.editButtonText}>{params.id ? 'Update' : 'Save'}</Text>
-      </TouchableOpacity>
-  
-      {params.id && (
-        <TouchableOpacity style={[stylePages.editButton, { backgroundColor: "red", marginTop: 10 }]} onPress={handleDelete}>
-          <Text style={stylePages.editButtonText}>Delete</Text>
-        </TouchableOpacity>
-      )}
+      {/*/!* Save & Delete Buttons *!/*/}
+      {/*<TouchableOpacity style={stylePages.editButton} onPress={handleSave}>*/}
+      {/*  <Text style={stylePages.editButtonText}>{params.id ? 'Update' : 'Save'}</Text>*/}
+      {/*</TouchableOpacity>*/}
+
+      {/*{params.id && (*/}
+      {/*  <TouchableOpacity style={[stylePages.editButton, { backgroundColor: "red", marginTop: 10 }]} onPress={handleDelete}>*/}
+      {/*    <Text style={stylePages.editButtonText}>Delete</Text>*/}
+      {/*  </TouchableOpacity>*/}
+      {/*)}*/}
     </ScrollView>
   );  
 }

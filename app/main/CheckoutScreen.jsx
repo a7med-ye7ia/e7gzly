@@ -1,5 +1,5 @@
 // CheckoutScreen.js
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   View,
@@ -7,25 +7,20 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  ScrollView 
+  ScrollView, Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Path } from 'react-native-svg';
 import {useLocalSearchParams , useRouter } from 'expo-router';
-
-
-
-
+import {addFlightToUser} from "../../services/userService";
+import {auth} from "../../config/firebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getAuth } from "firebase/auth";
 
 const FlightPath = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
 
-  const handleBookingConfirmation = () => {
-    router.push({
-      pathname: "/main/booking-confirmation",
-    });
-  };
 
   const ROUTE = {
     from: { code: params.cityFromCode, city: params.cityFromName },
@@ -68,10 +63,60 @@ const FlightPath = () => {
 
 export default function CheckoutScreen() {
   const router = useRouter();
-
   const params = useLocalSearchParams();
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  const [userEmail, setUserEmail] = React.useState(null);
+
+  // useEffect(() => {
+  //   const newBooking = auth.onAuthStateChanged((user) => {
+  //     if (user) {
+  //       // console.log("User is signed in:", user.email);
+  //       // setUserEmail(user.email);
+  //       // addFlightToUser(auth.currentUser.email, params.id)
+  //       getData();
+  //     } else {
+  //       Alert.alert("Booking Failed", "Please login first");
+  //       AsyncStorage.getItem("userEmail").then((email) => {
+  //         if (email) {
+  //           console.log("Using stored email:", email);
+  //           setUserEmail(email);
+  //           getData();
+  //         }
+  //       });
+  //     }
+  //   });
+  //
+  //   return () => unsubscribe();
+  // }, []);
+
+  // useEffect(() => {
+  //   const unsubscribe = auth.onAuthStateChanged(async (user) => {
+  //     if (user) {
+  //       await addFlightToUser(user.email, params.id);
+  //       setUserEmail(user.email);
+  //       getData();
+  //     } else {
+  //       Alert.alert("Booking Failed", "Please login first");
+  //       const email = await AsyncStorage.getItem("userEmail");
+  //       if (email) {
+  //         console.log("Using stored email:", email);
+  //         setUserEmail(email);
+  //         getData();
+  //       }
+  //     }
+  //   });
+  //
+  //   return () => unsubscribe();
+  // }, []);
 
 
+  const handleBookingConfirmation = () => {
+    router.push({
+      pathname: "/main/booking-confirmation",
+    });
+  };
 
   const BOOKING = {
     imageUri: '/assets/img.png',
@@ -94,6 +139,18 @@ export default function CheckoutScreen() {
     label: 'Current Balance',
     amount: 'IDR 80.400.000',
   };
+  // addFlightToUser(params.flightId , auth.currentUser.email)
+  const handleCheckBooking = async () =>{
+    const storedUserEmail = await AsyncStorage.getItem("userEmail");
+    console.log("Stored user email:", storedUserEmail);
+    const {success, error} = await addFlightToUser(storedUserEmail, params.id)
+    if (success) {
+      router.push("/book/successBooking")
+    } else {
+      Alert.alert("Booking Failed", error);
+      console.log(error);
+    }
+  }
 
   
   return (
@@ -148,7 +205,7 @@ export default function CheckoutScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.payButton} onPress={() => router.push("/book/successBooking")}>
+        <TouchableOpacity style={styles.payButton} onPress={handleCheckBooking}>
           <Text style={styles.payButtonText}>Pay Now</Text>
         </TouchableOpacity>
 

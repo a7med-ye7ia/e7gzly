@@ -8,47 +8,8 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 import { getUserById } from "../../services/userService";
 import { getFlightById } from "../../services/flightService";
+import { Path } from "react-native-svg";
 
-// const bookedTrips = [
-//   {
-//     id: 1,
-//     origin: {
-//       code: "CAI",
-//       city: "Cairo",
-//       time: "09:00 AM",
-//     },
-//     destination: {
-//       code: "ROM",
-//       city: "Rome",
-//       time: "12:30 PM",
-//     },
-//     duration: "3h 30m",
-//     airline: "EgyptAir",
-//     class: "Economy",
-//     price: "EGP 7,500",
-//     departureDate: "20 June 2025",
-//     returnDate: "30 June 2025",
-//   },
-//   {
-//     id: 2,
-//     origin: {
-//       code: "CAI",
-//       city: "Cairo",
-//       time: "10:00 AM",
-//     },
-//     destination: {
-//       code: "DPS",
-//       city: "Bali",
-//       time: "08:00 PM",
-//     },
-//     duration: "10h 00m",
-//     airline: "Qatar Airways",
-//     class: "Business",
-//     price: "EGP 25,000",
-//     departureDate: "10 July 2025",
-//     returnDate: "20 July 2025",
-//   },
-// ];
 
 
 const AirlineLogo = ({ airline }) => {
@@ -70,29 +31,56 @@ export default function BookedTravels() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const storedUserName = await AsyncStorage.getItem("userName");
-      const storedUserEmail = await AsyncStorage.getItem("userEmail");
+      try {
+        const storedUserEmail = await AsyncStorage.getItem("userEmail");
+        const user = await getUserById(storedUserEmail);
 
-      const user = await getUserById(storedUserEmail);
-      if (user) {
-        const bookedTripsIDs = user.bookedTrips || [];
-        const bookedTripsTemp = [];
-        bookedTripsIDs.forEach(async (tripID) => {
-          const flight = await getFlightById(tripID);
-          bookedTrips.push({data: flight, id: tripID});
-          console.log("Booked Trips:", `${flight.cityFromName} to ${flight.cityToName}`);
-        })
-        setBookedTrips(bookedTrips);
-      } else {
-        console.warn("User data not found");
+        if (user) {
+          const bookedTripsIDs = user.bookedTrips || [];
+
+          const trips = await Promise.all(
+              bookedTripsIDs.map(async (tripID) => {
+                const flight = await getFlightById(tripID);
+                return { data: flight, id: tripID };
+              })
+          );
+
+          setBookedTrips(trips);
+        } else {
+          console.warn("User data not found");
+        }
+      } catch (err) {
+        console.error("Error fetching booked trips:", err);
       }
     };
 
     fetchUserData();
   }, []);
 
-  const goToDeatails = () => {
-    Alert.alert("Flight Details", "Flight details will be shown here.");
+  const goToDeatails = (id) => {
+    router.push({
+      pathname: "/main/product-info",
+      params: {
+        id: trip.id,
+        cityFromCode: trip.cityFromCode,
+        cityFromName: trip.cityFromName,
+        cityToCode: trip.cityToCode,
+        cityToName: trip.cityToName,
+        flightTime: trip.flightTime,
+        arrivalTime: trip.arrivalTime,
+        flightDuration: trip.flightDuration,
+        airLine: trip.airLine,
+        class: trip.class,
+        price: trip.price,
+        new: trip.new,
+        featured: trip.featured,
+        about: trip.about,
+        photos: trip.photos,
+        interests: trip.interests,
+        rating: trip.rating,
+        showOnly: true,
+      }
+    })
   }
 
   return (
@@ -109,7 +97,7 @@ export default function BookedTravels() {
         <TouchableOpacity
           key={trip.id} // the trip is the id it self
           style={styles.flightCard}
-          onPress={goToDeatails}
+          onPress={() => goToDeatails(trip)}
         >
           <View style={styles.flightDetails}>
             {/* Origin */}

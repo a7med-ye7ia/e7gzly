@@ -35,15 +35,17 @@ const deleteUser = async (documentId) => {
 
 const addFlightToUser = async (userId, flightId) => {
   const user = await getUserById(userId);
+  console.log(`=========================${user}`);
   if (!user) {
     // throw new Error('User not found');
     return {success: false, error: 'User not found to update bookedTrips'};
   }
+  console.log(user);
 
-  const flights = user.bookTrips || [];
-  flights.push(flightId);
+  // const flights = user.bookTrips ? user.bookTrips : [];
+  // flights.append(flightId);
 
-  const {success, id, error } = await updateUser(userId, { bookedTrips: flights });
+  const {success, id, error } = await updateUser(userId, { bookedTrips: [...(user.bookedTrips || []), flightId] });
 
   if (success) {
     return {success, id};

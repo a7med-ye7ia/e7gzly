@@ -37,6 +37,7 @@ const ExtraServicesScreen = ({ navigation }) => {
         router.push({
             pathname: "/main/CheckoutScreen",
             params: {
+                id: params.id,
                 cityFromCode: params.cityFromCode,
                 cityFromName: params.cityFromName,
                 cityToCode: params.cityToCode,

@@ -44,7 +44,7 @@ export default function manageFlights() {
       data.forEach((doc) => {
         // console.log('fetching flights from fireStore:', doc.data().name);
         getDestinations.push({
-          id: doc.data().id,
+          id: doc.id,
           cityFromCode: doc.data().cityFromCode,
           cityFromName: doc.data().cityFromName,
           flightTime: doc.data().flightTime,

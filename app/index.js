@@ -44,10 +44,6 @@ export default function Page() {
             <Link href="/login/SignUp" style={styles.secondaryButton}>
               <Text style={styles.secondaryButtonText}>Sign Up</Text>
             </Link>
-            <Link href="/ChatBot" style={styles.secondaryButton}>
-              <Text style={styles.secondaryButtonText}>test</Text>
-            </Link>
-           
           </View>
         </View>
       </ImageBackground>
