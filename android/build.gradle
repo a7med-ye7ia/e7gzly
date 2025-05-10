@@ -6,7 +6,7 @@ buildscript {
         minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
         compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '34')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '34')
-        kotlinVersion = findProperty('android.kotlinVersion') ?:'1.8.10'
+        kotlinVersion = findProperty('android.kotlinVersion') ?:'1.8.22'
 
         ndkVersion = "26.1.10909125"
     }
@@ -15,23 +15,23 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath('com.android.tools.build:gradle')
-        classpath('com.facebook.react:react-native-gradle-plugin')
-        classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
+        // AGP 8.0.2 is known to work with Gradle 8.x
+        classpath("com.android.tools.build:gradle:8.0.2")
+        // React Native’s Gradle plugin
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        // (if you explicitly set Kotlin, ensure it's 1.8.x or above)
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22")
 
         classpath ('com.google.gms:google-services:4.4.2')
         //   classpath("com.android.tools.build:gradle:8.0.2")
-        classpath("expo.modules:expo-module-gradle-plugin:1.0.0")
+        
     }
 
     }
 
 plugins {
-    id "com.facebook.react.rootproject"
-    id "com.android.application" version "7.4.2"
-    id "org.jetbrains.kotlin.android" version "1.8.10"
-    id "expo.modules.gradle.plugin"
-    id("com.google.gms.google-services") version "4.4.2" apply false
+    id ("com.facebook.react.rootproject" )
+    id "org.jetbrains.kotlin.android" version "1.8.22" apply false
 }
 
 
