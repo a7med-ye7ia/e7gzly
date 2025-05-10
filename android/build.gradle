@@ -2,11 +2,11 @@
 
 buildscript {
     ext {
-        buildToolsVersion = findProperty('android.buildToolsVersion') ?: '35.0.0'
+        buildToolsVersion = findProperty('android.buildToolsVersion') ?: '34.0.0'
         minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
-        compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')
+        compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '34')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '34')
-        kotlinVersion = findProperty('android.kotlinVersion') ?: '1.9.25'
+        kotlinVersion = findProperty('android.kotlinVersion') ?:'1.8.10'
 
         ndkVersion = "26.1.10909125"
     }
@@ -21,17 +21,18 @@ buildscript {
 
         classpath ('com.google.gms:google-services:4.4.2')
         //   classpath("com.android.tools.build:gradle:8.0.2")
-        classpath("expo.modules:expo-module-gradle-plugin:1.6.0")
+        classpath("expo.modules:expo-module-gradle-plugin:1.0.0")
     }
 
     }
 
-
-apply plugin: "com.facebook.react.rootproject"
-apply plugin: "com.android.application"
-apply plugin: "org.jetbrains.kotlin.android"
-apply plugin: "expo-module-gradle-plugin"
-id("com.google.gms.google-services") version "4.4.2" apply false
+plugins {
+    id "com.facebook.react.rootproject"
+    id "com.android.application" version "7.4.2"
+    id "org.jetbrains.kotlin.android" version "1.8.10"
+    id "expo.modules.gradle.plugin"
+    id("com.google.gms.google-services") version "4.4.2" apply false
+}
 
 
 allprojects {
