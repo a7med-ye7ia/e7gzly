@@ -43,7 +43,7 @@ export default function SelectSeat() {
                 selectedSeats,
                 totalPrice: seatPrice * selectedSeats.length,
                 seats: params.seats,
-
+                passengerForms: params.passengerForms,
             },
         });
     }

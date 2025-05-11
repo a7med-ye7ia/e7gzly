@@ -34,6 +34,7 @@ const ExtraServicesScreen = ({ navigation }) => {
     };
 
     const handleCheckoutScreen = () => {
+        console.log("Selected Baggage: ", params.selectedSeats);
         router.push({
             pathname: "/main/CheckoutScreen",
             params: {
@@ -42,11 +43,12 @@ const ExtraServicesScreen = ({ navigation }) => {
                 cityFromName: params.cityFromName,
                 cityToCode: params.cityToCode,
                 cityToName: params.cityToName,
-                selectedSeats: params.selectedSeats ,
                 totalPrice: params.totalPrice,
                 extraServicesPrice: getTotalPrice(),
                 seats: params.seats,
-
+                selectedSeats: params.selectedSeats ,
+                passengerForms: params.passengerForms,
+                extras: JSON.stringify([JSON.stringify(selectedBaggage), selectedService]),
             },
         });
     }

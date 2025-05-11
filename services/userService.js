@@ -33,19 +33,15 @@ const deleteUser = async (documentId) => {
   return await deleteDocument(collectionName, documentId);
 }
 
-const addFlightToUser = async (userId, flightId) => {
+const addFlightToUser = async (userId, flightId, bookingDetailsId) => {
   const user = await getUserById(userId);
-  console.log(`=========================${user}`);
   if (!user) {
-    // throw new Error('User not found');
     return {success: false, error: 'User not found to update bookedTrips'};
   }
   console.log(user);
 
-  // const flights = user.bookTrips ? user.bookTrips : [];
-  // flights.append(flightId);
-
-  const {success, id, error } = await updateUser(userId, { bookedTrips: [...(user.bookedTrips || []), flightId] });
+  const {success, id, error } = await updateUser(userId, { bookedTrips: [...(user.bookedTrips || []), flightId],
+                                                           bookedTripsDetails: [...(user.bookedTripsDetails || []), bookingDetailsId] });
 
   if (success) {
     return {success, id};

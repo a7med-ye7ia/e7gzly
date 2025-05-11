@@ -163,6 +163,7 @@ const DetailTraveler = () => {
         if (!validatePassengerData()) {
             return;
         }
+        console.log(passengerForms)
         router.push({
             pathname: "./planeSeats",
             params: {
@@ -172,6 +173,7 @@ const DetailTraveler = () => {
                 cityToCode: params.cityToCode,
                 cityToName: params.cityToName,
                 seats: numSeats,
+                passengerForms: JSON.stringify(passengerForms),
             }
         });
     };

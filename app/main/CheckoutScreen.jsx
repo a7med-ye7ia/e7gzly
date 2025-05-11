@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Svg, { Path } from 'react-native-svg';
 import {useLocalSearchParams , useRouter } from 'expo-router';
 import {addFlightToUser} from "../../services/userService";
+import {addDetailDoc} from "../../services/bookingDetailsService";
 import {auth} from "../../config/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAuth } from "firebase/auth";
@@ -69,49 +70,7 @@ export default function CheckoutScreen() {
 
   const [userEmail, setUserEmail] = React.useState(null);
 
-  // useEffect(() => {
-  //   const newBooking = auth.onAuthStateChanged((user) => {
-  //     if (user) {
-  //       // console.log("User is signed in:", user.email);
-  //       // setUserEmail(user.email);
-  //       // addFlightToUser(auth.currentUser.email, params.id)
-  //       getData();
-  //     } else {
-  //       Alert.alert("Booking Failed", "Please login first");
-  //       AsyncStorage.getItem("userEmail").then((email) => {
-  //         if (email) {
-  //           console.log("Using stored email:", email);
-  //           setUserEmail(email);
-  //           getData();
-  //         }
-  //       });
-  //     }
-  //   });
-  //
-  //   return () => unsubscribe();
-  // }, []);
-
-  // useEffect(() => {
-  //   const unsubscribe = auth.onAuthStateChanged(async (user) => {
-  //     if (user) {
-  //       await addFlightToUser(user.email, params.id);
-  //       setUserEmail(user.email);
-  //       getData();
-  //     } else {
-  //       Alert.alert("Booking Failed", "Please login first");
-  //       const email = await AsyncStorage.getItem("userEmail");
-  //       if (email) {
-  //         console.log("Using stored email:", email);
-  //         setUserEmail(email);
-  //         getData();
-  //       }
-  //     }
-  //   });
-  //
-  //   return () => unsubscribe();
-  // }, []);
-
-
+  
   const handleBookingConfirmation = () => {
     router.push({
       pathname: "/main/booking-confirmation",
@@ -139,15 +98,48 @@ export default function CheckoutScreen() {
     label: 'Current Balance',
     amount: 'IDR 80.400.000',
   };
-  // addFlightToUser(params.flightId , auth.currentUser.email)
+
+  const handleAddFlightDetail = async () => {
+    console.log("Adding flight detail"); // ! delete
+    const numberOfSeats = params.seats;
+    console.log("Number of seats: ", numberOfSeats); // ! delete
+    const selectedSeats = params.selectedSeats;
+    console.log("Selected Seats: ", selectedSeats); // ! delete
+    const passengerArray = JSON.parse(params.passengerForms);
+    console.log("Passenger Forms: ", params.passengerForms); // ! delete
+    const names = passengerArray.map((form) => form.fullName.trim());
+    console.log("Passenger Names: ", names); // ! delete
+    const citizenship = passengerArray.map((form) => form.citizenship.trim());
+    console.log("Passenger Citizenship: ", citizenship); // ! delete
+    const passportNumbers = passengerArray.map((form) => form.passportNumber.trim());
+    console.log("Passenger Passport Numbers: ", passportNumbers); // ! delete
+    const expirationDates = passengerArray.map((form) => form.expirationDate.trim());
+    console.log("Passenger Expiration Dates: ", expirationDates); // ! delete
+    console.log("Seats", JSON.parse(selectedSeats)); // ! delete
+    const doc = {
+      numberOfSeats: parseInt(numberOfSeats),
+      names,
+      citizenship,
+      selectedSeats: JSON.parse(selectedSeats),
+      passportNumbers,
+      expirationDates,
+    }
+    console.log("Flight Detail Document: ", doc); // ! delete
+    return await addDetailDoc(doc);
+  }
+
   const handleCheckBooking = async () =>{
+    console.log("Booking confirmed"); // ! delete
     const storedUserEmail = await AsyncStorage.getItem("userEmail");
-    console.log("Stored user email:", storedUserEmail);
-    const {success, error} = await addFlightToUser(storedUserEmail, params.id)
+    console.log("Stored User Email: ", storedUserEmail);
+    const bookDetail = await handleAddFlightDetail();
+    console.log("Flight Detail: ", bookDetail); // ! delete
+    console.log("Flight Detail ID: ", id); // ! delete
+    const {success, id, error} = await addFlightToUser(storedUserEmail, params.id, bookDetail.id);
     if (success) {
       router.push("/book/successBooking")
     } else {
-      Alert.alert("Booking Failed", error);
+      Alert.alert("Booking Failed", addToUser.error);
       console.log(error);
     }
   }
