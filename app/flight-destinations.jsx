@@ -19,7 +19,7 @@ export default function FlightDestinations() {
   const [profileImage, setProfileImage] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [destinations, setDestinations] = useState([])
-  const [filteredDestinations, setFilteredDestinations] = useState(destinations)
+  const [filteredDestinations, setFilteredDestinations] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 
   const getData = async () => {
@@ -88,25 +88,33 @@ export default function FlightDestinations() {
           const getDestinations = []
 
           data.forEach((doc) => {
+            const flightData = doc.data();
+            const ratings = flightData.ratings || [];
+            const averageRating =
+                ratings.length > 0
+                    ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length
+                    : 0;
+
             getDestinations.push({
               id: doc.id,
-              cityFromCode: doc.data().cityFromCode,
-              cityFromName: doc.data().cityFromName,
-              flightTime: doc.data().flightTime,
-              cityToCode: doc.data().cityToCode,
-              cityToName: doc.data().cityToName,
-              arrivalTime: doc.data().arrivalTime,
-              flightDuration: doc.data().flightDuration,
-              airLine: doc.data().airLine,
-              class: doc.data().class,
-              price: doc.data().price,
-              museumLink: doc.data().museumLink,
-              new: doc.data().new,
-              featured: doc.data().featured,
-              about: doc.data().about,
-              photos: doc.data().photos,
-              interests: doc.data().interests,
-              rating: doc.data().rating,
+              cityFromCode: flightData.cityFromCode,
+              cityFromName: flightData.cityFromName,
+              flightTime: flightData.flightTime,
+              cityToCode: flightData.cityToCode,
+              cityToName: flightData.cityToName,
+              arrivalTime: flightData.arrivalTime,
+              flightDuration: flightData.flightDuration,
+              airLine: flightData.airLine,
+              class: flightData.class,
+              price: flightData.price,
+              museumLink: flightData.museumLink,
+              new: flightData.new,
+              featured: flightData.featured,
+              about: flightData.about,
+              photos: flightData.photos,
+              interests: flightData.interests,
+              ratings: ratings,
+              rating: averageRating.toFixed(1),
             })
           })
 
@@ -127,9 +135,9 @@ export default function FlightDestinations() {
 
   useEffect(() => {
     const filteredData = destinations.filter(
-      (destination) =>
-        destination.cityFromName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        destination.cityToName.toLowerCase().includes(searchQuery.toLowerCase())
+        (destination) =>
+            destination.cityFromName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            destination.cityToName.toLowerCase().includes(searchQuery.toLowerCase())
     )
     setFilteredDestinations(filteredData)
   }, [searchQuery, destinations])
@@ -164,92 +172,92 @@ export default function FlightDestinations() {
   const newDestinations = filteredDestinations.filter((dest) => dest.new)
 
   return (
-    <ScrollView style={styles.containerFlight} showsVerticalScrollIndicator={false}>
-      <View style={styles.headerFlight}>
-        <View>
-          <Text style={styles.greeting}>Hello,</Text>
-          <Text style={styles.userName}>{userFirstName}</Text>
-          <Text style={styles.searchPrompt}>Where to fly today?</Text>
+      <ScrollView style={styles.containerFlight} showsVerticalScrollIndicator={false}>
+        <View style={styles.headerFlight}>
+          <View>
+            <Text style={styles.greeting}>Hello,</Text>
+            <Text style={styles.userName}>{userFirstName}</Text>
+            <Text style={styles.searchPrompt}>Where to fly today?</Text>
+          </View>
+          <TouchableOpacity onPress={() => router.push("/profile/profile")}>
+            <Image source={profileImage ? { uri: profileImage } : defaultImage} style={styles.profileIcon} />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => router.push("/profile/profile")}>
-          <Image source={profileImage ? { uri: profileImage } : defaultImage} style={styles.profileIcon} />
-        </TouchableOpacity>
-      </View>
 
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Search destinations..."
-        onChangeText={(text) => setSearchQuery(text)}
-        value={searchQuery}
-      />
+        <TextInput
+            style={styles.searchBar}
+            placeholder="Search destinations..."
+            onChangeText={(text) => setSearchQuery(text)}
+            value={searchQuery}
+        />
 
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Featured Destinations</Text>
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Featured Destinations</Text>
 
-        {isLoading ? (
-          <Text>Loading featured destinations...</Text>
-        ) : featuredDestinations.length > 0 ? (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 10 }}
-            snapToInterval={cardWidth + 15}
-            decelerationRate="fast"
-          >
-            {featuredDestinations.map((destination) => (
-              <TouchableOpacity
-                key={destination.id}
-                style={[styles.featuredCard, { marginRight: 15, width: cardWidth, marginBottom: 15 }]}
-                onPress={() => navigateToProductInfo(destination)}
+          {isLoading ? (
+              <Text>Loading featured destinations...</Text>
+          ) : featuredDestinations.length > 0 ? (
+              <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ paddingHorizontal: 10 }}
+                  snapToInterval={cardWidth + 15}
+                  decelerationRate="fast"
               >
-                <Image source={{ uri: destination.photos[0] }} style={styles.featuredImage} />
-                {destination.rating && (
-                  <View style={styles.ratingBadge}>
-                    <Ionicons name="star" size={12} color="#FFD700" />
-                    <Text style={styles.ratingText}>{destination.rating}</Text>
-                  </View>
-                )}
-                <View style={styles.featuredInfo}>
-                  <Text style={styles.destinationName}>{destination.cityToName}</Text>
-                  <Text style={styles.destinationLocation}>{destination.cityFromName}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        ) : (
-          <Text>No featured destinations available</Text>
-        )}
-      </View>
+                {featuredDestinations.map((destination) => (
+                    <TouchableOpacity
+                        key={destination.id}
+                        style={[styles.featuredCard, { marginRight: 15, width: cardWidth, marginBottom: 15 }]}
+                        onPress={() => navigateToProductInfo(destination)}
+                    >
+                      <Image source={{ uri: destination.photos[0] }} style={styles.featuredImage} />
+                      {destination.rating && (
+                          <View style={styles.ratingBadge}>
+                            <Ionicons name="star" size={12} color="#FFD700" />
+                            <Text style={styles.ratingText}>{destination.rating}</Text>
+                          </View>
+                      )}
+                      <View style={styles.featuredInfo}>
+                        <Text style={styles.destinationName}>{destination.cityToName}</Text>
+                        <Text style={styles.destinationLocation}>{destination.cityFromName}</Text>
+                      </View>
+                    </TouchableOpacity>
+                ))}
+              </ScrollView>
+          ) : (
+              <Text>No featured destinations available</Text>
+          )}
+        </View>
 
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>New This Year</Text>
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>New This Year</Text>
 
-        {isLoading ? (
-          <Text>Loading new destinations...</Text>
-        ) : newDestinations.length > 0 ? (
-          newDestinations.map((destination) => (
-            <TouchableOpacity
-              key={destination.id}
-              style={styles.newDestinationCard}
-              onPress={() => navigateToProductInfo(destination)}
-            >
-              <Image source={{ uri: destination.photos[0] }} style={styles.newDestinationImage} />
-              <View style={styles.newDestinationInfo}>
-                <View>
-                  <Text style={styles.newDestinationName}>{destination.cityToName}</Text>
-                  <Text style={styles.newDestinationLocation}>{destination.cityFromName}</Text>
-                </View>
-                <View style={styles.newDestinationRating}>
-                  <Ionicons name="star" size={14} color="#FFD700" />
-                  <Text style={styles.newDestinationRatingText}>{destination.rating}</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text>No new destinations available</Text>
-        )}
-      </View>
-    </ScrollView>
+          {isLoading ? (
+              <Text>Loading new destinations...</Text>
+          ) : newDestinations.length > 0 ? (
+              newDestinations.map((destination) => (
+                  <TouchableOpacity
+                      key={destination.id}
+                      style={styles.newDestinationCard}
+                      onPress={() => navigateToProductInfo(destination)}
+                  >
+                    <Image source={{ uri: destination.photos[0] }} style={styles.newDestinationImage} />
+                    <View style={styles.newDestinationInfo}>
+                      <View>
+                        <Text style={styles.newDestinationName}>{destination.cityToName}</Text>
+                        <Text style={styles.newDestinationLocation}>{destination.cityFromName}</Text>
+                      </View>
+                      <View style={styles.newDestinationRating}>
+                        <Ionicons name="star" size={14} color="#FFD700" />
+                        <Text style={styles.newDestinationRatingText}>{destination.rating}</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+              ))
+          ) : (
+              <Text>No new destinations available</Text>
+          )}
+        </View>
+      </ScrollView>
   )
 }

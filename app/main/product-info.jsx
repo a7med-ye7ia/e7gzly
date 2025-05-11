@@ -2,6 +2,10 @@ import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { Ionicons } from "@expo/vector-icons"
 import styles from '../../styles/stylePages'
+import { AirbnbRating } from 'react-native-ratings';
+import React from 'react';
+import {addRating , getFlightById} from "../../services/flightService";
+import { useEffect } from 'react';
 
 export default function ProductInfo() {
   const router = useRouter()
@@ -9,7 +13,8 @@ export default function ProductInfo() {
 
   const [cityFrom, cityTo] = [params.cityFromName, params.cityToName]
   const photoArray = (params.photos || '').split(',')
-
+  const [rating, setRating] = React.useState(0);
+  const [averageRating, setAverageRating] = React.useState(0);
   const photos = [
     photoArray[1] || '',
     (photoArray[2] || '').replace("w=800", "w=801"),
@@ -31,6 +36,34 @@ export default function ProductInfo() {
       },
     })
   }
+  useEffect(() => {
+    if (params?.id) {
+      fetchFlightData(params.id);
+    }
+  }, [params?.id]);
+
+// Handle rating and refresh average
+  const handleRating = async (rating) => {
+    setRating(rating);
+    await addRating(params.id, rating); // Add rating to Firestore
+    fetchFlightData(params.id);         // Refresh average rating
+  };
+  const fetchFlightData = async (flightId) => {
+    try {
+      const flight = await getFlightById(flightId);
+      const ratingsArray = Array.isArray(flight.ratings) ? flight.ratings : [];
+      const average =
+          ratingsArray.length > 0
+              ? ratingsArray.reduce((sum, r) => sum + r, 0) / ratingsArray.length
+              : 0;
+      setAverageRating(average);
+      setAverageRating(average)
+      console.log("Flight Ratings:", flight.ratings); // [4, 5, 3, ...]
+      console.log("Average Rating:", averageRating); // e.g. 4.2
+    } catch (error) {
+      console.error("Error fetching flight data:", error);
+    }
+  };
 
   return (
     <ScrollView style={styles.containerProduct}>
@@ -49,7 +82,7 @@ export default function ProductInfo() {
           <Text style={styles.title}>{params.cityToName || 'Unknown Destination'}</Text>
           <View style={styles.ratingContainer}>
             <Ionicons name="star" size={16} color="#FFD700" />
-            <Text style={styles.rating}>4.8</Text>
+            <Text style={styles.rating}>{averageRating}</Text>
           </View>
         </View>
         <Text style={styles.location}>Popular destination</Text>
@@ -81,6 +114,12 @@ export default function ProductInfo() {
             {/* Interest items will be added here when available */}
           </View>
         </View>
+
+        <AirbnbRating
+            defaultRating={0}
+            onFinishRating={handleRating}
+            showRating={false}
+        />
 
         {!showOnly && (
           <View style={styles.bookingContainer}>
