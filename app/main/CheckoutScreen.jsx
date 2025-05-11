@@ -115,12 +115,12 @@ export default function CheckoutScreen() {
     console.log("Passenger Passport Numbers: ", passportNumbers); // ! delete
     const expirationDates = passengerArray.map((form) => form.expirationDate.trim());
     console.log("Passenger Expiration Dates: ", expirationDates); // ! delete
-    console.log("Seats", JSON.parse(selectedSeats)); // ! delete
+    // console.log("Seats", JSON.parse(selectedSeats)); // ! delete
     const doc = {
       numberOfSeats: parseInt(numberOfSeats),
       names,
       citizenship,
-      selectedSeats: JSON.parse(selectedSeats),
+      selectedSeats,
       passportNumbers,
       expirationDates,
     }

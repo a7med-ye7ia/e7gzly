@@ -9,7 +9,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { getUserById } from "../../services/userService";
 import { getFlightById } from "../../services/flightService";
 import { Path } from "react-native-svg";
-
+import {getDetailDocById} from "../../services/bookingDetailsService";
 
 
 const AirlineLogo = ({ airline }) => {
@@ -28,7 +28,6 @@ const AirlineLogo = ({ airline }) => {
 export default function BookedTravels() {
   const router = useRouter();
   const [bookedTrips, setBookedTrips] = useState([]);
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -57,27 +56,25 @@ export default function BookedTravels() {
     fetchUserData();
   }, []);
 
-  const goToDeatails = (ID) => {
+  const goToDetails = async (ID) => {
+    const storedUserEmail = await AsyncStorage.getItem("userEmail");
+    console.log(storedUserEmail)
+    const userData = await getUserById(storedUserEmail);
+    console.log("shit",userData)
+    const bookedTrips = userData.data.bookedTrips;
+    console.log(bookedTrips)
+    const index = bookedTrips.indexOf(ID);
+    console.log(index)
+    const infoId = userData.data.bookedTripsDetails[index];
+    console.loginfoId(infoId)
+    const {success, data, error} = getDetailDocById(infoId);
+    console.log(success)
+    console.log("details array", data)
     router.push({
-      pathname: "/main/product-info",
+      pathname: "/book/passengerBooking",
       params: {
         id: ID,
-        cityFromCode: bookedTrips.find((trip) => trip.id === ID).data.cityFromCode,
-        cityFromName: bookedTrips.find((trip) => trip.id === ID).data.cityFromName,
-        cityToCode: bookedTrips.find((trip) => trip.id === ID).data.cityToCode,
-        cityToName: bookedTrips.find((trip) => trip.id === ID).data.cityToName,
-        flightTime: bookedTrips.find((trip) => trip.id === ID).data.flightTime,
-        arrivalTime: bookedTrips.find((trip) => trip.id === ID).data.arrivalTime,
-        flightDuration: bookedTrips.find((trip) => trip.id === ID).data.flightDuration,
-        airLine: bookedTrips.find((trip) => trip.id === ID).data.airLine,
-        class: bookedTrips.find((trip) => trip.id === ID).data.class,
-        price: bookedTrips.find((trip) => trip.id === ID).data.price,
-        new: bookedTrips.find((trip) => trip.id === ID).data.new,
-        featured: bookedTrips.find((trip) => trip.id === ID).data.featured,
-        about: bookedTrips.find((trip) => trip.id === ID).data.about,
-        photos: bookedTrips.find((trip) => trip.id === ID).data.photos,
-        interests: bookedTrips.find((trip) => trip.id === ID).data.interests,
-        rating: bookedTrips.find((trip) => trip.id === ID).data.rating,
+        passengers: JSON.stringify(data),
         showOnly: true,
       }
     })
@@ -97,7 +94,7 @@ export default function BookedTravels() {
         <TouchableOpacity
           key={trip.id} 
           style={styles.flightCard}
-          onPress={() => goToDeatails(trip.id)}
+          onPress={() => goToDetails(trip.id)}
         >
           <View style={styles.flightDetails}>
             {/* Origin */}

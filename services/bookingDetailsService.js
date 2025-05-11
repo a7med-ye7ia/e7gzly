@@ -19,7 +19,7 @@ const getDetailDocById = async (documentId) => {
     return {success: false, error: 'Document not found'}
   }
 
-  const passengers = [numberOfSeats];
+  const passengers = [];
   for (let i = 0; i < data.numberOfSeats; i++) {
     passengers.push({
       name: data.names[i],
@@ -29,6 +29,7 @@ const getDetailDocById = async (documentId) => {
       selectedSeats: data.selectedSeats[i],
     });
   }
+  return {success : true , data : passengers};
 }
 
 export { addDetailDoc, getDetailDocById}
