@@ -112,7 +112,7 @@ const Profile = () => {
                 <Option icon="airplane-outline" label="Booked Trips" onPress={() => router.push("/profile/bookedTravels")} />
                 <Option icon="time-outline" label="Trips History" onPress={() => router.push("/profile/TravelsLog")} />
                 {isAdmin && (
-                    <Option icon="shield-checkmark" label="Admin Dashboard" onPress={() => router.push("/admin/admin")} />
+                    <Option icon="shield-checkmark" label="Admin Dashboard" onPress={() => router.push("/admin/manageFlights")} />
                 )}
                 <Option icon="log-out-outline" label="Log Out" onPress={handleSignOut} />
             </View>

@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import stylePages from "../../styles/stylePages";
 import { getAllFlights } from "../../services/flightService";
+import styles from "../../styles/stylesAuth";
 
 export default function manageFlights() {
   const router = useRouter();
@@ -73,14 +74,19 @@ export default function manageFlights() {
 
   return (
     <ScrollView style={stylePages.containerFlight}>
+      <View style={styles.profileHeaderRow}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.back}>
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text style={styles.profileTitle}>Manage Flight</Text>
+      </View>
       <View style={stylePages.sectionContainer}>
-        <Text style={stylePages.sectionTitle}>Manage Flights</Text>
 
         <TouchableOpacity
             style={[stylePages.newDestinationCard, {height: 70}]}
             onPress={() => navigateToFlightModificationPage(null)} // will move you to the add page
           >
-            <Ionicons name="add" size={40} color={'grey'} style={{marginRight: 8, marginLeft: 10}} />
+            <Ionicons name="add" size={40} color={'#5C40CC'} style={{marginRight: 8, marginLeft: 10}} />
             <Text style={stylePages.newDestinationName}>Add flight</Text>
                
         </TouchableOpacity>

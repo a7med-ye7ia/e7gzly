@@ -203,7 +203,8 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   content: {
-    padding: 20,
+    width: '100%',
+    padding: 40,
   },
 
   // Information rows
@@ -796,6 +797,19 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 12,
   },
+  input: {
+    fontSize: 16,
+    fontWeight: '600',
+    backgroundColor: '#FFF',
+    borderColor: '#CCC',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 24,
+    color: '#000',
+  },
+
 
 
 });

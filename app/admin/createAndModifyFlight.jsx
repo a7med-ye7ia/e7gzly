@@ -1,6 +1,6 @@
 import {View, Text, ScrollView, TextInput, TouchableOpacity, Switch, Image, Alert} from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { useState } from "react";
+import React, { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
 
 import stylesAuth from "../../styles/stylesAuth";
@@ -9,6 +9,7 @@ import stylePages from "../../styles/stylePages";
 import { addFlight, deleteFlight, updateFlight, getFlightById } from "../../services/flightService";
 import { deleteImage, pickImage } from "../../hooks/imagePiker2";
 import { uploadImage } from "../../upload/uploads";
+import styles from "../../styles/styleBooking";
 
 
 export default function ProductInfo() {
@@ -34,6 +35,7 @@ export default function ProductInfo() {
   const [photos, setPhotos] = useState(params.photos || []);
   const [interests, setInterests] = useState(params.interests || []);
   const [rating, setRating] = useState(params.rating || 0)
+  const [focusedField, setFocusedField] = useState(null);
 
   // image useCases
   const [images, setImages] = useState(params.photos ? params.photos : []) // we will use this to show the updated data till upload finish
@@ -189,40 +191,39 @@ export default function ProductInfo() {
 
   return (
 
-    <ScrollView style={[stylesAuth.containerSigUp, { paddingBottom: 100 }]}   contentContainerStyle={{ flexGrow: 1 }}>
-      <Text style={stylesAuth.title}>
-        {params.id ? "Edit Flight" : "Add Flight"}
-      </Text>
+      <ScrollView
 
-      {/* Save & Delete Buttons */}
-      <TouchableOpacity style={stylePages.editButton} onPress={handleSave}>
-        <Text style={stylePages.editButtonText}>{params.id ? 'Update' : 'Save'}</Text>
-      </TouchableOpacity>
-
-      {params.cityToCode && (
-          <TouchableOpacity style={[stylePages.editButton, { backgroundColor: "red", marginTop: 10 }]} onPress={handleDelete}>
-            <Text style={stylePages.editButtonText}>Delete</Text>
+          style={styles.container}
+          contentContainerStyle={{ paddingBottom: 80 }}
+      >
+        <View style={stylesAuth.profileHeaderRow}>
+          <TouchableOpacity onPress={() => router.back()} style={stylesAuth.back}>
+            <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-      )}
-
+          <Text style={stylesAuth.profileTitle}>{!params.cityToCode && "Create Flight"} {params.cityToCode&& "Update Flight"}</Text>
+        </View>
       {/* FROM CITY */}
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>From (City Name)</Text>
         <TextInput
-          style={stylesAuth.input}
+            style={[stylesAuth.input, focusedField === 'from' && stylesAuth.inputFocused]}
           placeholder='e.g. Sao Paulo'
           value={cityFromName}
           onChangeText={setCityFromName}
+            onFocus={() => setFocusedField('from')}
+            onBlur={() => setFocusedField(null)}
         />
       </View>
   
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>From (Airport Code)</Text>
         <TextInput
-          style={stylesAuth.input}
+            style={[stylesAuth.input, focusedField === 'to' && stylesAuth.inputFocused]}
           placeholder='e.g. GRU'
           value={cityFromCode}
           onChangeText={setCityFromCode}
+            onFocus={() => setFocusedField('to')}
+            onBlur={() => setFocusedField(null)}
         />
       </View>
   
@@ -230,20 +231,24 @@ export default function ProductInfo() {
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>To (City Name)</Text>
         <TextInput
-          style={stylesAuth.input}
+            style={[stylesAuth.input, focusedField === 'time' && stylesAuth.inputFocused]}
           placeholder='e.g. Bangkok'
           value={cityToName}
           onChangeText={setCityToName}
+            onFocus={() => setFocusedField('time')}
+            onBlur={() => setFocusedField(null)}
         />
       </View>
   
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>To (Airport Code)</Text>
         <TextInput
-          style={stylesAuth.input}
+            style={[stylesAuth.input, focusedField === 'toCode' && stylesAuth.inputFocused]}
           placeholder='e.g. BKK'
           value={cityToCode}
           onChangeText={setCityToCode}
+            onFocus={() => setFocusedField('toCode')}
+            onBlur={() => setFocusedField(null)}
         />
       </View>
   
@@ -251,30 +256,37 @@ export default function ProductInfo() {
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>Flight Time</Text>
         <TextInput
-          style={stylesAuth.input}
+            style={[stylesAuth.input, focusedField === 'duration' && stylesAuth.inputFocused]}
           placeholder='e.g. 10:00 PM'
           value={flightTime}
           onChangeText={setFlightTime}
+            onFocus={() => setFocusedField('duration')}
+            onBlur={() => setFocusedField(null)}
         />
       </View>
   
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>Arrival Time</Text>
         <TextInput
-          style={stylesAuth.input}
+            style={[stylesAuth.input, focusedField === 'arrivalTime' && stylesAuth.inputFocused]}
           placeholder='e.g. 01:00 PM'
           value={arrivalTime}
           onChangeText={setArrivalTime}
+            onFocus={() => setFocusedField('arrivalTime')}
+            onBlur={() => setFocusedField(null)}
+
         />
       </View>
   
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>Flight Duration</Text>
         <TextInput
-          style={stylesAuth.input}
+            style={[stylesAuth.input, focusedField === 'flightDuration' && stylesAuth.inputFocused]}
           placeholder='e.g. 18h 00m'
           value={flightDuration}
           onChangeText={setFlightDuration}
+            onFocus={() => setFocusedField('flightDuration')}
+            onBlur={() => setFocusedField(null)}
         />
       </View>
   
@@ -282,20 +294,24 @@ export default function ProductInfo() {
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>Airline</Text>
         <TextInput
-          style={stylesAuth.input}
+            style={[stylesAuth.input, focusedField === 'airline' && stylesAuth.inputFocused]}
           placeholder='e.g. Thai Airways'
           value={airLine}
           onChangeText={setAirLine}
+            onFocus={() => setFocusedField('airline')}
+            onBlur={() => setFocusedField(null)}
         />
       </View>
   
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>Class</Text>
         <TextInput
-          style={stylesAuth.input}
+            style={[stylesAuth.input, focusedField === 'class' && stylesAuth.inputFocused]}
           placeholder='e.g. Economy Class'
           value={flightClass}
           onChangeText={setFlightClass}
+            onFocus={() => setFocusedField('class')}
+            onBlur={() => setFocusedField(null)}
         />
       </View>
   
@@ -303,10 +319,12 @@ export default function ProductInfo() {
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>Price</Text>
         <TextInput
-          style={stylesAuth.input}
+          style={[stylesAuth.input, focusedField === 'price' && stylesAuth.inputFocused]}
           placeholder='e.g. IDR 13.000.000'
           value={price}
           onChangeText={setPrice}
+          onFocus={() => setFocusedField('price')}
+            onBlur={() => setFocusedField(null)}
         />
       </View>
   
@@ -314,11 +332,13 @@ export default function ProductInfo() {
       <View style={stylesAuth.inputContainer}>
         <Text style={stylesAuth.label}>About</Text>
         <TextInput
-          style={[stylesAuth.input, { height: 100 }]}
+          style={[stylesAuth.input, { height: 100 } , focusedField === 'about' && stylesAuth.inputFocused]}
           placeholder='Flight description'
           multiline
           value={about}
           onChangeText={setAbout}
+          onFocus={() => setFocusedField('about')}
+            onBlur={() => setFocusedField(null)}
         />
       </View>
   
@@ -328,8 +348,8 @@ export default function ProductInfo() {
         <Switch
           value={featured}
           onValueChange={() => setFeatured(!featured)}
-          trackColor={{ false: '#767577', true: '#81b0ff' }}
-          thumbColor={featured ? 'green' : 'red'}
+          trackColor={{ false: '#767577', true: '#766bbd' }}
+          thumbColor={featured ? '#5C40CC' : '#323131'}
         />
       </View>
   
@@ -338,8 +358,8 @@ export default function ProductInfo() {
         <Switch
           value={neww}
           onValueChange={() => setNeww(!neww)}
-          trackColor={{ false: '#767577', true: '#81b0ff' }}
-          thumbColor={neww ? 'green' : 'red'}
+          trackColor={{ false: '#767577', true: '#766bbd' }}
+          thumbColor={neww ? '#5C40CC' : '#323131'}
         />
       </View>
   
@@ -385,15 +405,16 @@ export default function ProductInfo() {
       </TouchableOpacity>
   
       {/*/!* Save & Delete Buttons *!/*/}
-      {/*<TouchableOpacity style={stylePages.editButton} onPress={handleSave}>*/}
-      {/*  <Text style={stylePages.editButtonText}>{params.id ? 'Update' : 'Save'}</Text>*/}
-      {/*</TouchableOpacity>*/}
-
-      {/*{params.id && (*/}
-      {/*  <TouchableOpacity style={[stylePages.editButton, { backgroundColor: "red", marginTop: 10 }]} onPress={handleDelete}>*/}
-      {/*    <Text style={stylePages.editButtonText}>Delete</Text>*/}
-      {/*  </TouchableOpacity>*/}
-      {/*)}*/}
+        <View style={[stylePages.buttonContainer ,{ marginTop: 20 , marginBottom: 20 }]} >
+          <TouchableOpacity style={[stylePages.editButton , {width:"40%" , height:40}]} onPress={handleSave}>
+           <Text style={stylePages.editButtonText}>{params.id ? 'Update' : 'Save'}</Text>
+          </TouchableOpacity>
+          {params.cityToCode && (
+              <TouchableOpacity style={[stylePages.editButton, { width:"40%" , height:40 , backgroundColor: "#ec2c2c", marginTop: 10 }]} onPress={handleDelete}>
+                <Text style={stylePages.editButtonText}>Delete</Text>
+              </TouchableOpacity>
+          )}
+        </View>
     </ScrollView>
   );  
 }
