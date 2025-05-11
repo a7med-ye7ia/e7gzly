@@ -1,6 +1,6 @@
 import React, { useState , useEffect } from "react";
 import {View, Text, TextInput, TouchableOpacity, Image, ScrollView,Alert,} from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter,useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "../../styles/stylesAuth";
 import { auth } from "../../config/firebaseConfig";
@@ -10,8 +10,10 @@ import defaultImage from "../../assets/default-avatar.jpg";
 import {getUserById} from "../../services/userService";
 import {updateUser} from "../../services/userService";
 
+
 export default function EditProfile() {
     const router = useRouter();
+    const params = useLocalSearchParams()
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -28,11 +30,11 @@ export default function EditProfile() {
     useEffect(() => {
         const user = auth.currentUser;
         if (user) {
-            setEmail(user.email);
+            setEmail(params.email);
         }
         const getData = async () => {
             try {
-                const data = await getUserById(auth.currentUser.email);
+                const data = await getUserById(params.email);
                 setProfilePicture(data.profilePictureURL);
                 setFirstName(data.firstName);
                 setLastName(data.lastName);
@@ -70,7 +72,7 @@ export default function EditProfile() {
                 profilePictureURL: profileImageUri || profilePicture
             };
 
-            const { success, error } = await updateUser(user.email, updates);
+            const { success, error } = await updateUser(params.email, updates);
 
             if (success) {
                 Alert.alert("Success", "Profile updated successfully.");

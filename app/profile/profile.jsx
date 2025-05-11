@@ -101,7 +101,7 @@ const Profile = () => {
                 <Text style={styles.profileName}>{userFirstName} {userLastName}</Text>
                 <Text style={styles.profileEmail}>{userEmail}</Text>
 
-                <TouchableOpacity style={styles.editButton} onPress={() => router.push("/profile/editProfile")}>
+                <TouchableOpacity style={styles.editButton} onPress={() => router.push({pathname:"/profile/editProfile", params:{email: userEmail}})}>
                     <Text style={styles.editButtonText}>Edit Profile</Text>
                 </TouchableOpacity>
             </View>
