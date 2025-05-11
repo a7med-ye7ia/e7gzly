@@ -1,19 +1,58 @@
 import React, { useEffect } from 'react';
-import { View, ImageBackground, Text, ScrollView, Dimensions, StyleSheet } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { View, ImageBackground, Text, ScrollView, Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserById } from '../../services/userService';
+import { getFlightById } from '../../services/flightService';
 
 const { width } = Dimensions.get('window');
 
 const PassengerSummary = () => {
+    const router = useRouter();
     const params = useLocalSearchParams();
-    // const parsedPassengers = passengers ? JSON.parse(decodeURIComponent(passengers)) : [];
     const parsedPassengers = params.passengers ? JSON.parse(params.passengers) : [];
 
+    const goToFlightDetails = async () => {
+        console.log("goToDetails")
+        const storedUserEmail = await AsyncStorage.getItem("userEmail");
+        console.log("storedUserEmail", storedUserEmail)
+        const user = await getUserById(storedUserEmail);
+        console.log("user", user)
+        const bookedTripsIDs = user.bookedTrips || [];
+        console.log("bookedTripsIDs", bookedTripsIDs)
+        const trips = await Promise.all(
+            bookedTripsIDs.map(async (tripID) => {
+            const flight = await getFlightById(tripID);
+            return { data: flight, id: tripID };
+            })
+        );
+        console.log("trips", trips)
 
-    useEffect(() => {
-        // Log the parsed passengers to verify the data
-        // console.log('Parsed Passengers:', parsedPassengers);
-    }, []);
+        router.push({
+            pathname: "../main/product-info",
+            params: {
+              id: params.id,
+              cityFromCode: trips.find((trip) => trip.id === params.id).data.cityFromCode,
+              cityFromName: trips.find((trip) => trip.id === params.id).data.cityFromName,
+              cityToCode: trips.find((trip) => trip.id === params.id).data.cityToCode,
+              cityToName: trips.find((trip) => trip.id === params.id).data.cityToName,
+              flightTime: trips.find((trip) => trip.id === params.id).data.flightTime,
+              arrivalTime: trips.find((trip) => trip.id === params.id).data.arrivalTime,
+              flightDuration: trips.find((trip) => trip.id === params.id).data.flightDuration,
+              airLine: trips.find((trip) => trip.id === params.id).data.airLine,
+              class: trips.find((trip) => trip.id === params.id).data.class,
+              price: trips.find((trip) => trip.id === params.id).data.price,
+              new: trips.find((trip) => trip.id === params.id).data.new,
+              featured: trips.find((trip) => trip.id === params.id).data.featured,
+              about: trips.find((trip) => trip.id === params.id).data.about,
+              photos: trips.find((trip) => trip.id === params.id).data.photos,
+              interests: trips.find((trip) => trip.id === params.id).data.interests,
+              rating: trips.find((trip) => trip.id === params.id).data.rating,
+              showOnly: true,
+            }
+          })
+    }
+
 
     return (
         <View style={styles.container}>
@@ -57,6 +96,13 @@ const PassengerSummary = () => {
                         </View>
                     </View>
                 ))}
+
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.button} onPress={goToFlightDetails}>
+                        <Text style={styles.buttonText}>Go to Flight Details</Text>
+                    </TouchableOpacity>
+                </View>
+
             </ScrollView>
         </View>
     );
@@ -115,6 +161,31 @@ const styles = StyleSheet.create({
         color: '#000',
         width: '55%',
         textAlign: 'right',
+    },
+    buttonContainer: {
+        gap: 12,
+        alignItems: "center",
+        marginTop: 20 ,
+        marginBottom: 5
+    },
+    button: {
+        backgroundColor: '#5D3FD3',
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+        borderRadius: 12,
+        alignSelf: 'center',
+        marginBottom: 5,
+        marginTop: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
 });
 

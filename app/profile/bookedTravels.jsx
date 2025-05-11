@@ -43,7 +43,6 @@ export default function BookedTravels() {
               })
           );
 
-          // setBookedTrips(trips);
           setBookedTrips(trips);
         } else {
           console.warn("User data not found");
@@ -62,7 +61,7 @@ export default function BookedTravels() {
     // console.log(storedUserEmail)
     const userData = await getUserById(storedUserEmail);
     // console.log("shit",userData)
-    const bcookedTrips = userData.bookedTrips;
+    const bookedTrips = userData.bookedTrips;
     // console.log("bookingtrips",bookedTrips)
     // const index = bookedTrips.indexOf(ID);
     // console.log("index",index)
