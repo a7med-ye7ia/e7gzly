@@ -42,10 +42,6 @@ export default function Book() {
   const [filteredFlightData, setFilteredFlightData] = useState(initialFilteredData);
   const [isLoading, setIsLoading] = useState(false);
 
-  // For inline error display
-  const [isValidFrom, setIsValidFrom] = useState(true);
-  const [isValidTo, setIsValidTo] = useState(true);
-
   const seats = ["1 Seat", "2 Seats", "3 Seats", "4 Seats", "5 Seats"];
 
   // Fetch all flights on component mount, similar to FlightDestinations
@@ -92,66 +88,6 @@ export default function Book() {
 
     getFlights();
   }, []);
-
-  const validateLocationWithoutAlert = async (location) => {
-    if (!location || location.trim() === "") {
-        console.log(`Location "${location}" is empty or invalid.`);
-        return false;
-    }
-    try {
-        console.log(`Sending request to validate location: "${location}"`);
-        const response = await fetch(
-            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-                location
-            )}&format=json&addressdetails=1&limit=5`,
-            {
-                headers: {
-                    'User-Agent': 'MyFlightBookingApp/1.0 (contact: your-email@example.com)',
-                    'Referer': 'http://localhost',
-                },
-            }
-        );
-        console.log(`Response status for "${location}": ${response.status}`);
-        
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.log(`Error response body for "${location}":`, errorText);
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log(`Validation results for "${location}":`, data);
-    
-        if (data.length > 0) {
-            data.forEach((result, index) => {
-                console.log(`Result ${index + 1} for "${location}": Type=${result.type}, Class=${result.class || 'N/A'}, Display_Name=${result.display_name || 'N/A'}`);
-            });
-    
-            const hasValidType = data.some(result => 
-                ["city", "town", "village", "country", "place", "boundary", "administrative"].includes(result.type)
-            );
-            if (hasValidType) {
-                console.log(`Location "${location}" is valid (found relevant type in ${data.length} results).`);
-                return true;
-            } else {
-                const hasHighImportance = data.some(result => result.importance > 0.5);
-                if (hasHighImportance) {
-                    console.log(`Location "${location}" is valid (high importance despite no matching type, ${data.length} results).`);
-                    return true;
-                } else {
-                    console.log(`Location "${location}" has results but no relevant type or high importance.`);
-                    return false;
-                }
-            }
-        } else {
-            console.log(`Location "${location}" not found (0 results).`);
-            return false;
-        }
-    } catch (error) {
-        console.error(`Error validating location "${location}":`, error.message);
-        return false;
-    }
-};
 
   const openDatePicker = () => {
     setFocusedField("date");
@@ -236,19 +172,6 @@ export default function Book() {
       return;
     }
 
-    // Validate "from" and "to" with live city/country check
-    const [fromValid, toValid] = await Promise.all([
-      validateLocationWithoutAlert(fromTrimmed),
-      validateLocationWithoutAlert(toTrimmed),
-    ]);
-    setIsValidFrom(fromValid);
-    setIsValidTo(toValid);
-
-    if (!fromValid || !toValid) {
-      Alert.alert("Invalid Location", "One or both locations are invalid or cannot be found.");
-      return;
-    }
-
     setSearching(true);
     const filteredData = destinations.filter(
       (destination) =>
@@ -277,25 +200,11 @@ export default function Book() {
     setSearching(false);
   };
 
-  const handleFromBlur = async () => {
-    if (from.trim().length > 0) {
-      const valid = await validateLocationWithoutAlert(from.trim());
-      setIsValidFrom(valid);
-    }
-  };
-
-  const handleToBlur = async () => {
-    if (to.trim().length > 0) {
-      const valid = await validateLocationWithoutAlert(to.trim());
-      setIsValidTo(valid);
-    }
-  };
-
   const focusedStyle = (field) => ({
     borderColor: focusedField === field ? primaryColor : "#ccc",
   });
 
-  return (
+  return ( 
     <ScrollView style={styles.container}>
       <Text style={styles.h1}>Book Your Trip Now!!</Text>
       {isLoading && <Text>Loading flight data...</Text>}
@@ -330,13 +239,9 @@ export default function Book() {
           placeholder="Enter origin city (e.g. Toronto)"
           value={from}
           onChangeText={setFrom}
-          onBlur={handleFromBlur}
           onFocus={() => setFocusedField('from')}
           autoCapitalize="words"
         />
-        {!isValidFrom && (
-          <Text style={{ color: "red", marginBottom: 8 }}>Please enter a valid city or country.</Text>
-        )}
 
         {/* To Input */}
         <Text style={styles.inputLabel}>To</Text>
@@ -345,13 +250,9 @@ export default function Book() {
           placeholder="Enter destination city (e.g. New York)"
           value={to}
           onChangeText={setTo}
-          onBlur={handleToBlur}
           onFocus={() => setFocusedField('to')}
           autoCapitalize="words"
         />
-        {!isValidTo && (
-          <Text style={{ color: "red", marginBottom: 8 }}>Please enter a valid city or country.</Text>
-        )}
 
         {/* Date Picker */}
         <Text style={styles.inputLabel}>Date</Text>
@@ -404,8 +305,6 @@ export default function Book() {
             </View>
           </View>
         </Modal>
-
-        {/* Booking Modal */}
 
         {/* Booking Modal */}
         <Modal
@@ -478,8 +377,6 @@ export default function Book() {
             </View>
           </View>
         </Modal>
-
-
 
         {/* Book Now Button */}
         <TouchableOpacity

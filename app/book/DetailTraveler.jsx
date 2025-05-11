@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, Dimensions, Alert } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useRouter, useLocalSearchParams } from "expo-router";
-import Icon from "react-native-vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get('window');
 const primaryColor = '#5D3FD3';
@@ -201,34 +201,16 @@ const DetailTraveler = () => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.progressContainer}>
-                <View style={styles.stepContainer}>
-                    <View style={[styles.stepCircle, styles.activeStep]}>
-                        <Text style={styles.stepNumber}>1</Text>
-                    </View>
-                    <Text style={styles.activeStepText}>Detail Traveler</Text>
+            <View style={styles.stepsContainer}>
+                <View style={styles.stepsRow}>
+                    <Text style={styles.stepNumberActive}>①</Text>
+                    <Text style={styles.stepNumber}>②</Text>
+                    <Text style={styles.stepNumber}>③</Text>
                 </View>
-
-                <View style={styles.dottedLine} />
-
-                <View style={styles.planeIconContainer}>
-                    <Icon name="airplane" size={20} color="#5C40CC" />
-                </View>
-
-                <View style={styles.dottedLine} />
-                <View style={styles.stepContainer}>
-                    <View style={styles.stepCircle}>
-                        <Text style={styles.stepNumber}>2</Text>
-                    </View>
-                    <Text style={styles.stepText}>Select Seat</Text>
-                </View>
-
-                <View style={styles.dottedLine} />
-                <View style={styles.stepContainer}>
-                    <View style={styles.stepCircle}>
-                        <Text style={styles.stepNumber}>3</Text>
-                    </View>
-                    <Text style={styles.stepText}>Extra Services</Text>
+                <View style={styles.stepsRow}>
+                    <Text style={styles.stepLabelActive}>Detail Traveler</Text>
+                    <Text style={styles.stepLabel}>Select Seat</Text>
+                    <Text style={styles.stepLabel}>Extra Services</Text>
                 </View>
             </View>
 
@@ -383,54 +365,50 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         paddingTop: 30,
     },
-    progressContainer: {
+    stepsContainer: {
+        marginVertical: 20,
+        alignItems: 'center',
+      },
+    
+      stepsRow: {
         flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 20,
-        paddingVertical: 20,
-        paddingHorizontal: 20,
-    },
-    stepContainer: {
-        alignItems: 'center',
-    },
-    stepCircle: {
-        width: 30,
-        height: 30,
-        borderRadius: 15,
-        backgroundColor: '#E0E0E0',
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '90%',
         marginBottom: 5,
-    },
-    activeStep: {
-        backgroundColor: primaryColor,
-    },
-    stepNumber: {
-        color: 'white',
-        fontWeight: 'bold',
-    },
-    stepText: {
-        color: '#888',
-        fontSize: 12,
-        textAlign: 'center',
-    },
-    activeStepText: {
-        color: primaryColor,
-        fontWeight: 'bold',
-        fontSize: 12,
-        textAlign: 'center',
-    },
-    dottedLine: {
+      },
+    
+      stepNumber: {
         flex: 1,
-        borderStyle: "dashed",
-        borderWidth: 0.4,
-        borderColor: "#B0B0B0",
-        marginBottom: 15,
-    },
-    planeIconContainer: {
-        marginBottom: 15,
-    },
+        textAlign: 'center',
+        color: '#999',
+        fontSize: 20,
+      },
+    
+      stepNumberActive: {
+        flex: 1,
+        textAlign: 'center',
+        color: '#5D50C6',
+        fontWeight: 'bold',
+        fontSize: 20,
+        marginLeft: -10,
+      },
+    
+      stepLabel: {
+        flex: 1,
+        textAlign: 'center',
+        color: '#999',
+        fontSize: 12,
+      },
+    
+      stepLabelActive: {
+        flex: 1,
+        textAlign: 'center',
+        color: '#5D50C6',
+        fontSize: 12,
+        fontWeight: 'bold',
+      },
+      stepInactive: { color: '#999' },
+      stepActive: { color: '#5D50C6', fontWeight: 'bold' },
     contentContainer: {
         flex: 1,
         display: 'flex',
