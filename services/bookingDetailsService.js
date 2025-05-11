@@ -15,6 +15,7 @@ const addDetailDoc = async (doc) => {
 
 const getDetailDocById = async (documentId) => {
   const data = await getDocumentById(collectionName, documentId)
+  console.log("data from firesotre functions", data)
   if (!data) {
     return {success: false, error: 'Document not found'}
   }

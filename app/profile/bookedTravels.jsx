@@ -36,7 +36,6 @@ export default function BookedTravels() {
 
         if (user) {
           const bookedTripsIDs = user.bookedTrips || [];
-
           const trips = await Promise.all(
               bookedTripsIDs.map(async (tripID) => {
                 const flight = await getFlightById(tripID);
@@ -44,6 +43,7 @@ export default function BookedTravels() {
               })
           );
 
+          // setBookedTrips(trips);
           setBookedTrips(trips);
         } else {
           console.warn("User data not found");
@@ -56,20 +56,21 @@ export default function BookedTravels() {
     fetchUserData();
   }, []);
 
-  const goToDetails = async (ID) => {
+  const goToDetails = async (ID, index) => {
+    // console.log("ID", ID)
     const storedUserEmail = await AsyncStorage.getItem("userEmail");
-    console.log(storedUserEmail)
+    // console.log(storedUserEmail)
     const userData = await getUserById(storedUserEmail);
-    console.log("shit",userData)
-    const bookedTrips = userData.data.bookedTrips;
-    console.log(bookedTrips)
-    const index = bookedTrips.indexOf(ID);
-    console.log(index)
-    const infoId = userData.data.bookedTripsDetails[index];
-    console.loginfoId(infoId)
-    const {success, data, error} = getDetailDocById(infoId);
-    console.log(success)
-    console.log("details array", data)
+    // console.log("shit",userData)
+    const bcookedTrips = userData.bookedTrips;
+    // console.log("bookingtrips",bookedTrips)
+    // const index = bookedTrips.indexOf(ID);
+    // console.log("index",index)
+    const infoId = userData.bookedTripsDetails[index];
+    // console.log("infoId",infoId) // the value
+    // console.log("===============================")
+    const {success, data, error} = await getDetailDocById(infoId);
+    // console.log("details array", JSON.stringify(data)) // ! delete
     router.push({
       pathname: "/book/passengerBooking",
       params: {
@@ -90,11 +91,11 @@ export default function BookedTravels() {
         <View style={{ width: 24 }} />
       </View>
 
-      {bookedTrips.map((trip) => (
+      {bookedTrips.map((trip, index) => (
         <TouchableOpacity
-          key={trip.id} 
+          key={trip.id + index} 
           style={styles.flightCard}
-          onPress={() => goToDetails(trip.id)}
+          onPress={() => goToDetails(trip.id, index)}
         >
           <View style={styles.flightDetails}>
             {/* Origin */}

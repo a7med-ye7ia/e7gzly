@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, ImageBackground, Text, ScrollView, Dimensions, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 const { width } = Dimensions.get('window');
-const params = useLocalSearchParams();
-const passengers = params.passengers;
+
 const PassengerSummary = () => {
     const params = useLocalSearchParams();
     // const parsedPassengers = passengers ? JSON.parse(decodeURIComponent(passengers)) : [];
-    const parsedPassengers = JSON.parse(params.detail);
+    const parsedPassengers = params.passengers ? JSON.parse(params.passengers) : [];
+
+
+    useEffect(() => {
+        // Log the parsed passengers to verify the data
+        // console.log('Parsed Passengers:', parsedPassengers);
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -33,7 +38,7 @@ const PassengerSummary = () => {
 
                         <View style={styles.textContent}>
                             <Text style={styles.label}>Full Name:</Text>
-                            <Text style={styles.value}>{passenger.fullName}</Text>
+                            <Text style={styles.value}>{passenger.name}</Text>
                         </View>
 
                         <View style={styles.textContent}>
@@ -48,7 +53,7 @@ const PassengerSummary = () => {
 
                         <View style={styles.textContent}>
                             <Text style={styles.label}>Expiration Date:</Text>
-                            <Text style={styles.value}>{passenger.expirationDate}</Text>
+                            <Text style={styles.value}>{passenger.expirationDates}</Text>
                         </View>
                     </View>
                 ))}
