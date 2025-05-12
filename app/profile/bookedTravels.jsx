@@ -37,13 +37,15 @@ export default function BookedTravels() {
         if (user) {
           const bookedTripsIDs = user.bookedTrips || [];
           const trips = await Promise.all(
-              bookedTripsIDs.map(async (tripID) => {
-                const flight = await getFlightById(tripID);
-                return { data: flight, id: tripID };
-              })
+            bookedTripsIDs.map(async (tripID) => {
+              const flight = await getFlightById(tripID);
+              if (!flight) return null; // Handle case where flight is not found
+              return { data: flight, id: tripID };
+            })
           );
 
-          setBookedTrips(trips);
+          setBookedTrips(trips.filter(trip => trip !== null));
+          console.log("Booked trips:", trips);
         } else {
           console.warn("User data not found");
         }
